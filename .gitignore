@@ -1,0 +1,5 @@
+# local cross-pointer and scratch, not part of the site
+SOURCE_LOCATION.md
+Thumbs.db
+desktop.ini
+.DS_Store

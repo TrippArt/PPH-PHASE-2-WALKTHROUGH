@@ -1,0 +1,673 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>PPH Zone 3 Walkthrough V2</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600&display=swap">
+<style>
+/* Layout: the 3D room fills the whole screen; one small menu button opens a side sheet. Single dark look by choice. */
+:root{
+  color-scheme:dark;
+  --bg:#0d1012;
+  --panel:#151a1c;
+  --panel-2:#1e2527;
+  --line:#34403f;
+  --ink:#e9ece8;
+  --ink-dim:#9aa5a1;
+  --accent:#58c4b4;
+  --measured:#f1f3ee;
+  --derived:#f2c14e;
+  --provisional:#ff8f5e;
+  --font-body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-sign:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);overflow:hidden;overscroll-behavior:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+#gl{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;outline:none}
+
+#menuBtn{position:fixed;top:calc(env(safe-area-inset-top,0px) + 12px);right:calc(env(safe-area-inset-right,0px) + 12px);width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:rgba(21,26,28,.78);color:var(--ink);display:grid;place-items:center;cursor:pointer;z-index:5;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+#menuBtn span,#menuBtn span::before,#menuBtn span::after{display:block;width:18px;height:2px;background:var(--ink);border-radius:2px;content:"";position:relative}
+#menuBtn span::before{position:absolute;top:-6px}
+#menuBtn span::after{position:absolute;top:6px}
+button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+#readout{position:fixed;left:calc(env(safe-area-inset-left,0px) + 12px);bottom:calc(env(safe-area-inset-bottom,0px) + 10px);font-family:var(--font-sign);font-weight:500;font-size:14px;letter-spacing:.04em;color:var(--ink);background:rgba(13,16,18,.6);padding:5px 10px;border-radius:6px;pointer-events:none;font-variant-numeric:tabular-nums;z-index:3;max-width:calc(100% - 236px)}
+#hint{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 56px);width:max-content;max-width:calc(100% - 32px);text-align:center;font-size:15px;line-height:1.4;background:rgba(13,16,18,.82);border:1px solid var(--line);padding:10px 16px;border-radius:10px;pointer-events:none;transition:opacity .6s;z-index:3}
+#hint.gone{opacity:0}
+#quick{position:fixed;right:calc(env(safe-area-inset-right,0px) + 10px);bottom:calc(env(safe-area-inset-bottom,0px) + 10px);display:flex;gap:6px;z-index:4}
+#quick button{border:1px solid var(--line);background:rgba(21,26,28,.78);color:var(--ink);border-radius:6px;padding:6px 9px;font-family:var(--font-sign);font-weight:500;font-size:13px;letter-spacing:.04em;cursor:pointer;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+#quick button[aria-pressed="true"]{background:var(--derived);border-color:var(--derived);color:#241b00;font-weight:600}
+#tag{position:fixed;left:50%;bottom:calc(50% + 20px);transform:translateX(-50%);width:max-content;max-width:calc(100% - 32px);text-align:center;font-family:var(--font-sign);background:rgba(13,16,18,.84);border:1px solid var(--line);border-radius:8px;padding:6px 12px 7px;pointer-events:none;z-index:3;font-variant-numeric:tabular-nums;line-height:1.15}
+#tag b{display:block;font-weight:600;font-size:clamp(19px,5.2vw,26px);letter-spacing:.02em;color:var(--tagc,var(--measured))}
+#tag span{display:block;font-weight:500;font-size:clamp(15px,4vw,19px);letter-spacing:.03em;color:var(--ink);margin-top:2px}
+#intro{position:fixed;inset:0;z-index:7;display:grid;place-items:center;padding:24px 16px;background:rgba(9,12,13,.84);pointer-events:none;opacity:0;transition:opacity .45s}
+#intro.on{opacity:1}
+#intro .card{display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;transition:opacity .32s}
+#intro.swap .card{opacity:0}
+#intro .stage{position:relative;width:200px;height:210px}
+#intro .track{position:absolute;left:50%;top:50%;width:4px;height:150px;margin:-75px 0 0 -2px;border-radius:2px;background:linear-gradient(var(--derived),rgba(242,193,78,0));opacity:.55}
+#intro[data-dir="down"] .track{transform:rotate(180deg)}
+#intro[data-dir="side"] .track{transform:rotate(90deg);background:linear-gradient(var(--derived),rgba(242,193,78,0) 50%,var(--derived))}
+#intro .tips{position:absolute;left:50%;top:50%;display:flex;gap:16px;transform:translate(-50%,-50%)}
+#intro .tip{width:46px;height:46px;border-radius:50%;background:rgba(241,243,238,.92);box-shadow:0 0 0 7px rgba(241,243,238,.22),0 0 0 15px rgba(241,243,238,.09)}
+#intro .tip + .tip{display:none}
+#intro[data-n="2"] .tip + .tip{display:block}
+#intro[data-dir="up"] .tips{animation:goUp 1.5s cubic-bezier(.3,.1,.2,1) infinite}
+#intro[data-dir="down"] .tips{animation:goDown 1.5s cubic-bezier(.3,.1,.2,1) infinite}
+#intro[data-dir="side"] .tips{animation:goSide 1.8s ease-in-out infinite}
+@keyframes goUp{0%{transform:translate(-50%,calc(-50% + 62px));opacity:0}14%{opacity:1}72%{transform:translate(-50%,calc(-50% - 62px));opacity:1}100%{transform:translate(-50%,calc(-50% - 62px));opacity:0}}
+@keyframes goDown{0%{transform:translate(-50%,calc(-50% - 62px));opacity:0}14%{opacity:1}72%{transform:translate(-50%,calc(-50% + 62px));opacity:1}100%{transform:translate(-50%,calc(-50% + 62px));opacity:0}}
+@keyframes goSide{0%,100%{transform:translate(calc(-50% - 58px),-50%)}50%{transform:translate(calc(-50% + 58px),-50%)}}
+#intro .count{font-family:var(--font-sign);font-weight:600;font-size:14px;letter-spacing:.16em;text-transform:uppercase;color:var(--derived)}
+#intro .say{font-family:var(--font-sign);font-weight:600;font-size:clamp(28px,8vw,44px);line-height:1.05;letter-spacing:.02em;text-transform:uppercase;margin:0;text-wrap:balance;max-width:9.5em}
+#intro .more{font-size:17px;line-height:1.35;color:var(--ink);margin:0;max-width:20em;min-height:2.7em}
+#intro .skip{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 64px);text-align:center;font-size:14px;color:var(--ink-dim);letter-spacing:.04em}
+@media (prefers-reduced-motion:reduce){#intro .tips{animation:none!important}#intro,#intro .card{transition:none}}
+#fail{position:fixed;inset:0;display:grid;place-items:center;padding:24px;text-align:center;font-size:16px;line-height:1.5;z-index:9;background:var(--bg)}
+
+#sheet{position:fixed;top:0;right:0;bottom:0;width:min(360px,100%);background:var(--panel);border-left:1px solid var(--line);z-index:6;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:calc(env(safe-area-inset-top,0px) + 16px) 18px calc(env(safe-area-inset-bottom,0px) + 24px);display:flex;flex-direction:column;gap:20px;-webkit-user-select:text;user-select:text}
+#sheet header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+#sheet h1{font-family:var(--font-sign);font-weight:600;font-size:26px;letter-spacing:.03em;text-transform:uppercase;margin:0;line-height:1.1}
+#sheet .sub{color:var(--ink-dim);font-size:13px;margin:4px 0 0}
+#sheet h2{font-family:var(--font-sign);font-weight:600;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim);margin:0 0 8px}
+#closeBtn{border:1px solid var(--line);background:var(--panel-2);color:var(--ink);border-radius:8px;padding:8px 12px;font:inherit;font-size:14px;cursor:pointer;flex:none}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.seg.two{grid-template-columns:1fr 1fr}
+#sheet p.note{color:var(--ink-dim);font-size:13px;margin-top:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.seg button,.grid2 button{border:1px solid var(--line);background:var(--panel-2);color:var(--ink);border-radius:8px;padding:11px 8px;font:inherit;font-size:14px;cursor:pointer;text-align:center}
+.seg button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#06211d;font-weight:600}
+.checks{display:flex;flex-direction:column;gap:2px}
+.checks label{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:15px;cursor:pointer}
+.checks input{width:20px;height:20px;accent-color:var(--accent);flex:none}
+#sheet p,#sheet li{font-size:14px;line-height:1.5;margin:0}
+#sheet ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px}
+.key{display:flex;flex-direction:column;gap:6px;font-size:14px}
+.key span{display:flex;align-items:center;gap:8px}
+.key i{width:12px;height:12px;border-radius:3px;flex:none}
+details summary{cursor:pointer;font-family:var(--font-sign);font-weight:600;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim);padding:4px 0}
+details[open] summary{margin-bottom:8px}
+@media (prefers-reduced-motion:reduce){#hint{transition:none}}
+#howBtn{border:1px solid var(--line);background:var(--panel-2);color:var(--ink);border-radius:8px;padding:11px 8px;font:inherit;font-size:14px;cursor:pointer;margin-top:10px;width:100%}
+</style>
+
+<canvas id="gl" tabindex="0" aria-label="Walkable 3D model of Palmetto Pump House Zone 3"></canvas>
+<button id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span></button>
+<div id="readout"></div>
+<div id="hint"></div>
+<div id="tag" hidden><b id="tagA"></b><span id="tagB"></span></div>
+<div id="quick"><button id="measBtn" aria-pressed="true">Measure</button><button id="eyeBtn" aria-pressed="false">Eye line</button><button id="levelBtn" aria-label="Reset the view to level">Reset</button></div>
+<div id="intro" hidden aria-live="polite"><div class="card"><div class="count" id="introN"></div><div class="stage"><div class="track"></div><div class="tips"><div class="tip"></div><div class="tip"></div></div></div><p class="say" id="introSay"></p><p class="more" id="introMore"></p></div><div class="skip">Touch the screen to start</div></div>
+<div id="fail" hidden>The 3D view could not start on this device. Try reopening the page, or open it in Safari or Chrome.</div>
+
+<aside id="sheet" hidden aria-label="Menu">
+  <header>
+    <div><h1>PPH Zone 3</h1><p class="sub">Walkthrough V2 · every wall and corner named · site photos on M4, the Viper, the Tiger, B3, B2 and Wall 1 · designs on B2, B3, the Viper and the Tiger · tape measure on the eye line · planning model, not a survey</p></div>
+    <button id="closeBtn">Close</button>
+  </header>
+  <section><h2>View</h2>
+    <div class="seg">
+      <button data-mode="walk" aria-pressed="true">Walk</button>
+      <button data-mode="orbit" aria-pressed="false">Overview</button>
+      <button data-mode="plan" aria-pressed="false">Plan</button>
+    </div>
+  </section>
+  <section><h2>Lens</h2>
+    <div class="seg two">
+      <button data-lens="1" aria-pressed="true">1× camera</button>
+      <button data-lens="0.5" aria-pressed="false">0.5× wide</button>
+    </div>
+    <p class="note">1× sees what your phone's main camera sees from the same spot. 0.5× matches the ultra-wide, for taking in more wall at once.</p>
+  </section>
+  <section><h2>Stand at</h2>
+    <div class="grid2" id="spots"></div>
+  </section>
+  <section><h2>Show</h2>
+    <div class="checks">
+      <label><input type="checkbox" id="tPhotos" checked> Wall photos</label>
+      <label id="artRow" hidden><input type="checkbox" id="tArt" checked> Designs</label>
+      <label><input type="checkbox" id="tMeas" checked> Tape measure on the eye line and wall size</label>
+      <label><input type="checkbox" id="tEye"> Eye-level line at 5′9″ and view circle</label>
+      <label><input type="checkbox" id="tLabels" checked> Wall names, corners and dimensions</label>
+      <label><input type="checkbox" id="tPart" checked> Females room partition (planned)</label>
+      <label><input type="checkbox" id="tZones" checked> Paint zones in color</label>
+      <label><input type="checkbox" id="tCeil" checked> Ceilings</label>
+      <label><input type="checkbox" id="tGrid" checked> 5 ft floor grid</label>
+      <label><input type="checkbox" id="tRead" checked> Distance from each wall</label>
+    </div>
+  </section>
+  <section><h2>How to move</h2>
+    <ul>
+      <li><b>Phone or tablet:</b> touch anywhere and push up to walk forward, pull down to back up, slide sideways to turn. A short push walks at the regular pace. Push all the way up and you move twice as fast.</li>
+      <li><b>Two fingers:</b> slide up to look up, down to look down.</li>
+      <li><b>Computer:</b> click the view once. Then the arrow keys or W A S D walk forward, back and step sideways, and moving the mouse looks around. Q and E turn. Hold Shift to go three times faster. Esc frees the mouse pointer, M opens this menu. If the mouse pointer stays visible after the click, hold the button and drag to look.</li>
+      <li><b>Overview and Plan:</b> drag to turn or pan, pinch or scroll to zoom.</li>
+    </ul>
+    <button id="howBtn">Play the touch controls intro</button>
+  </section>
+  <section><h2>Label colors</h2>
+    <div class="key">
+      <span><i style="background:var(--measured)"></i>Measured on site</span>
+      <span><i style="background:var(--derived)"></i>Worked out from other measurements</span>
+      <span><i style="background:var(--provisional)"></i>Provisional, not measured</span>
+    </div>
+  </section>
+  <details><summary>Working choices in this model</summary>
+    <ul>
+      <li>Wall names follow PPH Walkthrough V4: M is a mural, B is a band, S numbers are walk stops.</li>
+      <li>Eye height is 5′9″. Room depth uses the direct B2 to M4 reading, 60′7½″.</li>
+      <li>The walking view uses a 1× phone camera lens (24 mm equivalent): across the width of the screen you see what a 1× photo taken from the same spot shows, held the same way. 0.5× matches the ultra-wide camera (13 mm). There is no haze, so far walls are as clear as near ones.</li>
+      <li>Keyboard walking is 4½′ a second, an ordinary walking pace, and eases in and out like a person starting and stopping. Shift is three times that.</li>
+      <li>M4 is 49′ and the B4 band runs 146′ past it, per the October measurements. V4 carried 36′ and 159′.</li>
+      <li>M7 (the Viper) is 58′8″ and M8 (the Tiger) is 71′11″, from V4. The M7 door is 10′ wide and 9′ high, at the far right end of the wall.</li>
+      <li>The box is drawn about 8′ longer than the females partition, which makes it about 43′5″ long. The east wall between the box and M8, about 40′7″, is not measured and has no name yet.</li>
+      <li>M6 is 35′5″ and placed at the Wall 1 end of the box face. Its door is not placed.</li>
+      <li>The females room partition is planned. Its length, depth (11′) and height (10′) are placeholders.</li>
+      <li>M8 is set in line with the end of M7, about 2′ in from the B2 line.</li>
+      <li>B3 openings are placed by working back from the M4 corner. B2 opening top is 6′7½″ with a 4″ casing until scaled from the photo.</li>
+      <li>Four columns, each 12½″ across and 19′2″ from M4, in one line down the hall. Column 1 is assumed on the Wall 1 line, 39′1″ from B3, and the others repeat that spacing.</li>
+      <li>Wall photos are stretched to fit the measured walls, with doors and windows pinned to their measured positions. The Viper (M7), the Tiger (M8), B3, B2 with its bulkhead and Wall 1 carry photos so far. The M8 photo is stretched to the V4 width and its doors and windows are not measured or cut out of the wall.</li>
+      <li>Designs are Tripp's Photoshop canvas exports from 11 October, laid over the photos on B2, the B2 bulkhead, B3, the Viper and the Tiger. M4 and B4 have no design yet. Phones and tablets load 4096 px copies; computers load the full exports.</li>
+      <li>The M4 mural photo is laid on unstretched, floor to ceiling from the B3 corner. At that size it is about 50′6″ long, so its last 1′6″ of foliage and blue wall runs past the 49′ mark onto B4.</li>
+      <li>The Wall 1 doorway is new and comes from the photo: about 3′1½″ wide and 6′9″ high, with its near edge about 7½″ from the bulkhead. The photo is pinned to the bulkhead edge and underside, and the spare length is taken up in the blank wall left of the doorway.</li>
+      <li>On B2 the photo stops about 2′ short of the Wall 1 corner, so the curved end is stretched to reach it. B3 Window 1 is squeezed to its measured 7′; in the photo it looks the same size as Window 2.</li>
+      <li>The eye-level line is drawn at 5′9″ on every wall. It stays at that height however near you stand. The view circle marks what falls inside a 60° cone of vision around the point you are looking at, so it follows you when you look up or down and shrinks as you walk closer. Reset brings your view back to level.</li>
+      <li>Measure puts a tape on the 5′9″ eye line of every wall. It counts in feet from the wall's left end as you face it, with a number every 5′, and each end carries the wall's full width and height. The tag above the dot gives the wall you are looking at, its width and height, and how far the dot is from the left and right ends. M4 and B4 are one wall, so their tape runs 0 to 195′ without a break. Heights are floor to ceiling: 12′11″ under the low ceiling, 13′7″ elsewhere.</li>
+      <li>The high ceiling carries the black 2′ × 2′ tile ceiling on one continuous grid starting at the B2 | B3 corner. Where the real grid starts is not measured. The low ceiling by B2 stays white, as in the B3 photo. Lights are not modeled.</li>
+      <li>Wall thickness is 6″ for looks only.</li>
+      <li>Not in this model: the lobby side of B2 (M2), mirrors, equipment, the hallway to Zone 4.</li>
+    </ul>
+  </details>
+</aside>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+if(!window.THREE){$('fail').hidden=false;return;}
+
+/* ---------- measurements (decimal feet) ---------- */
+const ft=(f,i=0)=>f+i/12;
+const W=ft(39,1);                 // B2 width — measured
+const D=ft(60,7+17/32);           // B2→M4 direct reading — working depth
+const WALL1=ft(19,2);             // Wall 1 length — measured
+const L=ft(12,11), H=ft(13,7);    // lower / higher ceiling — measured
+const STEP=ft(16,10);             // ceiling step along B3 — measured
+const BH_UNDER=ft(9,1), BH_PROJ=ft(1,5);
+const B2_DOOR_W=6, B2_DOOR_H=ft(6,7.5), B2_DOOR_RIGHT=ft(14,11);
+const TRIM=4/12;
+const M4W=49, BAND=146, XMAX=M4W+BAND;
+const COL_D=12.5/12, COL_FAR=ft(19,2);
+const M7W=ft(58,8), M8W=ft(71,11), M6W=ft(35,5);
+const BOXN=XMAX-M8W;          // where M8 starts
+const BX=W+M6W+8;            // box end: the box is about 8 ft longer than the females partition (Tripp)
+const M8Y=D-M7W;             // M8 plane, in line with the end of M7 — provisional
+const PDEPTH=11, PY=WALL1+PDEPTH, PH=10; // females room partition — placeholders
+const T=0.5;                      // wall thickness — provisional, visual only
+const EYE=ft(5,9);
+// B3 openings: chain back from the M4 corner
+const rEnd=D-ft(5,10), rStart=rEnd-ft(7,8), dEnd=rStart-ft(12,2.5), dStart=dEnd-ft(7,8), lEnd=dStart-ft(12,3), lStart=lEnd-7;
+const SILL=L-ft(11,6);
+const COL_Y=D-COL_FAR-COL_D/2;
+const COLS_X=[1,2,3,4].map(i=>i*W); // four columns in one line, each one B3-to-column-1 distance apart
+
+function fmt(n){const h=Math.round(n*24),f=Math.floor(h/24),r=h-f*24;return f+'′'+Math.floor(r/2)+(r%2?'½':'')+'″';}
+
+/* ---------- three setup ---------- */
+const canvas=$('gl');
+let renderer;
+try{renderer=new THREE.WebGLRenderer({canvas,antialias:true});}catch(e){$('fail').hidden=false;return;}
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+const BG=0x0d1012;
+renderer.setClearColor(BG);
+const scene=new THREE.Scene();
+// no fog: inside the hall the far walls are as clear as the near ones
+scene.add(new THREE.HemisphereLight(0xffffff,0x8d8d88,0.95));
+const sun=new THREE.DirectionalLight(0xffffff,0.28);sun.position.set(0.5,1,0.35);scene.add(sun);
+
+const persp=new THREE.PerspectiveCamera(62,1,0.25,900);persp.rotation.order='YXZ';
+const ortho=new THREE.OrthographicCamera(-50,50,50,-50,1,600);
+
+// model (X along B2, Y along B3, Z up) → three (x, y up, z)
+const V=(X,Y,Z)=>new THREE.Vector3(X,Z,-Y);
+const UP=new THREE.Vector3(0,1,0);
+function frame(left,n){ // local: x = viewer-right when facing the wall from the room, y = up, z = toward the room
+  const nT=new THREE.Vector3(n[0],n[2],-n[1]);
+  const r=new THREE.Vector3().crossVectors(UP,nT);
+  const m=new THREE.Matrix4().makeBasis(r,UP,nT);m.setPosition(V(left[0],left[1],left[2]));return m;
+}
+
+const NEUTRAL=0xc9c6bf;
+const wallMat=new THREE.MeshLambertMaterial({color:NEUTRAL,side:THREE.DoubleSide});
+const trimMat=new THREE.MeshLambertMaterial({color:0xffffff});
+const glassMat=new THREE.MeshBasicMaterial({color:0x7d97a3});
+const voidMat=new THREE.MeshBasicMaterial({color:0x07090a});
+const edgeMat=new THREE.LineBasicMaterial({color:0x2c3235});
+
+const gArch=new THREE.Group(),gSkins=new THREE.Group(),gCeil=new THREE.Group(),gGrid=new THREE.Group(),gPart=new THREE.Group(),gLabels=new THREE.Group(),gWallL=new THREE.Group(),gFloorL=new THREE.Group();gLabels.add(gWallL,gFloorL);
+const gPartW=new THREE.Group(),gPartF=new THREE.Group(),gCaps=new THREE.Group();gPart.add(gPartW,gPartF);const gFill=new THREE.Group(),gArt=new THREE.Group(),gEye=new THREE.Group(),gEyeP=new THREE.Group(),gTape=new THREE.Group(),gTapeP=new THREE.Group();gPart.add(gEyeP,gTapeP);scene.add(gTape);scene.add(gEye);scene.add(gArch,gSkins,gCeil,gGrid,gLabels,gPart,gCaps,gFill,gArt);
+const skins={}; // id → mesh; photo and artwork textures attach here later
+
+function shapeOf(pts,holes){const s=new THREE.Shape();pts.forEach((p,i)=>i?s.lineTo(p[0],p[1]):s.moveTo(p[0],p[1]));s.closePath();
+  (holes||[]).forEach(h=>{const p=new THREE.Path();p.moveTo(h[0],h[1]);p.lineTo(h[2],h[1]);p.lineTo(h[2],h[3]);p.lineTo(h[0],h[3]);p.closePath();s.holes.push(p);});return s;}
+function outline(w,top,doors,grow){const pts=[[0,0]];let open=false;doors.forEach(d=>{const g=grow?d.g:0;if(d.s1>=w-1e-6){pts.push([d.s0-g,0],[d.s0-g,d.v1+g],[w,d.v1+g]);open=true;}else pts.push([d.s0-g,0],[d.s0-g,d.v1+g],[d.s1+g,d.v1+g],[d.s1+g,0]);});if(!open)pts.push([w,0]);return pts.concat(top);}
+function localBox(fr,s0,s1,v0,v1,z0,z1,mat,parent){const g=new THREE.BoxGeometry(s1-s0,v1-v0,z1-z0);g.translate((s0+s1)/2,(v0+v1)/2,(z0+z1)/2);g.applyMatrix4(fr);const m=new THREE.Mesh(g,mat);(parent||gArch).add(m);return m;}
+function addEdges(geo,parent){(parent||gArch).add(new THREE.LineSegments(new THREE.EdgesGeometry(geo,30),edgeMat));}
+const flat=(w,h)=>[[w,h],[0,h]];
+function buildWall(def){
+  const fr=frame(def.left,def.n), ops=def.openings||[], grp=def.grp||gArch, sgrp=def.grp||gSkins;
+  ops.forEach(o=>o.g=o.noTrim?0:TRIM);
+  const doors=ops.filter(o=>o.kind==='door').sort((a,b)=>a.s0-b.s0), wins=ops.filter(o=>o.kind==='window');
+  const solid=new THREE.ExtrudeGeometry(shapeOf(outline(def.w,def.top,doors,false),wins.map(o=>[o.s0,o.v0,o.s1,o.v1])),{depth:T,bevelEnabled:false});
+  solid.translate(0,0,-T);solid.applyMatrix4(fr);grp.add(new THREE.Mesh(solid,wallMat));addEdges(solid,grp);
+  const sTop=def.skinTop||def.top, hMax=Math.max.apply(null,sTop.map(p=>p[1]));
+  const sg=new THREE.ShapeGeometry(shapeOf(outline(def.w,sTop,doors,true),wins.map(o=>[o.s0-o.g,o.v0-o.g,o.s1+o.g,o.v1+o.g])));
+  const pos=sg.attributes.position,uv=sg.attributes.uv;for(let i=0;i<pos.count;i++)uv.setXY(i,pos.getX(i)/def.w,pos.getY(i)/hMax);
+  sg.translate(0,0,0.02);sg.applyMatrix4(fr);
+  const skin=new THREE.Mesh(sg,new THREE.MeshLambertMaterial({color:def.tint||NEUTRAL,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2}));
+  skin.userData={tint:def.tint||NEUTRAL,width:def.w,height:hMax,fr:fr,ops:ops};sgrp.add(skin);skins[def.id]=skin;
+  ops.forEach(o=>{
+    if(!o.noTrim){
+      localBox(fr,o.s0-TRIM,o.s0,o.kind==='door'?0:o.v0-TRIM,o.v1+TRIM,0,0.08,trimMat,grp);
+      localBox(fr,o.s1,o.s1+TRIM,o.kind==='door'?0:o.v0-TRIM,o.v1+TRIM,0,0.08,trimMat,grp);
+      localBox(fr,o.s0,o.s1,o.v1,o.v1+TRIM,0,0.08,trimMat,grp);
+      if(o.kind==='window')localBox(fr,o.s0,o.s1,o.v0-TRIM,o.v0,0,0.08,trimMat,grp);}
+    if(o.fill==='glass')localBox(fr,o.s0,o.s1,o.v0,o.v1,-T*0.6,-T*0.5,glassMat,grp);
+    else localBox(fr,o.s0,o.s1,o.v0,o.v1,-T-0.04,-T,voidMat,grp);
+  });
+  return fr;
+}
+
+const ZONE_BAND=0x86b9c4, ZONE_M4=0xa98fc9, ZONE_CONT=0xc7b8da, ZONE_M7=0x8fbf8a, ZONE_M8=0xe0a35c, ZONE_M6=0xd9c96a, ZONE_WFR=0xe58fb8;
+const b2s0=W-B2_DOOR_RIGHT-B2_DOOR_W;
+const F={};
+F.B2=buildWall({id:'B2',left:[W,0,0],n:[0,1,0],w:W,top:[[W,L],[0,L]],skinTop:[[W,BH_UNDER],[0,BH_UNDER]],tint:ZONE_BAND,
+  openings:[{kind:'door',fill:'void',s0:b2s0,s1:b2s0+B2_DOOR_W,v0:0,v1:B2_DOOR_H}]});
+F.B3=buildWall({id:'B3',left:[0,0,0],n:[1,0,0],w:D,top:[[D,H],[STEP,H],[STEP,L],[0,L]],tint:ZONE_BAND,openings:[
+  {kind:'window',fill:'glass',s0:lStart,s1:lEnd,v0:SILL,v1:SILL+ft(7,7.5)},
+  {kind:'door',fill:'glass',s0:dStart,s1:dEnd,v0:0,v1:9},
+  {kind:'window',fill:'glass',s0:rStart,s1:rEnd,v0:SILL,v1:SILL+ft(7,8)}]});
+const W1_D0=14, W1_D1=ft(17,1.5), W1_DH=ft(6,9); // Wall 1 doorway — read off the photo, provisional
+F.W1=buildWall({id:'Wall1',left:[W,WALL1,0],n:[-1,0,0],w:WALL1,top:[[WALL1,L],[0,L]],openings:[{kind:'door',fill:'void',s0:W1_D0,s1:W1_D1,v0:0,v1:W1_DH}]});
+F.M4=buildWall({id:'M4',left:[0,D,0],n:[0,-1,0],w:M4W,top:[[M4W,H],[0,H]],tint:ZONE_M4});
+F.BAND=buildWall({id:'B4',left:[M4W,D,0],n:[0,-1,0],w:BAND,top:flat(BAND,H),tint:ZONE_CONT});
+F.M7=buildWall({id:'M7',left:[XMAX,D,0],n:[-1,0,0],w:M7W,top:flat(M7W,H),tint:ZONE_M7,openings:[{kind:'door',fill:'void',noTrim:true,s0:M7W-10,s1:M7W,v0:0,v1:9}]});
+F.M8=buildWall({id:'M8',left:[XMAX,M8Y,0],n:[0,1,0],w:M8W,top:flat(M8W,H),tint:ZONE_M8});
+F.EAST=buildWall({id:'East',left:[BOXN,M8Y,0],n:[0,1,0],w:BOXN-BX,top:flat(BOXN-BX,H)});
+F.BOXEND=buildWall({id:'BoxEnd',left:[BX,M8Y,0],n:[1,0,0],w:WALL1-M8Y,top:flat(WALL1-M8Y,H)});
+F.BOX=buildWall({id:'Box',left:[BX,WALL1,0],n:[0,1,0],w:8,top:flat(8,H)});
+F.M6=buildWall({id:'M6',left:[W+M6W,WALL1,0],n:[0,1,0],w:M6W,top:flat(M6W,H),tint:ZONE_M6});
+// females room partition (planned) — its own group so it can be switched off
+F.WFR=buildWall({id:'WFR',left:[W+M6W,PY,0],n:[0,1,0],w:M6W,top:flat(M6W,PH),tint:ZONE_WFR,grp:gPart});
+F.WFRN=buildWall({id:'WFR_north',left:[W+M6W,WALL1,0],n:[1,0,0],w:PDEPTH,top:flat(PDEPTH,PH),tint:ZONE_WFR,grp:gPart});
+F.WFRS=buildWall({id:'WFR_south',left:[W,PY,0],n:[-1,0,0],w:PDEPTH,top:flat(PDEPTH,PH),tint:ZONE_WFR,grp:gPart});
+
+// B2 bulkhead (solid) and its paintable face
+(function(){const b=localBox(F.B2,0,W,BH_UNDER,L,0,BH_PROJ,wallMat);addEdges(b.geometry);
+  const g=new THREE.PlaneGeometry(W,L-BH_UNDER);g.translate(W/2,(BH_UNDER+L)/2,BH_PROJ+0.02);g.applyMatrix4(F.B2);
+  const m=new THREE.Mesh(g,new THREE.MeshLambertMaterial({color:ZONE_BAND,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2}));
+  m.userData={tint:ZONE_BAND,width:W,height:L-BH_UNDER,fr:F.B2};gSkins.add(m);skins.B2_bulkhead=m;})();
+
+function quad(a,b,c,d,mat,parent){const g=new THREE.BufferGeometry();const p=[a,b,c,a,c,d].map(v=>V(v[0],v[1],v[2]));g.setFromPoints(p);g.computeVertexNormals();const m=new THREE.Mesh(g,mat);parent.add(m);return m;}
+// floor: measured room plus the open gym as far as the band runs
+quad([0,0,0],[XMAX,0,0],[XMAX,D,0],[0,D,0],new THREE.MeshLambertMaterial({color:0x3a3f42,side:THREE.DoubleSide}),gArch);
+// ceilings
+const ceilLow=new THREE.MeshBasicMaterial({color:0xdedcd5,side:THREE.DoubleSide}), ceilHigh=new THREE.MeshBasicMaterial({color:0x17191b,side:THREE.DoubleSide});
+quad([0,BH_PROJ,L],[W,BH_PROJ,L],[W,STEP,L],[0,STEP,L],ceilLow,gCeil);
+quad([0,STEP,L],[W,STEP,L],[W,STEP,H],[0,STEP,H],new THREE.MeshBasicMaterial({color:0xc9c7c0,side:THREE.DoubleSide}),gCeil);
+// black suspended ceiling: 2 ft tiles on one grid for the whole space, measured from the B2 | B3 corner. The image repeats every 4 tiles (8 ft).
+function tiled(a,b,c,d){const m=quad(a,b,c,d,ceilHigh,gCeil),u=[];[a,b,c,a,c,d].forEach(v=>u.push(v[0]/8,v[1]/8));m.geometry.setAttribute('uv',new THREE.Float32BufferAttribute(u,2));}
+tiled([0,STEP,H],[W,STEP,H],[W,D,H],[0,D,H]);
+tiled([W,0,H],[XMAX,0,H],[XMAX,D,H],[W,D,H]);
+new THREE.TextureLoader().load('tex/ceiling.jpg',t=>{t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=renderer.capabilities.getMaxAnisotropy();ceilHigh.map=t;ceilHigh.color.setHex(0xffffff);ceilHigh.needsUpdate=true;});
+// solid tops for the box and the strip behind M8, seen only from above
+(function(){const m=new THREE.MeshBasicMaterial({color:0x6f6c66,side:THREE.DoubleSide});quad([W,0,H],[BX,0,H],[BX,WALL1,H],[W,WALL1,H],m,gCaps);quad([BX,0,H],[XMAX,0,H],[XMAX,M8Y,H],[BX,M8Y,H],m,gCaps);})();
+// column
+(function(){const g=new THREE.CylinderGeometry(COL_D/2,COL_D/2,H,28);const m=new THREE.Mesh(g,new THREE.MeshLambertMaterial({color:0xd3cab8}));COLS_X.forEach(x=>{const c=m.clone();c.position.copy(V(x,COL_Y,H/2));gArch.add(c);});})();
+// floor grid, 5 ft
+(function(){const p=[];for(let x=0;x<=XMAX;x+=5)p.push(V(x,0,0.015),V(x,D,0.015));for(let y=0;y<=D;y+=5)p.push(V(0,y,0.015),V(XMAX,y,0.015));
+  gGrid.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(p),new THREE.LineBasicMaterial({color:0x566066,transparent:true,opacity:0.55})));})();
+
+/* ---------- labels ---------- */
+const COLS={m:'#f1f3ee',d:'#f2c14e',p:'#ff8f5e'};
+function textTex(lines,col,big){const c=document.createElement('canvas'),x=c.getContext('2d');const a=big?170:76,b=big?40:46;
+  const f1=(big?'600 ':'600 ')+a+'px "Barlow Condensed","Arial Narrow",system-ui,sans-serif',f2='500 '+b+'px "Barlow Condensed","Arial Narrow",system-ui,sans-serif';
+  x.font=f1;let w=x.measureText(lines[0]).width;if(lines[1]){x.font=f2;w=Math.max(w,x.measureText(lines[1]).width);}
+  const pad=30;c.width=Math.ceil(w+pad*2);c.height=lines[1]?pad*2+a+12+b:pad*2+a-4;
+  x.fillStyle=big?'rgba(11,14,16,0.86)':'rgba(11,14,16,0.78)';const r=22,cw=c.width,ch=c.height;x.beginPath();x.moveTo(r,0);x.arcTo(cw,0,cw,ch,r);x.arcTo(cw,ch,0,ch,r);x.arcTo(0,ch,0,0,r);x.arcTo(0,0,cw,0,r);x.fill();
+  x.textBaseline='top';x.fillStyle=big?'#ffffff':(COLS[col]||COLS.m);x.font=f1;x.fillText(lines[0],pad,pad-(big?10:4));
+  if(lines[1]){x.fillStyle=COLS[col]||COLS.m;x.font=f2;x.fillText(lines[1],pad,pad+a+(big?4:8));}
+  const t=new THREE.CanvasTexture(c);t.anisotropy=renderer.capabilities.getMaxAnisotropy();return {t,aspect:c.width/c.height};}
+function labelMesh(lines,col,h,maxW,big){const tt=textTex(lines,col,big);let w=h*tt.aspect;if(maxW&&w>maxW){h*=maxW/w;w=maxW;}
+  return new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({map:tt.t,transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-4,polygonOffsetUnits:-4,fog:false}));}
+function wallLabel(fr,s,v,lines,col,h,maxW,z,parent,big){const k=big?0.5:0.75;const m=labelMesh(lines,col,h*k,maxW?maxW*k:maxW,big);m.geometry.translate(s,v,z||0.06);m.geometry.applyMatrix4(fr);(parent||gWallL).add(m);}
+// the big call-out name of a wall
+function sign(fr,s,v,code,sub,col,h,maxW,parent,z){wallLabel(fr,s,v,[code,sub],col||'m',h||4.6,maxW,z,parent,true);}
+// plan reads like Walkthrough V4: M4/B4 on the left, B2 on the right, B3 along the bottom, the Viper at the top
+const FLOOR=new THREE.Matrix4().makeBasis(new THREE.Vector3(0,0,1),new THREE.Vector3(1,0,0),new THREE.Vector3(0,1,0));
+function floorLabel(X,Y,lines,col,h,maxW,parent,big){const m=labelMesh(lines,col,h,maxW,big);m.geometry.applyMatrix4(FLOOR);m.position.copy(V(X,Y,0.05));(parent||gFloorL).add(m);}
+// corner tags: always turn to face you
+const bills=[];
+function corner(X,Y,name,col,parent,Z){const m=labelMesh([name],col||'m',1.25);m.position.copy(V(X,Y,Z||10.9));(parent?gPartW:gWallL).add(m);bills.push(m);
+  const f=labelMesh([name],col||'m',1.5);f.geometry.applyMatrix4(FLOOR);f.position.copy(V(X,Y,0.06));(parent?gPartF:gFloorL).add(f);}
+function buildLabels(){
+  // ---- big wall names ----
+  sign(F.B2,9.1,5.1,'B2','Entrance band · 39′1″ wide','m',4.4,15);
+  sign(F.B2,W-7.4,5.1,'B2','Entrance band · 39′1″ wide','m',4.4,12);
+  sign(F.B3,21.2,5.2,'B3','Cardio window wall band · 60′7½″','d',4.4,10.6);
+  sign(F.B3,(dEnd+rStart)/2,5.2,'B3','Cardio window wall band · 60′7½″','d',4.4,10.6);
+  sign(F.W1,7,6,'WALL 1','Box side wall · 19′2″ · stays blank, no art','m',4.4,12);
+  wallLabel(F.W1,(W1_D0+W1_D1)/2,8,['Doorway about 3′1½″ × 6′9″','placed from the photo, not measured'],'p',1.1,6);
+  sign(F.M4,M4W/2,7,'M4 + B4','Forward mirror wall mural · 49′','m',5,30);
+  [22,70,122].forEach(x=>sign(F.BAND,x,7,'B4','West wall band above the mirrors · 146′ run right of M4','m',5,30));
+  sign(F.M7,12.5,7,'M7 + B7','The Viper · separator wall · 58′8″','m',4.8,21);
+  sign(F.M7,36,7,'M7 + B7','The Viper · separator wall · 58′8″','m',4.8,21);
+  wallLabel(F.M7,M7W-5,10.6,['Door 10′ wide × 9′ high','at the far right end of the wall'],'m',1.4,9);
+  [16,M8W-18].forEach(x=>sign(F.M8,x,7,'M8 + B6','The Tiger · breakroom wall · 71′11″','m',4.8,26));
+  wallLabel(F.M8,M8W/2,11.6,['Doors and windows come from the photo','positions not measured'],'p',1.4,14);
+  sign(F.M6,M6W/2,7,'M6 + B5','Box face · backward type · 35′5″','m',4.8,26);
+  wallLabel(F.M6,M6W/2,3.4,['Door 76″ × 86½″ not placed','position along the box assumed'],'p',1.3,12);
+  sign(F.BOX,4,7,'BOX','8′ past the partition','d',3.4,7);
+  sign(F.BOXEND,(WALL1-M8Y)/2,7,'BOX END','box is about 43′5″ long','d',3.6,13);
+  sign(F.EAST,(BOXN-BX)/2,7,'EAST WALL','Between the box and M8 · about 40′7″ · not measured, no name yet','p',4.8,30);
+  sign(F.WFR,M6W/2,5.4,'WFR','Females room partition · planned · size not measured','p',4.6,26,gPartW);
+  sign(F.WFRN,PDEPTH/2,5.4,'WFR','Partition return','p',3.2,8.5,gPartW);
+  sign(F.WFRS,PDEPTH/2,5.4,'WFR','Partition return','p',3.2,8.5,gPartW);
+  // ---- detail notes ----
+  wallLabel(F.B2,b2s0+3,7.85,['Opening 6′ × 6′7½″','casing size provisional · M2 is the other side'],'p',1.2,7);
+  wallLabel(F.B2,30,11,['Bulkhead','underside 9′1″ · face 3′10″ · sticks out 1′5″'],'m',1.5,16,BH_PROJ+0.06);
+  wallLabel(F.B3,(lStart+lEnd)/2,10.7,['Window 1','7′ × about 7′7½″ · sill 1′5″'],'m',1.3,8);
+  wallLabel(F.B3,(dStart+dEnd)/2,10.8,['Doors','7′8″ × 9′'],'m',1.3,7);
+  wallLabel(F.B3,(rStart+rEnd)/2,10.7,['Window 2','7′8″ × 7′8″ · sill provisional'],'m',1.3,8);
+  wallLabel(F.B3,STEP+3.4,12.35,['Ceiling step at 16′10″','12′11″ rises to 13′7″'],'m',1.0,6);
+  wallLabel(F.B3,D-2.75,5,['5′10″','window to M4 corner'],'m',1.1,4.6);
+  // ---- corners ----
+  corner(1.3,1.3,'B2 | B3 corner');
+  corner(1.3,D-1.3,'B3 | M4 corner');
+  corner(M4W,D-1.2,'M4 ends | B4 band carries on');
+  corner(XMAX-1.3,D-1.3,'B4 | M7 corner');
+  corner(XMAX-1.3,M8Y+1.3,'M7 | M8 corner');
+  corner(BOXN,M8Y+1.3,'M8 | East wall','p');
+  corner(BX+1.3,M8Y+1.3,'East wall | Box end','d');
+  corner(BX+1.2,WALL1+1.2,'Box end | Box face','d');
+  corner(W+M6W,WALL1+1.2,'M6 | Box','p');
+  corner(W-1.2,WALL1+1.2,'Wall 1 end | M6');
+  corner(W-1.3,1.3,'B2 | Wall 1 corner');
+  corner(W-1.2,PY+1.2,'WFR south corner','p',gPart,8.6);
+  corner(W+M6W+1.2,PY+1.2,'WFR north corner','p',gPart,8.6);
+  COLS_X.forEach((x,i)=>corner(x-2.4,COL_Y,'Column '+(i+1)+' · '+fmt(x)+' from B3',i?'d':'m',null,9.5));
+  // ---- floor names, readable in Plan ----
+  floorLabel(W/2,6,['B2','Entrance band · 39′1″'],'m',5,null,null,true);
+  floorLabel(6,D/2+6,['B3','Cardio window wall · 60′7½″'],'d',5,null,null,true);
+  floorLabel(M4W/2,D-6.5,['M4 + B4','Mirror wall mural · 49′'],'m',5,null,null,true);
+  floorLabel(M4W+BAND/2,D-6.5,['B4','Band above the mirrors · 146′'],'m',5,null,null,true);
+  floorLabel(XMAX-6,D/2,['M7 + B7','The Viper · 58′8″'],'m',5,null,null,true);
+  floorLabel(BOXN+M8W/2,M8Y+7,['M8 + B6','The Tiger · 71′11″'],'m',5,null,null,true);
+  floorLabel(W+M6W/2,WALL1+4,['M6 + B5','Box face · 35′5″'],'m',3.4,null,null,true);
+  floorLabel(BX+4,WALL1+5,['BOX','about 43′5″ long'],'d',3.4,null,null,true);
+  floorLabel((BX+BOXN)/2,M8Y+6,['EAST WALL','not measured'],'p',4.2,null,null,true);
+  floorLabel(W+M6W/2,PY+4.5,['WFR','Females partition · planned'],'p',3.6,null,gPartF,true);
+  floorLabel(W-5,WALL1/2+2,['WALL 1','19′2″ · no art'],'m',3.6,null,null,true);
+  floorLabel(1.9,lStart/2,['8′0″'],'d',1.15);floorLabel(1.9,(lEnd+dStart)/2-6,['12′3″'],'m',1.15);floorLabel(1.9,(dEnd+rStart)/2,['12′2½″'],'m',1.15);floorLabel(1.9,D-2.9,['5′10″'],'m',1.15);
+  floorLabel(1.9,(lStart+lEnd)/2,['7′'],'m',1.15);floorLabel(1.9,(dStart+dEnd)/2,['7′8″'],'m',1.15);floorLabel(1.9,(rStart+rEnd)/2,['7′8″'],'m',1.15);
+}
+const fontReady=(document.fonts&&document.fonts.load)?Promise.race([document.fonts.load('600 76px "Barlow Condensed"'),new Promise(r=>setTimeout(r,1800))]).catch(()=>{}):Promise.resolve();
+fontReady.then(buildLabels);
+
+/* ---------- state ---------- */
+const st={mode:'walk',X:W-B2_DOOR_RIGHT-3+0,Y:7,yaw:0,pitch:0,az:2.35,el:0.8,dist:250,tx:92,ty:D/2,pcx:XMAX/2,pcy:D/2,span:110};
+st.X=B2_DOOR_RIGHT+3; // centre of the B2 opening
+const SPOTS=[
+  ['B2 entrance',B2_DOOR_RIGHT+3,5,0],
+  ['Facing B2',19.5,31,180],
+  ['Facing B3',33,30,90],
+  ['Facing M4 + B4',24.5,D-36,0],
+  ['B4 band run',M4W+6,D-12,-72],
+  ['Facing the Viper (M7)',XMAX-48,D/2,-90],
+  ['Facing the Tiger (M8)',BOXN+M8W/2,M8Y+40,180],
+  ['Facing the east wall',(BX+BOXN)/2,M8Y+34,180],
+  ['Facing the box (M6)',W+M6W/2,PY+18,180],
+  ['Look back down the hall',XMAX-30,D/2+6,90],
+  ['Long view from B3',1.6,(rStart+rEnd)/2,-90]
+];
+const spotsEl=$('spots');
+SPOTS.forEach(s=>{const b=document.createElement('button');b.textContent=s[0];b.onclick=()=>{st.X=s[1];st.Y=s[2];st.yaw=s[3]*Math.PI/180;st.pitch=0;kv.f=kv.s=0;setMode('walk');closeSheet();};spotsEl.appendChild(b);});
+
+function blocked(x,y){
+  if(x<1||x>XMAX-1||y<1||y>D-1)return true;
+  if(x>W-1&&x<BX+1&&y<WALL1+1)return true;            // the box
+  if(x>=BX-1&&y<M8Y+1)return true;                     // east wall and M8 line
+  if(gPart.visible&&x>W-1&&x<W+M6W+1&&y<PY+1)return true; // females room
+  const dy=y-COL_Y;for(const cx of COLS_X){const dx=x-cx;if(dx*dx+dy*dy<(COL_D/2+0.9)*(COL_D/2+0.9))return true;}
+  return false;
+}
+function setMode(m){st.mode=m;for(const b of bills)b.visible=true;document.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.mode===m));
+  if(m!=='walk')freeMouse();applyToggles();resize();}
+document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{setMode(b.dataset.mode);closeSheet();});
+
+function applyToggles(){
+  gLabels.visible=$('tLabels').checked;gPart.visible=$('tPart').checked;gWallL.visible=st.mode!=='plan';gFloorL.visible=st.mode!=='walk';gPartW.visible=gLabels.visible&&st.mode!=='plan';gPartF.visible=gLabels.visible&&st.mode!=='walk';gCaps.visible=st.mode!=='walk';
+  gCeil.visible=$('tCeil').checked&&st.mode==='walk';
+  gGrid.visible=$('tGrid').checked;
+  const z=$('tZones').checked,ph=$('tPhotos').checked;gFill.visible=ph;const eyeOn=$('tEye').checked,measOn=$('tMeas').checked;gEye.visible=gEyeP.visible=eyeOn||measOn;gTape.visible=gTapeP.visible=measOn&&st.mode!=='plan';$('eyeBtn').setAttribute('aria-pressed',eyeOn);$('measBtn').setAttribute('aria-pressed',measOn);$('quick').hidden=st.mode!=='walk';gArt.visible=$('tArt').checked;
+  Object.keys(skins).forEach(k=>{const s=skins[k],u=s.userData;if(u.photo&&ph)s.material=u.photo;else{if(u.plain)s.material=u.plain;s.material.color.setHex(z?u.tint:NEUTRAL);}});
+  $('readout').hidden=!($('tRead').checked&&st.mode==='walk');
+}
+['tPhotos','tArt','tEye','tMeas','tLabels','tPart','tZones','tCeil','tGrid','tRead'].forEach(id=>$(id).onchange=applyToggles);
+
+/* ---------- menu ---------- */
+const sheet=$('sheet'),menuBtn=$('menuBtn');
+function openSheet(){sheet.hidden=false;menuBtn.setAttribute('aria-expanded','true');$('closeBtn').focus();}
+function closeSheet(){const was=!sheet.hidden;sheet.hidden=true;menuBtn.setAttribute('aria-expanded','false');if(was&&sheet.contains(document.activeElement))focusView();}
+menuBtn.onclick=()=>{if(sheet.hidden){freeMouse();openSheet();}else closeSheet();};$('closeBtn').onclick=closeSheet;
+
+/* ---------- input ---------- */
+const coarse=window.matchMedia&&matchMedia('(pointer:coarse)').matches;
+const hint=$('hint');hint.textContent=coarse?'Push up to walk · slide sideways to turn · two fingers to look up and down':'Click the view, then arrow keys or W A S D to walk · move the mouse to look · menu at top right';
+let hintGone=false,hintT=0;function dropHint(){endIntro();if(hintGone)return;hintGone=true;clearTimeout(hintT);hintT=setTimeout(()=>hint.classList.add('gone'),2500);}
+// a short message in the hint bubble; sticky ones stay until something replaces them
+function say(t,stay){if(coarse)return;hint.hidden=false;hint.textContent=t;hint.dataset.stay=stay?'1':'';hint.classList.remove('gone');clearTimeout(hintT);if(!stay)hintT=setTimeout(()=>hint.classList.add('gone'),3200);}
+/* ---------- touch controls intro ---------- */
+const INTRO=[
+  {n:1,dir:'up',say:'Push up to walk',more:'A short push is the regular pace. All the way up is twice as fast.',ms:3600},
+  {n:1,dir:'side',say:'Slide sideways to turn',more:'',ms:2800},
+  {n:2,dir:'up',say:'Two fingers up to look up',more:'',ms:2800},
+  {n:2,dir:'down',say:'Two fingers down to look down',more:'',ms:2800}];
+const introEl=$('intro');let introT=0,introOn=false;
+function introStep(i){if(!introOn)return;if(i>=INTRO.length){endIntro();return;}const s=INTRO[i];
+  introEl.dataset.n=s.n;introEl.dataset.dir=s.dir;$('introN').textContent=(i+1)+' of '+INTRO.length+' · '+(s.n===1?'one finger':'two fingers');$('introSay').textContent=s.say;$('introMore').textContent=s.more;
+  introEl.classList.remove('swap');
+  introT=setTimeout(()=>{introEl.classList.add('swap');introT=setTimeout(()=>introStep(i+1),340);},s.ms);}
+function playIntro(){clearTimeout(introT);introOn=true;introEl.hidden=false;hint.hidden=true;void introEl.offsetWidth;introEl.classList.add('on');introStep(0);}
+function endIntro(){if(!introOn)return;introOn=false;clearTimeout(introT);introEl.classList.remove('on');setTimeout(()=>{if(!introOn)introEl.hidden=true;},480);}
+$('howBtn').onclick=()=>{closeSheet();setMode('walk');playIntro();};
+if(coarse)playIntro();
+const ptrs=new Map();let two=null;
+function twoState(){const a=[...ptrs.values()];return {cx:(a[0].x+a[1].x)/2,cy:(a[0].y+a[1].y)/2,sp:Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y)||1};}
+function rebase(){ptrs.forEach(p=>{p.sx=p.x;p.sy=p.y;});two=ptrs.size>=2?twoState():null;}
+/* keyboard focus and mouse look. The page can sit inside a frame, so a click on the view has to take the keyboard explicitly,
+   and only touch input cancels the browser's own handling of the press (cancelling a mouse press is what kept the arrow keys from arriving). */
+function focusView(){try{window.focus();}catch(_){}try{canvas.focus({preventScroll:true});}catch(_){}}
+const LOOK=0.0023; // radians per mouse count while the mouse is held by the view
+const locked=()=>document.pointerLockElement===canvas;
+let everLocked=false,lockFail=!canvas.requestPointerLock;
+function holdMouse(){if(coarse||lockFail||locked()||st.mode!=='walk')return;
+  try{const r=canvas.requestPointerLock();if(r&&r.catch)r.catch(()=>{});}catch(_){if(!everLocked){lockFail=true;say('Hold the mouse button and drag to look around');}}}
+function freeMouse(){if(locked())try{document.exitPointerLock();}catch(_){}}
+document.addEventListener('pointerlockchange',()=>{if(locked()){everLocked=true;say('Mouse look is on · Esc frees the mouse pointer');}
+  else if(st.mode==='walk'&&sheet.hidden&&document.hasFocus())say('Mouse pointer free · click the view to look with the mouse again');});
+document.addEventListener('pointerlockerror',()=>{if(!everLocked&&!lockFail){lockFail=true;say('Hold the mouse button and drag to look around · arrow keys walk');}});
+window.addEventListener('focus',()=>{if(hint.dataset.stay){hint.dataset.stay='';hint.classList.add('gone');}});
+canvas.addEventListener('pointerdown',e=>{if(!sheet.hidden)closeSheet();focusView();try{canvas.setPointerCapture(e.pointerId);}catch(_){}
+  const mouse=e.pointerType==='mouse';if(mouse&&e.button===0)holdMouse();
+  ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY,sx:e.clientX,sy:e.clientY,mouse});rebase();dropHint();if(!mouse)e.preventDefault();});
+canvas.addEventListener('pointermove',e=>{
+  if(locked()){if(st.mode==='walk'){const mx=e.movementX||0,my=e.movementY||0;if(Math.abs(mx)<400&&Math.abs(my)<400){st.yaw-=mx*LOOK;st.pitch-=my*LOOK;}}return;}
+  const p=ptrs.get(e.pointerId);if(!p)return;const dx=e.clientX-p.x,dy=e.clientY-p.y;p.x=e.clientX;p.y=e.clientY;
+  if(ptrs.size>=2){const n=twoState();if(two){const dcx=n.cx-two.cx,dcy=n.cy-two.cy,k=two.sp/n.sp;
+      if(st.mode==='walk'){st.pitch-=dcy*0.006;}
+      else if(st.mode==='orbit'){st.dist=Math.max(20,Math.min(520,st.dist*k));st.el+=dcy*0.004;}
+      else{st.span=Math.max(18,Math.min(460,st.span*k));const u=st.span/window.innerWidth;st.pcy+=dcx*u;st.pcx+=dcy*u;}}
+    two=n;return;}
+  if(st.mode==='walk'){if(p.mouse){st.yaw-=dx*0.0042;st.pitch-=dy*0.0042;}}
+  else if(st.mode==='orbit'){st.az-=dx*0.006;st.el+=dy*0.005;}
+  else{const u=st.span/window.innerWidth;st.pcy+=dx*u;st.pcx+=dy*u;}});
+function up(e){ptrs.delete(e.pointerId);rebase();}
+canvas.addEventListener('pointerup',up);canvas.addEventListener('pointercancel',up);
+canvas.addEventListener('wheel',e=>{e.preventDefault();const k=Math.exp(e.deltaY*0.0012);if(st.mode==='orbit')st.dist=Math.max(20,Math.min(520,st.dist*k));else if(st.mode==='plan')st.span=Math.max(18,Math.min(460,st.span*k));},{passive:false});
+canvas.addEventListener('contextmenu',e=>e.preventDefault());['gesturestart','gesturechange'].forEach(n=>document.addEventListener(n,e=>e.preventDefault()));
+const keys={};
+window.addEventListener('keydown',e=>{if(e.metaKey||e.ctrlKey||e.altKey)return;if(e.target&&/INPUT|BUTTON|SUMMARY/.test(e.target.tagName)&&!/^Arrow|^Key[WASDQE]/.test(e.code))return;
+  if(e.code==='Escape'){closeSheet();return;}if(e.code==='KeyM'){if(sheet.hidden){freeMouse();openSheet();}else closeSheet();return;}
+  keys[e.code]=true;if(/^Arrow/.test(e.code))e.preventDefault();dropHint();});
+window.addEventListener('keyup',e=>{keys[e.code]=false;});
+function dropKeys(){for(const k in keys)keys[k]=false;ptrs.clear();two=null;}
+window.addEventListener('blur',()=>{dropKeys();if(st.mode==='walk')say('Click the view to keep walking with the keys',true);});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)dropKeys();});
+
+/* ---------- frame ---------- */
+/* Walking lens. A phone photo is 4:3; the screen's width shows what the photo's width shows when the phone is held the same way
+   (long side across a landscape screen, short side across a portrait one). Sizes are 35 mm equivalents: 1x is 24 mm, 0.5x is 13 mm. */
+const LENS={'1':24,'0.5':13};let lens='1';
+try{const v=localStorage.getItem('pph-lens');if(LENS[v])lens=v;}catch(_){}
+function walkFov(a){const side=a>=1?34.62:25.96,hh=Math.atan(side/2/LENS[lens]);return Math.min(120,2*Math.atan(Math.tan(hh)/a)*180/Math.PI);}
+function setLens(v){lens=v;try{localStorage.setItem('pph-lens',v);}catch(_){}
+  document.querySelectorAll('[data-lens]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.lens===v));resize();}
+document.querySelectorAll('[data-lens]').forEach(b=>b.onclick=()=>setLens(b.dataset.lens));
+function resize(){const w=window.innerWidth,h=window.innerHeight,a=w/h;renderer.setSize(w,h,false);
+  persp.fov=st.mode==='walk'?walkFov(a):(a<1?60:45);persp.aspect=a;persp.updateProjectionMatrix();}
+window.addEventListener('resize',resize);
+let last=performance.now(),readT=0;
+const WALK=4.5;const kv={f:0,s:0}; // keyboard walking pace in ft per second, about 3 mph
+// one-finger walking pace in ft per second: the first half of the push eases up to the regular pace, the second half climbs to twice that. Backing up stays at the regular pace.
+const PACE=11;
+function walkSpeed(j,forward){const h=0.5;if(j<=h||!forward)return PACE*Math.pow(Math.min(j,h)/h,1.3);return PACE*(1+(j-h)/h);}
+function tick(now){const dt=Math.min(0.05,(now-last)/1000);last=now;updateEye();
+  if(st.mode==='walk'){
+    let fwd=0,strafe=0,turn=0;
+    if(ptrs.size===1){const p=ptrs.values().next().value;if(!p.mouse){const R=95,dz=0.1;let jx=(p.x-p.sx)/R,jy=(p.y-p.sy)/R;
+        jx=Math.abs(jx)<dz?0:Math.max(-1,Math.min(1,jx-Math.sign(jx)*dz));jy=Math.abs(jy)<dz?0:Math.max(-1,Math.min(1,jy-Math.sign(jy)*dz));
+        fwd=-Math.sign(jy)*walkSpeed(Math.abs(jy),jy<0);turn=-Math.sign(jx)*Math.pow(Math.abs(jx),1.4)*1.9;}}
+    let kf=0,ks=0;
+    if(keys.KeyW||keys.ArrowUp)kf+=1;if(keys.KeyS||keys.ArrowDown)kf-=1;
+    if(keys.KeyD||keys.ArrowRight)ks+=1;if(keys.KeyA||keys.ArrowLeft)ks-=1;
+    const km=Math.hypot(kf,ks)||1,kspd=WALK*((keys.ShiftLeft||keys.ShiftRight)?3:1),ease=1-Math.exp(-dt/0.14);
+    kv.f+=(kf/km*kspd-kv.f)*ease;kv.s+=(ks/km*kspd-kv.s)*ease;if(Math.abs(kv.f)<0.01)kv.f=0;if(Math.abs(kv.s)<0.01)kv.s=0;
+    fwd+=kv.f;strafe+=kv.s;
+    if(keys.KeyQ)turn+=1.6;if(keys.KeyE)turn-=1.6;
+    st.yaw+=turn*dt;st.pitch=Math.max(-1.35,Math.min(1.35,st.pitch));
+    const s=Math.sin(st.yaw),c=Math.cos(st.yaw);
+    const nx=st.X+(-s*fwd+c*strafe)*dt,ny=st.Y+(c*fwd+s*strafe)*dt;
+    if(!blocked(nx,st.Y))st.X=nx;if(!blocked(st.X,ny))st.Y=ny;
+    persp.position.copy(V(st.X,st.Y,EYE));persp.rotation.set(st.pitch,st.yaw,0);
+    if(now-readT>160){readT=now;$('readout').textContent='B2 '+fmt(st.Y)+' · B3 '+fmt(st.X)+' · M4 '+fmt(D-st.Y)+eyeText;}
+    for(const b of bills)b.rotation.set(0,st.yaw,0);
+    renderer.render(scene,persp);
+  }else if(st.mode==='orbit'){
+    st.el=Math.max(0.12,Math.min(1.5,st.el));
+    const t=V(st.tx,st.ty,4),ce=Math.cos(st.el);
+    persp.position.set(t.x+st.dist*ce*Math.sin(st.az),t.y+st.dist*Math.sin(st.el),t.z+st.dist*ce*Math.cos(st.az));persp.rotation.order='YXZ';persp.lookAt(t);
+    for(const b of bills)b.quaternion.copy(persp.quaternion);
+    renderer.render(scene,persp);
+  }else{
+    const a=window.innerWidth/window.innerHeight,hw=st.span/2,hh=hw/a;
+    ortho.left=-hw;ortho.right=hw;ortho.top=hh;ortho.bottom=-hh;ortho.updateProjectionMatrix();
+    ortho.position.set(st.pcx,300,-st.pcy);ortho.up.set(1,0,0);ortho.lookAt(st.pcx,0,-st.pcy);for(const b of bills)b.visible=false;
+    renderer.render(scene,ortho);
+  }
+  requestAnimationFrame(tick);
+}
+(function initPlan(){const a=window.innerWidth/window.innerHeight;st.span=Math.max(D+16,(XMAX+16)*a);})();
+applyToggles();setLens(lens);requestAnimationFrame(tick);
+if(!coarse)hint.dataset.stay='1'; // the page waits for a click before taking the keyboard, so it never pulls typing away from a chat box beside it
+
+/* ---------- wall photos and designs ---------- */
+// Each image is already warped to its wall: full image width = wall length, full height = skin height.
+const loader=new THREE.TextureLoader();
+function prep(t){t.anisotropy=renderer.capabilities.getMaxAnisotropy();return t;}
+function setWallImage(id,url){const s=skins[id];if(!s)return;loader.load(url,t=>{prep(t);const u=s.userData;
+  u.plain=u.plain||s.material;
+  u.photo=new THREE.MeshBasicMaterial({map:t,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2});
+  // the same photo shows through the door and window openings
+  const fm=new THREE.MeshBasicMaterial({map:t});
+  (u.ops||[]).forEach(o=>{const g=new THREE.PlaneGeometry(o.s1-o.s0,o.v1-o.v0);g.translate((o.s0+o.s1)/2,(o.v0+o.v1)/2,-0.03);
+    const p=g.attributes.position,q=g.attributes.uv;for(let i=0;i<p.count;i++)q.setXY(i,p.getX(i)/u.width,p.getY(i)/u.height);
+    g.applyMatrix4(u.fr);gFill.add(new THREE.Mesh(g,fm));});
+  applyToggles();});}
+// a transparent design laid over a wall, on its own layer above the photo
+function setWallArt(id,url){const s=skins[id];if(!s)return;loader.load(url,t=>{prep(t);const u=s.userData;
+  if(u.art)gArt.remove(u.art);
+  // lifted 0.05 ft off the wall so it clears the photo layers, the M4 photo plane included
+  const g=s.geometry.clone();if(u.fr){const n=new THREE.Vector3().setFromMatrixColumn(u.fr,2).multiplyScalar(0.05);g.translate(n.x,n.y,n.z);}
+  u.art=new THREE.Mesh(g,new THREE.MeshBasicMaterial({map:t,transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-3,polygonOffsetUnits:-3}));
+  gArt.add(u.art);$('artRow').hidden=false;applyToggles();});}
+// a photo laid flat over a stretch of wall at its own proportions, free to run past the end of one named wall
+function addPhotoPlane(fr,s0,s1,v0,v1,url){loader.load(url,t=>{prep(t);const g=new THREE.PlaneGeometry(s1-s0,v1-v0);g.translate((s0+s1)/2,(v0+v1)/2,0.03);g.applyMatrix4(fr);
+  gFill.add(new THREE.Mesh(g,new THREE.MeshBasicMaterial({map:t,polygonOffset:true,polygonOffsetFactor:-3,polygonOffsetUnits:-3})));});}
+addPhotoPlane(F.M4,0,H*3.72093,0,H,'tex/M4.jpg');
+// full-size images on computers; 4096 px copies on phones and tablets, which run out of graphics memory on the big ones
+const BIG=(coarse||renderer.capabilities.maxTextureSize<8192)?'sm/':'';
+const PHOTOS={M7:'tex/M7.jpg',B3:'tex/B3.jpg',B2:'tex/B2.jpg',B2_bulkhead:'tex/B2_bulkhead.jpg',Wall1:'tex/Wall1.jpg',M8:BIG+'tex/M8.jpg'};
+Object.keys(PHOTOS).forEach(k=>setWallImage(k,PHOTOS[k]));
+const ART={B2:'art/B2.png',B2_bulkhead:'art/B2_bulkhead.png',B3:'art/B3.png',M7:'art/M7.png',M8:'art/M8.png'};
+Object.keys(ART).forEach(k=>setWallArt(k,BIG+ART[k]));
+/* ---------- eye-level line and view circle ---------- */
+const eyeMat=new THREE.MeshBasicMaterial({color:0xffe14a,fog:false,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-6,polygonOffsetUnits:-6});
+Object.keys(skins).forEach(k=>{const u=skins[k].userData;if(!u.fr||u.height<EYE)return;
+  const g=new THREE.PlaneGeometry(u.width,0.1);g.translate(u.width/2,EYE,0.07);g.applyMatrix4(u.fr);(k.indexOf('WFR')===0?gEyeP:gEye).add(new THREE.Mesh(g,eyeMat));});
+const eyeRing=new THREE.Mesh(new THREE.RingGeometry(0.985,1,128),eyeMat),eyeDot=new THREE.Mesh(new THREE.CircleGeometry(0.18,24),eyeMat);
+gEye.add(eyeRing,eyeDot);
+/* ---------- tape measure on the eye line ---------- */
+// A run is one wall as the crew reads it, left to right as you face it. M4 and B4 are one run.
+const RUNS=[
+  {name:'B2',ids:['B2','B2_bulkhead'],offs:[0,0],total:W,fr:F.B2,h:()=>L,col:'m'},
+  {name:'B3',ids:['B3'],offs:[0],total:D,fr:F.B3,h:s=>s<STEP?L:H,col:'d'},
+  {name:'M4 + B4',ids:['M4','B4'],offs:[0,M4W],total:XMAX,fr:F.M4,h:()=>H,col:'m'},
+  {name:'M7 Viper',ids:['M7'],offs:[0],total:M7W,fr:F.M7,h:()=>H,col:'m'},
+  {name:'M8 Tiger',ids:['M8'],offs:[0],total:M8W,fr:F.M8,h:()=>H,col:'m'},
+  {name:'M6',ids:['M6'],offs:[0],total:M6W,fr:F.M6,h:()=>H,col:'m'},
+  {name:'Wall 1',ids:['Wall1'],offs:[0],total:WALL1,fr:F.W1,h:()=>L,col:'m'},
+  {name:'Box',ids:['Box'],offs:[0],total:8,fr:F.BOX,h:()=>H,col:'d',about:true},
+  {name:'Box end',ids:['BoxEnd'],offs:[0],total:WALL1-M8Y,fr:F.BOXEND,h:()=>H,col:'d',about:true},
+  {name:'East wall',ids:['East'],offs:[0],total:BOXN-BX,fr:F.EAST,h:()=>H,col:'p',about:true},
+  {name:'WFR partition',ids:['WFR'],offs:[0],total:M6W,fr:F.WFR,h:()=>PH,col:'p',about:true,part:true},
+  {name:'WFR return',ids:['WFR_north'],offs:[0],total:PDEPTH,fr:F.WFRN,h:()=>PH,col:'p',about:true,part:true},
+  {name:'WFR return',ids:['WFR_south'],offs:[0],total:PDEPTH,fr:F.WFRS,h:()=>PH,col:'p',about:true,part:true}
+];
+RUNS.forEach(r=>r.ids.forEach((id,i)=>{const u=skins[id].userData;u.run=r;u.off=r.offs[i];u.inv=new THREE.Matrix4().copy(u.fr).invert();}));
+const sizeText=(r,s)=>(r.about?'about ':'')+fmt(r.total)+' wide · '+fmt(r.h(s))+' high';
+function buildTape(){RUNS.forEach(r=>{const grp=r.part?gTapeP:gTape,p=[],z=0.075;
+  const rect=(s0,s1,v0,v1)=>p.push(s0,v0,z,s1,v0,z,s1,v1,z,s0,v0,z,s1,v1,z,s0,v1,z);
+  for(let f=0;f<=r.total+1e-6;f++){const ten=f%10===0,five=f%5===0,hw=ten?0.05:five?0.04:0.025,len=ten?0.55:five?0.4:0.2;rect(f-hw,f+hw,EYE-len,EYE);}
+  rect(r.total-0.05,r.total,EYE-0.55,EYE+0.55);rect(0,0.05,EYE-0.55,EYE+0.55);
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(p,3));g.applyMatrix4(r.fr);grp.add(new THREE.Mesh(g,eyeMat));
+  const put=(m,s,v)=>{m.geometry.translate(s,v,0.1);m.geometry.applyMatrix4(r.fr);grp.add(m);};
+  for(let f=5;f<=r.total-2.5;f+=5){const h=f%10===0?0.8:0.58;put(labelMesh([f+'′'],r.col,h),f,EYE-0.62-h/2);}
+  // each end of the wall carries the full width and height
+  const ends=r.total<24?[['mid',r.total/2]]:[['left',0.5],['right',r.total-0.5]];
+  ends.forEach(e=>{const s=e[0]==='left'?0.5:e[0]==='right'?r.total-0.5:r.total/2;
+    const m=labelMesh([sizeText(r,s),r.name+' · whole wall'+(e[0]==='left'?' · 0′ starts here':e[0]==='right'?' · ends here':'')],r.col,1.5,r.total<24?r.total-1:r.total*0.42);
+    const w=m.geometry.parameters.width,hh=m.geometry.parameters.height;put(m,e[0]==='left'?0.5+w/2:e[0]==='right'?r.total-0.5-w/2:r.total/2,EYE-1.6-hh/2);});});}
+fontReady.then(buildTape);
+const eyeRay=new THREE.Raycaster(),CONE=Math.tan(30*Math.PI/180);let eyeText='';
+const tagEl=$('tag'),tagA=$('tagA'),tagB=$('tagB'),tagP=new THREE.Vector3();let tagKey='';
+function updateEye(){eyeText='';eyeRing.visible=eyeDot.visible=false;const measOn=$('tMeas').checked,eyeOn=$('tEye').checked;
+  if(!gEye.visible||st.mode!=='walk'){tagEl.hidden=true;return;}
+  const cp=Math.cos(st.pitch),o=V(st.X,st.Y,EYE),d=new THREE.Vector3(-Math.sin(st.yaw)*cp,Math.sin(st.pitch),-Math.cos(st.yaw)*cp);eyeRay.set(o,d);
+  const list=Object.keys(skins).map(k=>skins[k]).filter(s=>s.userData.fr&&(gPart.visible||s.parent!==gPart));
+  const hit=eyeRay.intersectObjects(list,false)[0];if(!hit||hit.distance<0.5){tagEl.hidden=true;return;}
+  const n=hit.face.normal.clone();if(n.dot(d)>0)n.negate();const r=hit.distance*CONE,c=hit.point.clone().addScaledVector(n,0.09);
+  eyeRing.position.copy(c);eyeRing.scale.set(r,r,1);eyeRing.lookAt(c.clone().add(n));eyeDot.position.copy(c);eyeDot.lookAt(c.clone().add(n));
+  const ds=Math.max(1,hit.distance/22);eyeDot.scale.set(ds,ds,1);
+  eyeDot.visible=true;eyeRing.visible=eyeOn;if(eyeOn)eyeText=' · 60° view circle '+fmt(2*r)+' across';
+  const u=hit.object.userData,run=u.run;if(!measOn||!run||introOn){tagEl.hidden=true;return;}
+  tagP.copy(hit.point).applyMatrix4(u.inv);const s=Math.max(0,Math.min(run.total,u.off+tagP.x));
+  const a=run.name+' · '+sizeText(run,s),b=fmt(s)+' from left end · '+fmt(run.total-s)+' to right end';
+  if(a+b!==tagKey){tagKey=a+b;tagA.textContent=a;tagB.textContent=b;tagEl.style.setProperty('--tagc',COLS[run.col]);}
+  tagEl.hidden=false;}
+$('measBtn').onclick=()=>{$('tMeas').checked=!$('tMeas').checked;applyToggles();};
+$('eyeBtn').onclick=()=>{$('tEye').checked=!$('tEye').checked;applyToggles();};
+$('levelBtn').onclick=()=>{st.pitch=0;};
+window.PPH={skins,state:st,setMode,setWallImage,setWallArt};
+})();
+</script>
+
+</body></html>
