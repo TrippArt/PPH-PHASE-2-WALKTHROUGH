@@ -9,6 +9,7 @@ A static site with no build step. `index.html` at the root is the whole app; it 
 | `tex/` | Wall, ceiling and bulkhead textures (JPEG) |
 | `art/` | Band and mural artwork as transparent PNGs, web size (long side capped at 8192 px) |
 | `sm/` | Phone-size copies (long side 4096 px) of the heavier art and textures |
+| `layers/` | Overlay PNGs at exact canvas px (10 px = 1 in): `trim/` the bottom trim on every wall and Wall 4 section, `mirrors/` the B4 mirrors. Built by `tools/make_layers.py` |
 
 **Live:** https://trippart.github.io/PPH-PHASE-2-WALKTHROUGH/
 **Repo:** https://github.com/TrippArt/PPH-PHASE-2-WALKTHROUGH
@@ -26,7 +27,10 @@ Serve the repository root with any static file server and open `index.html`. Ope
 
 ```
 python tools/make_spec.py .
+python tools/make_layers.py .
 ```
+
+`make_layers.py` reads the spec and rebuilds `layers/` plus the 3D page's `tex/trim.png` and `tex/mirror.png` tiles. Run it after `make_spec.py` whenever the trim height, the mirrors, a door or a wall length changes.
 
 ## Editing
 

@@ -99,7 +99,7 @@ details[open] summary{margin-bottom:8px}
 
 <aside id="sheet" hidden aria-label="Menu">
   <header>
-    <div><h1>PPH Zone 3</h1><p class="sub">Walkthrough V2 · every wall and corner named · site photos on M4, the Viper, the Tiger, B3, B2 and Wall 1 · designs on B2, B3, the Viper and the Tiger · tape measure on the eye line · planning model, not a survey</p></div>
+    <div><h1>PPH Zone 3</h1><p class="sub">Walkthrough V2 · every wall and corner named · site photos on M4, the Viper, the Tiger, B3, B2 and Wall 1 · designs on B2, B3, the Viper and the Tiger · bottom trim on every wall · planned mirrors under the B4 Mirror Band · tape measure on the eye line · planning model, not a survey</p></div>
     <button id="closeBtn">Close</button>
   </header>
   <section><h2>View</h2>
@@ -123,6 +123,8 @@ details[open] summary{margin-bottom:8px}
     <div class="checks">
       <label><input type="checkbox" id="tPhotos" checked> Wall photos</label>
       <label id="artRow" hidden><input type="checkbox" id="tArt" checked> Designs</label>
+      <label><input type="checkbox" id="tTrim" checked> Bottom trim, 8″ (its own layer)</label>
+      <label><input type="checkbox" id="tMir" checked> Mirrors on B4 (planned, ends not taped)</label>
       <label><input type="checkbox" id="tMeas" checked> Tape measure on the eye line and wall size</label>
       <label><input type="checkbox" id="tEye"> Eye-level line at 5′9″ and view circle</label>
       <label><input type="checkbox" id="tLabels" checked> Wall names, corners and dimensions</label>
@@ -155,7 +157,9 @@ details[open] summary{margin-bottom:8px}
       <li>Eye height is 5′9″. Room depth uses the direct B2 to M4 reading, 60′7½″.</li>
       <li>The walking view uses a 1× phone camera lens (24 mm equivalent): across the width of the screen you see what a 1× photo taken from the same spot shows, held the same way. 0.5× matches the ultra-wide camera (13 mm). There is no haze, so far walls are as clear as near ones.</li>
       <li>Keyboard walking is 4½′ a second, an ordinary walking pace, and eases in and out like a person starting and stopping. Shift is three times that.</li>
-      <li>M4 is 49′ and the B4 band runs 146′ past it, per the October measurements. V4 carried 36′ and 159′.</li>
+      <li>M4 is 49′ and the B4 band runs 146′ past it, per the October measurements. V4 carried 36′ and 159′. B4 is the Mirror Band, the band above the mirrors (Tripp, 11 October). B5 is a different band, on the box face over M6.</li>
+      <li>The bottom trim is drawn 8″ high along the foot of every wall, from Tripp's note on the 7 October panorama. It is not taped: the only taped trim is 4″, in the Zone 4 hallway, and the Viper photo reads about 7″. The trim is its own layer laid over the wall photos and designs, so a photo that already shows the trim and one that does not end up the same. It stops at every doorway, together with the door casing, and runs under the windows.</li>
+      <li>The B4 mirrors are planned: 8′ tall, standing on the top edge of the bottom trim, so 8″ to 8′8″ off the floor. They start about 9′ past the end of M4 (Tripp: 8′ to 10′) and stop about 27′6″ short of the M7 corner (Tripp: 25′ to 30′), about 109′6″ long. Neither end is taped. From the mirror tops to the ceiling is about 4′11″ of band. The mirrors are their own layer, drawn as plain glass, not as a reflection.</li>
       <li>M7 (the Viper) is 58′8″ and M8 (the Tiger) is 71′11″, from V4. The M7 door is 10′ wide and 9′ high, at the far right end of the wall.</li>
       <li>The box is drawn about 8′ longer than the females partition, which makes it about 43′5″ long. The east wall between the box and M8, about 40′7″, is not measured and has no name yet.</li>
       <li>M6 is 35′5″ and placed at the Wall 1 end of the box face. Its door is not placed.</li>
@@ -172,7 +176,7 @@ details[open] summary{margin-bottom:8px}
       <li>Measure puts a tape on the 5′9″ eye line of every wall. It counts in feet from the wall's left end as you face it, with a number every 5′, and each end carries the wall's full width and height. The tag above the dot gives the wall you are looking at, its width and height, and how far the dot is from the left and right ends. M4 and B4 are one wall, so their tape runs 0 to 195′ without a break. Heights are floor to ceiling: 12′11″ under the low ceiling, 13′7″ elsewhere.</li>
       <li>The high ceiling carries the black 2′ × 2′ tile ceiling on one continuous grid starting at the B2 | B3 corner. Where the real grid starts is not measured. The low ceiling by B2 stays white, as in the B3 photo. Lights are not modeled.</li>
       <li>Wall thickness is 6″ for looks only.</li>
-      <li>Not in this model: the lobby side of B2 (M2), mirrors, equipment, the hallway to Zone 4.</li>
+      <li>Not in this model: the lobby side of B2 (M2), equipment, the hallway to Zone 4.</li>
     </ul>
   </details>
 </aside>
@@ -194,7 +198,9 @@ const STEP=ft(16,10);             // ceiling step along B3 — measured
 const BH_UNDER=ft(9,1), BH_PROJ=ft(1,5);
 const B2_DOOR_W=6, B2_DOOR_H=ft(6,7.5), B2_DOOR_RIGHT=ft(14,11);
 const TRIM=4/12;
+const BASE=8/12;                  // bottom trim height: 8 in from Tripp's 10-07 pano note, not taped. Provisional.
 const M4W=49, BAND=146, XMAX=M4W+BAND;
+const MIR_H=8, MIR_IN=9, MIR_OUT=ft(27,6); // B4 mirrors: 8 ft tall, standing on the bottom trim. Start about 8-10 ft past M4, stop about 25-30 ft before the M7 corner (Tripp 10-11); middle of each range. Provisional.
 const COL_D=12.5/12, COL_FAR=ft(19,2);
 const M7W=ft(58,8), M8W=ft(71,11), M6W=ft(35,5);
 const BOXN=XMAX-M8W;          // where M8 starts
@@ -243,7 +249,7 @@ const voidMat=new THREE.MeshBasicMaterial({color:0x07090a});
 const edgeMat=new THREE.LineBasicMaterial({color:0x2c3235});
 
 const gArch=new THREE.Group(),gSkins=new THREE.Group(),gCeil=new THREE.Group(),gGrid=new THREE.Group(),gPart=new THREE.Group(),gLabels=new THREE.Group(),gWallL=new THREE.Group(),gFloorL=new THREE.Group();gLabels.add(gWallL,gFloorL);
-const gPartW=new THREE.Group(),gPartF=new THREE.Group(),gCaps=new THREE.Group();gPart.add(gPartW,gPartF);const gFill=new THREE.Group(),gArt=new THREE.Group(),gEye=new THREE.Group(),gEyeP=new THREE.Group(),gTape=new THREE.Group(),gTapeP=new THREE.Group();gPart.add(gEyeP,gTapeP);scene.add(gTape);scene.add(gEye);scene.add(gArch,gSkins,gCeil,gGrid,gLabels,gPart,gCaps,gFill,gArt);
+const gPartW=new THREE.Group(),gPartF=new THREE.Group(),gCaps=new THREE.Group();gPart.add(gPartW,gPartF);const gFill=new THREE.Group(),gArt=new THREE.Group(),gEye=new THREE.Group(),gEyeP=new THREE.Group(),gTape=new THREE.Group(),gTapeP=new THREE.Group();gPart.add(gEyeP,gTapeP);const gTrim=new THREE.Group(),gTrimP=new THREE.Group(),gMirror=new THREE.Group(),gMirL=new THREE.Group();gPart.add(gTrimP);gMirror.add(gMirL);scene.add(gTrim,gMirror);scene.add(gTape);scene.add(gEye);scene.add(gArch,gSkins,gCeil,gGrid,gLabels,gPart,gCaps,gFill,gArt);
 const skins={}; // id → mesh; photo and artwork textures attach here later
 
 function shapeOf(pts,holes){const s=new THREE.Shape();pts.forEach((p,i)=>i?s.lineTo(p[0],p[1]):s.moveTo(p[0],p[1]));s.closePath();
@@ -273,8 +279,18 @@ function buildWall(def){
     if(o.fill==='glass')localBox(fr,o.s0,o.s1,o.v0,o.v1,-T*0.6,-T*0.5,glassMat,grp);
     else localBox(fr,o.s0,o.s1,o.v0,o.v1,-T-0.04,-T,voidMat,grp);
   });
+  baseTrim(fr,def.w,doors,def.grp===gPart?gTrimP:gTrim);
   return fr;
 }
+/* bottom trim: its own layer, laid over the wall photo and the design so every wall reads the same whether or not its photo shows the trim.
+   It breaks at each doorway together with the door casing and runs under the windows. */
+const baseMat=new THREE.MeshLambertMaterial({color:0xffffff,polygonOffset:true,polygonOffsetFactor:-4,polygonOffsetUnits:-4});
+new THREE.TextureLoader().load('tex/trim.png',t=>{t.wrapS=THREE.RepeatWrapping;t.anisotropy=renderer.capabilities.getMaxAnisotropy();baseMat.map=t;baseMat.needsUpdate=true;});
+function baseTrim(fr,w,doors,parent){let a=0;const runs=[];
+  doors.forEach(d=>{const g=d.noTrim?0:TRIM;if(d.s0-g>a)runs.push([a,d.s0-g]);a=Math.max(a,d.s1+g);});if(w>a)runs.push([a,w]);
+  runs.forEach(r=>{const len=r[1]-r[0];if(len<0.05)return;const g=new THREE.PlaneGeometry(len,BASE);
+    const uv=g.attributes.uv;for(let i=0;i<uv.count;i++)uv.setX(i,uv.getX(i)*len/4); // the trim image covers 4 ft
+    g.translate((r[0]+r[1])/2,BASE/2,0.08);g.applyMatrix4(fr);parent.add(new THREE.Mesh(g,baseMat));});}
 
 const ZONE_BAND=0x86b9c4, ZONE_M4=0xa98fc9, ZONE_CONT=0xc7b8da, ZONE_M7=0x8fbf8a, ZONE_M8=0xe0a35c, ZONE_M6=0xd9c96a, ZONE_WFR=0xe58fb8;
 const b2s0=W-B2_DOOR_RIGHT-B2_DOOR_W;
@@ -305,6 +321,16 @@ F.WFRS=buildWall({id:'WFR_south',left:[W,PY,0],n:[-1,0,0],w:PDEPTH,top:flat(PDEP
   const g=new THREE.PlaneGeometry(W,L-BH_UNDER);g.translate(W/2,(BH_UNDER+L)/2,BH_PROJ+0.02);g.applyMatrix4(F.B2);
   const m=new THREE.Mesh(g,new THREE.MeshLambertMaterial({color:ZONE_BAND,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2}));
   m.userData={tint:ZONE_BAND,width:W,height:L-BH_UNDER,fr:F.B2};gSkins.add(m);skins.B2_bulkhead=m;})();
+
+// B4 mirrors (planned): 8 ft tall, standing on the top edge of the bottom trim, not on the floor. Their own layer, over the photo and the design.
+const MIR_S0=MIR_IN, MIR_S1=BAND-MIR_OUT; // along B4, from the M4 / B4 line
+(function(){const w=MIR_S1-MIR_S0,v0=BASE,v1=BASE+MIR_H;
+  const mat=new THREE.MeshBasicMaterial({color:0xffffff,polygonOffset:true,polygonOffsetFactor:-4,polygonOffsetUnits:-4});
+  new THREE.TextureLoader().load('tex/mirror.png',t=>{t.wrapS=THREE.RepeatWrapping;t.anisotropy=renderer.capabilities.getMaxAnisotropy();mat.map=t;mat.needsUpdate=true;});
+  const g=new THREE.PlaneGeometry(w,MIR_H),uv=g.attributes.uv;for(let i=0;i<uv.count;i++)uv.setX(i,uv.getX(i)*w/8); // the mirror image covers 8 ft
+  g.translate((MIR_S0+MIR_S1)/2,(v0+v1)/2,0.08);g.applyMatrix4(F.BAND);gMirror.add(new THREE.Mesh(g,mat));
+  const e=[[MIR_S0,v0],[MIR_S1,v0],[MIR_S1,v1],[MIR_S0,v1]].map(p=>new THREE.Vector3(p[0],p[1],0.085).applyMatrix4(F.BAND));
+  gMirror.add(new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(e),new THREE.LineBasicMaterial({color:0x4c5a60})));})();
 
 function quad(a,b,c,d,mat,parent){const g=new THREE.BufferGeometry();const p=[a,b,c,a,c,d].map(v=>V(v[0],v[1],v[2]));g.setFromPoints(p);g.computeVertexNormals();const m=new THREE.Mesh(g,mat);parent.add(m);return m;}
 // floor: measured room plus the open gym as far as the band runs
@@ -357,7 +383,11 @@ function buildLabels(){
   sign(F.W1,7,6,'WALL 1','Box side wall · 19′2″ · stays blank, no art','m',4.4,12);
   wallLabel(F.W1,(W1_D0+W1_D1)/2,8,['Doorway about 3′1½″ × 6′9″','placed from the photo, not measured'],'p',1.1,6);
   sign(F.M4,M4W/2,7,'M4 + B4','Forward mirror wall mural · 49′','m',5,30);
-  [22,70,122].forEach(x=>sign(F.BAND,x,7,'B4','West wall band above the mirrors · 146′ run right of M4','m',5,30));
+  [22,70,122].forEach(x=>sign(F.BAND,x,11.1,'B4 MIRROR BAND','The band above the mirrors · 146′ run right of M4','m',5,30));
+  // mirrors: labels ride with the mirror layer
+  wallLabel(F.BAND,(MIR_S0+MIR_S1)/2,BASE+MIR_H-1.2,['Mirrors · 8′ tall, standing on the '+fmt(BASE).replace(/^0′/,'')+' bottom trim','about '+fmt(MIR_S1-MIR_S0)+' long · '+fmt(BASE).replace(/^0′/,'')+' to '+fmt(BASE+MIR_H)+' off the floor · start and stop not taped'],'p',1.5,22,0.1,gMirL);
+  wallLabel(F.BAND,MIR_S0+4.6,BASE+MIR_H-3.4,['Mirrors start about '+fmt(MIR_IN)+' past M4','Tripp: 8′ to 10′ · not taped'],'p',1.2,8.4,0.1,gMirL);
+  wallLabel(F.BAND,MIR_S1-5.4,BASE+MIR_H-3.4,['Mirrors stop about '+fmt(MIR_OUT)+' before the M7 corner','Tripp: 25′ to 30′ · not taped'],'p',1.2,10,0.1,gMirL);
   sign(F.M7,12.5,7,'M7 + B7','The Viper · separator wall · 58′8″','m',4.8,21);
   sign(F.M7,36,7,'M7 + B7','The Viper · separator wall · 58′8″','m',4.8,21);
   wallLabel(F.M7,M7W-5,10.6,['Door 10′ wide × 9′ high','at the far right end of the wall'],'m',1.4,9);
@@ -382,7 +412,7 @@ function buildLabels(){
   // ---- corners ----
   corner(1.3,1.3,'B2 | B3 corner');
   corner(1.3,D-1.3,'B3 | M4 corner');
-  corner(M4W,D-1.2,'M4 ends | B4 band carries on');
+  corner(M4W,D-1.2,'M4 ends | B4 Mirror Band carries on');
   corner(XMAX-1.3,D-1.3,'B4 | M7 corner');
   corner(XMAX-1.3,M8Y+1.3,'M7 | M8 corner');
   corner(BOXN,M8Y+1.3,'M8 | East wall','p');
@@ -398,7 +428,8 @@ function buildLabels(){
   floorLabel(W/2,6,['B2','Entrance band · 39′1″'],'m',5,null,null,true);
   floorLabel(6,D/2+6,['B3','Cardio window wall · 60′7½″'],'d',5,null,null,true);
   floorLabel(M4W/2,D-6.5,['M4 + B4','Mirror wall mural · 49′'],'m',5,null,null,true);
-  floorLabel(M4W+BAND/2,D-6.5,['B4','Band above the mirrors · 146′'],'m',5,null,null,true);
+  floorLabel(M4W+BAND/2,D-6.5,['B4 MIRROR BAND','Band above the mirrors · 146′'],'m',5,null,null,true);
+  floorLabel(M4W+(MIR_S0+MIR_S1)/2,D-2.2,['Mirrors · about '+fmt(MIR_S1-MIR_S0)+' · ends not taped'],'p',1.6);
   floorLabel(XMAX-6,D/2,['M7 + B7','The Viper · 58′8″'],'m',5,null,null,true);
   floorLabel(BOXN+M8W/2,M8Y+7,['M8 + B6','The Tiger · 71′11″'],'m',5,null,null,true);
   floorLabel(W+M6W/2,WALL1+4,['M6 + B5','Box face · 35′5″'],'m',3.4,null,null,true);
@@ -420,7 +451,7 @@ const SPOTS=[
   ['Facing B2',19.5,31,180],
   ['Facing B3',33,30,90],
   ['Facing M4 + B4',24.5,D-36,0],
-  ['B4 band run',M4W+6,D-12,-72],
+  ['B4 Mirror Band run',M4W+6,D-12,-72],
   ['Facing the Viper (M7)',XMAX-48,D/2,-90],
   ['Facing the Tiger (M8)',BOXN+M8W/2,M8Y+40,180],
   ['Facing the east wall',(BX+BOXN)/2,M8Y+34,180],
@@ -447,11 +478,12 @@ function applyToggles(){
   gLabels.visible=$('tLabels').checked;gPart.visible=$('tPart').checked;gWallL.visible=st.mode!=='plan';gFloorL.visible=st.mode!=='walk';gPartW.visible=gLabels.visible&&st.mode!=='plan';gPartF.visible=gLabels.visible&&st.mode!=='walk';gCaps.visible=st.mode!=='walk';
   gCeil.visible=$('tCeil').checked&&st.mode==='walk';
   gGrid.visible=$('tGrid').checked;
+  gTrim.visible=gTrimP.visible=$('tTrim').checked;gMirror.visible=$('tMir').checked;gMirL.visible=gLabels.visible&&st.mode!=='plan';
   const z=$('tZones').checked,ph=$('tPhotos').checked;gFill.visible=ph;const eyeOn=$('tEye').checked,measOn=$('tMeas').checked;gEye.visible=gEyeP.visible=eyeOn||measOn;gTape.visible=gTapeP.visible=measOn&&st.mode!=='plan';$('eyeBtn').setAttribute('aria-pressed',eyeOn);$('measBtn').setAttribute('aria-pressed',measOn);$('quick').hidden=st.mode!=='walk';gArt.visible=$('tArt').checked;
   Object.keys(skins).forEach(k=>{const s=skins[k],u=s.userData;if(u.photo&&ph)s.material=u.photo;else{if(u.plain)s.material=u.plain;s.material.color.setHex(z?u.tint:NEUTRAL);}});
   $('readout').hidden=!($('tRead').checked&&st.mode==='walk');
 }
-['tPhotos','tArt','tEye','tMeas','tLabels','tPart','tZones','tCeil','tGrid','tRead'].forEach(id=>$(id).onchange=applyToggles);
+['tPhotos','tArt','tTrim','tMir','tEye','tMeas','tLabels','tPart','tZones','tCeil','tGrid','tRead'].forEach(id=>$(id).onchange=applyToggles);
 
 /* ---------- menu ---------- */
 const sheet=$('sheet'),menuBtn=$('menuBtn');
@@ -612,7 +644,7 @@ Object.keys(ART).forEach(k=>setWallArt(k,BIG+ART[k]));
 /* ---------- eye-level line and view circle ---------- */
 const eyeMat=new THREE.MeshBasicMaterial({color:0xffe14a,fog:false,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-6,polygonOffsetUnits:-6});
 Object.keys(skins).forEach(k=>{const u=skins[k].userData;if(!u.fr||u.height<EYE)return;
-  const g=new THREE.PlaneGeometry(u.width,0.1);g.translate(u.width/2,EYE,0.07);g.applyMatrix4(u.fr);(k.indexOf('WFR')===0?gEyeP:gEye).add(new THREE.Mesh(g,eyeMat));});
+  const g=new THREE.PlaneGeometry(u.width,0.1);g.translate(u.width/2,EYE,0.09);g.applyMatrix4(u.fr);(k.indexOf('WFR')===0?gEyeP:gEye).add(new THREE.Mesh(g,eyeMat));});
 const eyeRing=new THREE.Mesh(new THREE.RingGeometry(0.985,1,128),eyeMat),eyeDot=new THREE.Mesh(new THREE.CircleGeometry(0.18,24),eyeMat);
 gEye.add(eyeRing,eyeDot);
 /* ---------- tape measure on the eye line ---------- */
@@ -634,12 +666,12 @@ const RUNS=[
 ];
 RUNS.forEach(r=>r.ids.forEach((id,i)=>{const u=skins[id].userData;u.run=r;u.off=r.offs[i];u.inv=new THREE.Matrix4().copy(u.fr).invert();}));
 const sizeText=(r,s)=>(r.about?'about ':'')+fmt(r.total)+' wide · '+fmt(r.h(s))+' high';
-function buildTape(){RUNS.forEach(r=>{const grp=r.part?gTapeP:gTape,p=[],z=0.075;
+function buildTape(){RUNS.forEach(r=>{const grp=r.part?gTapeP:gTape,p=[],z=0.092; // above the trim and mirror layers (0.08)
   const rect=(s0,s1,v0,v1)=>p.push(s0,v0,z,s1,v0,z,s1,v1,z,s0,v0,z,s1,v1,z,s0,v1,z);
   for(let f=0;f<=r.total+1e-6;f++){const ten=f%10===0,five=f%5===0,hw=ten?0.05:five?0.04:0.025,len=ten?0.55:five?0.4:0.2;rect(f-hw,f+hw,EYE-len,EYE);}
   rect(r.total-0.05,r.total,EYE-0.55,EYE+0.55);rect(0,0.05,EYE-0.55,EYE+0.55);
   const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(p,3));g.applyMatrix4(r.fr);grp.add(new THREE.Mesh(g,eyeMat));
-  const put=(m,s,v)=>{m.geometry.translate(s,v,0.1);m.geometry.applyMatrix4(r.fr);grp.add(m);};
+  const put=(m,s,v)=>{m.geometry.translate(s,v,0.11);m.geometry.applyMatrix4(r.fr);grp.add(m);};
   for(let f=5;f<=r.total-2.5;f+=5){const h=f%10===0?0.8:0.58;put(labelMesh([f+'′'],r.col,h),f,EYE-0.62-h/2);}
   // each end of the wall carries the full width and height
   const ends=r.total<24?[['mid',r.total/2]]:[['left',0.5],['right',r.total-0.5]];
