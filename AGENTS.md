@@ -14,6 +14,7 @@ Live site: https://trippart.github.io/PPH-PHASE-2-WALKTHROUGH/ (GitHub Pages ser
 | `tex/trim.png`, `tex/mirror.png` | Tiles the page repeats, GENERATED | Never by hand |
 | `tex/` (other files) | Wall photos and the ceiling tile (JPEG) | Only when asked |
 | `art/` | Tripp's designs, transparent PNGs, long side at most 8192 px | Only when asked |
+| `avatar/head.png` | The front of the walker's head: a square PNG, see `avatar/README.md`. A placeholder face is drawn until it exists | Only when asked |
 | `sm/` | Phone copies of the heavy images, long side 4096 px | Keep in step with `art/` and `tex/` |
 | `tools/make_spec.py`, `tools/make_layers.py` | Generators (Python 3 + Pillow) | Yes, if the task is about them |
 | `GPT_BRIEF.md` | Standing brief for ChatGPT design work | Keep in step with the spec |
@@ -36,7 +37,7 @@ Live site: https://trippart.github.io/PPH-PHASE-2-WALKTHROUGH/ (GitHub Pages ser
 
 ## Finding your way around `index.html`
 
-Search for these names: the measurement block (constants) · `buildWall` (walls, openings, casing) · `baseTrim` (bottom trim) · `MIR_S0` (mirrors) · `buildLabels` (wall names, notes, corners) · `buildSections` (pink section lines and tags) · `SPOTS` (the "Stand at" menu) · `applyToggles` (menu checkboxes) · `PHOTOS` and `ART` (which image goes on which wall) · `RUNS` (the tape measure).
+Search for these names: the measurement block (constants) · `buildWall` (walls, openings, casing) · `baseTrim` (bottom trim) · `MIR_S0` (mirrors) · `buildLabels` (wall names, notes, corners) · `buildSections` (pink section lines and tags) · `SPOTS` (the "Stand at" menu) · `applyToggles` (menu checkboxes) · `renderMirror` (the live reflection in the B4 mirrors) · `avatar` and `updateAvatar` (the blocky figure and its three-position walk) · `PHOTOS` and `ART` (which image goes on which wall) · `RUNS` (the tape measure).
 
 Designs attach to a whole wall skin (`ART` map). The B4 sections do not have their own skins yet. If a task needs per-section artwork on B4, propose the approach in the pull request before building it.
 

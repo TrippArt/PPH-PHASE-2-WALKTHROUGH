@@ -9,6 +9,7 @@ A static site with no build step. `index.html` at the root is the whole app; it 
 | `tex/` | Wall, ceiling and bulkhead textures (JPEG) |
 | `art/` | Band and mural artwork as transparent PNGs, web size (long side capped at 8192 px) |
 | `sm/` | Phone-size copies (long side 4096 px) of the heavier art and textures |
+| `avatar/` | `head.png`, the front of the walker's blocky head (square PNG). See `avatar/README.md` |
 | `layers/` | Overlay PNGs at exact canvas px (10 px = 1 in): `trim/` the bottom trim, `mirrors/` the B4 mirrors, `doors/` each door cut from its wall photo, `sections/` the pink Wall 4 section guides. Built by `tools/make_layers.py` |
 
 **Live:** https://trippart.github.io/PPH-PHASE-2-WALKTHROUGH/

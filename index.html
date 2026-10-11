@@ -99,7 +99,7 @@ details[open] summary{margin-bottom:8px}
 
 <aside id="sheet" hidden aria-label="Menu">
   <header>
-    <div><h1>PPH Zone 3</h1><p class="sub">Walkthrough V2 · every wall and corner named · site photos on M4, the Viper, the Tiger, B3, B2 and Wall 1 · designs on B2, B3, the Viper and the Tiger · bottom trim on every wall · planned mirrors under the B4 Mirror Band · pink section lines on M4 + B4 · tape measure on the eye line · planning model, not a survey</p></div>
+    <div><h1>PPH Zone 3</h1><p class="sub">Walkthrough V2 · every wall and corner named · site photos on M4, the Viper, the Tiger, B3, B2 and Wall 1 · designs on B2, B3, the Viper and the Tiger · bottom trim on every wall · planned mirrors under the B4 Mirror Band that reflect the room, with you in them as a blocky figure · pink section lines on M4 + B4 · tape measure on the eye line · planning model, not a survey</p></div>
     <button id="closeBtn">Close</button>
   </header>
   <section><h2>View</h2>
@@ -125,6 +125,8 @@ details[open] summary{margin-bottom:8px}
       <label id="artRow" hidden><input type="checkbox" id="tArt" checked> Designs</label>
       <label><input type="checkbox" id="tTrim" checked> Bottom trim, 8″ (its own layer)</label>
       <label><input type="checkbox" id="tMir" checked> Mirrors on B4 (planned)</label>
+      <label><input type="checkbox" id="tRefl" checked> Mirrors reflect the room (live)</label>
+      <label><input type="checkbox" id="tMe" checked> You in the mirrors (blocky figure)</label>
       <label><input type="checkbox" id="tSect" checked> Section lines on M4 + B4 (pink)</label>
       <label><input type="checkbox" id="tMeas" checked> Tape measure on the eye line and wall size</label>
       <label><input type="checkbox" id="tEye"> Eye-level line at 5′9″ and view circle</label>
@@ -169,6 +171,7 @@ details[open] summary{margin-bottom:8px}
       <li>M8 is set in line with the end of M7, about 2′ in from the B2 line.</li>
       <li>B3 openings are placed by working back from the M4 corner. B2 opening top is 6′7½″ with a 4″ casing until scaled from the photo.</li>
       <li>Four columns, each 12½″ across and 19′2″ from M4, in one line down the hall. Column 1 is assumed on the Wall 1 line, 39′1″ from B3, and the others repeat that spacing.</li>
+      <li>The B4 mirrors reflect the room for real: every frame the model is drawn once more from a camera mirrored through the glass, so you see the far walls, the ceiling and the floor behind you as a mirror would show them (lettering reads backwards, as it should). You appear in them as a simple blocky figure at the 5′9″ eye line, about 6′2″ tall. Its arms and legs hold one of three positions and switch only while you are moving, with the keys or with a finger. The face is <code>avatar/head.png</code>, a square PNG that becomes the front of the head; the picture's top rows colour the top of the head and its outer columns colour the sides. Until that file exists a placeholder face is drawn. Overview and Plan show the figure standing where you are.</li>
       <li>Wall photos are stretched to fit the measured walls, with doors and windows pinned to their measured positions. The Viper (M7), the Tiger (M8), B3, B2 with its bulkhead and Wall 1 carry photos so far. The M8 photo is stretched to the V4 width. Its three doors (about 28″ wide, 6′8″ to 6′10″ high) and the 5′ × 8′ opening at its right end are cut out of the wall where the photo shows them, so the trim and the designs stop there. The M8 windows are not cut.</li>
       <li>Designs are Tripp's Photoshop canvas exports from 11 October, laid over the photos on B2, the B2 bulkhead, B3, the Viper and the Tiger. M4 and B4 have no design yet. Phones and tablets load 4096 px copies; computers load the full exports.</li>
       <li>The M4 mural photo is laid on unstretched, floor to ceiling from the B3 corner. At that size it is about 50′6″ long, so its last 1′6″ of foliage and blue wall runs past the 49′ mark onto B4.</li>
@@ -329,14 +332,99 @@ F.WFRS=buildWall({id:'WFR_south',left:[W,PY,0],n:[-1,0,0],w:PDEPTH,top:flat(PDEP
   m.userData={tint:ZONE_BAND,width:W,height:L-BH_UNDER,fr:F.B2};gSkins.add(m);skins.B2_bulkhead=m;})();
 
 // B4 mirrors (planned): 8 ft tall, standing on the top edge of the bottom trim, not on the floor. Their own layer, over the photo and the design.
+// They reflect for real: each frame the room is drawn once more from a camera mirrored through the glass, and that picture is projected back onto the strip.
 const MIR_S0=MIR_IN, MIR_S1=BAND-MIR_OUT; // along B4, from the M4 / B4 line
+const mirror={mesh:null,tile:null,live:null,rt:null,on:true,ok:true};
 (function(){const w=MIR_S1-MIR_S0,v0=BASE,v1=BASE+MIR_H;
-  const mat=new THREE.MeshBasicMaterial({color:0xffffff,polygonOffset:true,polygonOffsetFactor:-4,polygonOffsetUnits:-4});
-  new THREE.TextureLoader().load('tex/mirror.png',t=>{t.wrapS=THREE.RepeatWrapping;t.anisotropy=renderer.capabilities.getMaxAnisotropy();mat.map=t;mat.needsUpdate=true;});
+  const tile=new THREE.MeshBasicMaterial({color:0xffffff,polygonOffset:true,polygonOffsetFactor:-4,polygonOffsetUnits:-4});
+  new THREE.TextureLoader().load('tex/mirror.png',t=>{t.wrapS=THREE.RepeatWrapping;t.anisotropy=renderer.capabilities.getMaxAnisotropy();tile.map=t;tile.needsUpdate=true;});
   const g=new THREE.PlaneGeometry(w,MIR_H),uv=g.attributes.uv;for(let i=0;i<uv.count;i++)uv.setX(i,uv.getX(i)*w/8); // the mirror image covers 8 ft
-  g.translate((MIR_S0+MIR_S1)/2,(v0+v1)/2,0.08);g.applyMatrix4(F.BAND);gMirror.add(new THREE.Mesh(g,mat));
+  g.translate((MIR_S0+MIR_S1)/2,(v0+v1)/2,0.08);g.applyMatrix4(F.BAND);
+  const m=new THREE.Mesh(g,tile);gMirror.add(m);mirror.mesh=m;mirror.tile=tile;
   const e=[[MIR_S0,v0],[MIR_S1,v0],[MIR_S1,v1],[MIR_S0,v1]].map(p=>new THREE.Vector3(p[0],p[1],0.085).applyMatrix4(F.BAND));
-  gMirror.add(new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(e),new THREE.LineBasicMaterial({color:0x4c5a60})));})();
+  gMirror.add(new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(e),new THREE.LineBasicMaterial({color:0x4c5a60})));
+  // the live glass (after three.js's Reflector): a texture the mirrored camera draws into, read back by where each point of the glass lands in that picture
+  try{
+    mirror.rt=new THREE.WebGLRenderTarget(1024,512,{minFilter:THREE.LinearFilter,magFilter:THREE.LinearFilter,format:THREE.RGBFormat});
+    mirror.live=new THREE.ShaderMaterial({uniforms:{tDiffuse:{value:mirror.rt.texture},textureMatrix:{value:new THREE.Matrix4()},tint:{value:new THREE.Color(0.88,0.92,0.94)}},
+      vertexShader:'uniform mat4 textureMatrix;varying vec4 vUv;void main(){vUv=textureMatrix*modelMatrix*vec4(position,1.0);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
+      fragmentShader:'uniform sampler2D tDiffuse;uniform vec3 tint;varying vec4 vUv;void main(){vec4 c=texture2DProj(tDiffuse,vUv);gl_FragColor=vec4(c.rgb*tint,1.0);}',
+      polygonOffset:true,polygonOffsetFactor:-4,polygonOffsetUnits:-4});
+  }catch(_){mirror.ok=false;}
+})();
+const mirN=new THREE.Vector3(0,0,1),mirP=new THREE.Vector3(M4W,0,-D+0.08); // the glass plane: faces the room, 0.08 ft off the B4 wall
+const vcam=new THREE.PerspectiveCamera(),mirPlane=new THREE.Plane(),mirClip=new THREE.Vector4(),mirQ=new THREE.Vector4(),mirFrustum=new THREE.Frustum(),mirM=new THREE.Matrix4();
+const _c=new THREE.Vector3(),_v=new THREE.Vector3(),_t=new THREE.Vector3(),_u=new THREE.Vector3();
+function sizeMirror(){const d=Math.min(window.devicePixelRatio||1,2),w=Math.max(512,Math.min(2048,Math.round(window.innerWidth*d*0.7))),h=Math.max(384,Math.min(1536,Math.round(window.innerHeight*d*0.7)));
+  if(mirror.rt.width!==w||mirror.rt.height!==h)mirror.rt.setSize(w,h);}
+// draw this frame's reflection. cam needs a fresh matrixWorld. Falls back to the tile when the glass is off screen, behind the camera or switched off.
+function renderMirror(cam){
+  const m=mirror.mesh;if(!m)return false;
+  if(!mirror.ok||!mirror.on||!gMirror.visible){m.material=mirror.tile;return false;}
+  _c.setFromMatrixPosition(cam.matrixWorld);_v.subVectors(mirP,_c);
+  mirM.multiplyMatrices(cam.projectionMatrix,cam.matrixWorldInverse);mirFrustum.setFromProjectionMatrix(mirM);
+  if(_v.dot(mirN)>0||!mirFrustum.intersectsObject(m)){m.material=mirror.tile;return false;}
+  // the camera, mirrored through the glass
+  _v.subVectors(_c,mirP).reflect(mirN).add(mirP);vcam.position.copy(_v);
+  _t.set(0,0,-1).transformDirection(cam.matrixWorld).add(_c).sub(mirP).reflect(mirN).add(mirP);
+  _u.set(0,1,0).transformDirection(cam.matrixWorld).reflect(mirN);vcam.up.copy(_u);vcam.lookAt(_t);
+  vcam.near=cam.near;vcam.far=cam.far;vcam.updateMatrixWorld();vcam.projectionMatrix.copy(cam.projectionMatrix);
+  mirror.live.uniforms.textureMatrix.value.set(0.5,0,0,0.5,0,0.5,0,0.5,0,0,0.5,0.5,0,0,0,1).multiply(vcam.projectionMatrix).multiply(vcam.matrixWorldInverse);
+  // an oblique near plane on the glass, so nothing behind it (the wall itself) can block the view
+  mirPlane.setFromNormalAndCoplanarPoint(mirN,mirP).applyMatrix4(vcam.matrixWorldInverse);
+  mirClip.set(mirPlane.normal.x,mirPlane.normal.y,mirPlane.normal.z,mirPlane.constant);
+  const e=vcam.projectionMatrix.elements;
+  mirQ.x=(Math.sign(mirClip.x)+e[8])/e[0];mirQ.y=(Math.sign(mirClip.y)+e[9])/e[5];mirQ.z=-1;mirQ.w=(1+e[10])/e[14];
+  mirClip.multiplyScalar(2/mirClip.dot(mirQ));
+  e[2]=mirClip.x;e[6]=mirClip.y;e[10]=mirClip.z+1-0.003;e[14]=mirClip.w;
+  sizeMirror();
+  const wasAv=avatar.g.visible;gMirror.visible=false;avatar.g.visible=avatar.on;
+  renderer.setRenderTarget(mirror.rt);renderer.render(scene,vcam);renderer.setRenderTarget(null);
+  gMirror.visible=true;avatar.g.visible=wasAv;
+  m.material=mirror.live;return true;}
+
+/* ---------- you, as a blocky figure: seen in the mirrors while walking, and standing on the floor in Overview and Plan ---------- */
+// Minecraft-style proportions, 32 units tall: head 8, body 12, legs 12, arms 12. The eye sits at the walking eye height, so the figure stands about 6 ft 2 in.
+const AV_U=(EYE+0.45)/32;
+const avatar={g:new THREE.Group(),on:true,phase:0,still:0,pose:0,parts:{}};
+scene.add(avatar.g);avatar.g.visible=false;
+(function(){const u=AV_U,g=avatar.g,P=avatar.parts;
+  const skin=0xd9a874,shirt=0x2b8c8c,pants=0x35459a,shoe=0x3b3b3b,mat=c=>new THREE.MeshLambertMaterial({color:c});
+  function box(w,h,d,y0,mats){const geo=new THREE.BoxGeometry(w*u,h*u,d*u);geo.translate(0,(y0+h/2)*u,0);const m=new THREE.Mesh(geo,mats);m.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo),edgeMat));return m;}
+  // a limb hangs from its joint: the upper part (-split .. 0) and the lower part (-len .. -split), measured down from the pivot
+  function limb(x,pivotY,len,split,topMat,botMat,lift){const j=new THREE.Group();j.position.set(x*u,pivotY*u,0);
+    const a=box(4,split,4,-split,topMat),b=box(4,len-split,4,-len,botMat);a.position.y=b.position.y=(lift||0)*u;j.add(a,b);g.add(j);return j;}
+  P.torso=box(8,12,4,12,mat(shirt));g.add(P.torso);
+  P.legL=limb(-2,12,12,9,mat(pants),mat(shoe));P.legR=limb(2,12,12,9,mat(pants),mat(shoe));
+  P.armL=limb(-6,22,12,4,mat(shirt),mat(skin),2);P.armR=limb(6,22,12,4,mat(shirt),mat(skin),2); // arms pivot 2 units below the shoulder top
+  P.neck=new THREE.Group();P.neck.position.y=24*u;g.add(P.neck);
+  P.head=box(8,8,8,0,[0,1,2,3,4,5].map(()=>mat(skin)));P.neck.add(P.head);
+})();
+// the face. A square PNG at avatar/head.png is the FRONT of the head; its top two rows colour the top of the head, its outer columns colour the sides and back.
+// Until that file exists a placeholder face is drawn here.
+const HEAD_URL='avatar/head.png';
+function setHead(img){const c=document.createElement('canvas');c.width=c.height=256;const x=c.getContext('2d');x.imageSmoothingEnabled=false;
+  let top='#4a2f1d',side='#d9a874';
+  if(img){const s=document.createElement('canvas');s.width=s.height=16;const y=s.getContext('2d');y.drawImage(img,0,0,16,16);const d=y.getImageData(0,0,16,16).data;
+    const avg=idx=>{let r=0,g=0,b=0,n=0;idx.forEach(i=>{if(d[i*4+3]>60){r+=d[i*4];g+=d[i*4+1];b+=d[i*4+2];n++;}});return n?'rgb('+Math.round(r/n)+','+Math.round(g/n)+','+Math.round(b/n)+')':null;};
+    const t=[],e=[];for(let i=0;i<16;i++){t.push(i,16+i);e.push(i*16,i*16+15);}
+    top=avg(t)||top;side=avg(e)||side;x.imageSmoothingEnabled=true;x.fillStyle=side;x.fillRect(0,0,256,256);x.drawImage(img,0,0,256,256);}
+  else{x.fillStyle=side;x.fillRect(0,0,256,256);x.fillStyle=top;x.fillRect(0,0,256,68);x.fillRect(0,68,32,32);x.fillRect(224,68,32,32);
+    x.fillStyle='#ffffff';x.fillRect(64,112,32,32);x.fillRect(160,112,32,32);x.fillStyle='#3b2a8c';x.fillRect(80,112,16,32);x.fillRect(160,112,16,32);
+    x.fillStyle='#9a6a44';x.fillRect(112,144,32,32);x.fillStyle='#5a3a2a';x.fillRect(96,192,64,20);}
+  const t=new THREE.CanvasTexture(c);t.anisotropy=renderer.capabilities.getMaxAnisotropy();
+  const mats=avatar.parts.head.material;mats.forEach((m,i)=>{m.map=null;m.color.set(i===2?top:side);m.needsUpdate=true;});
+  mats[5].map=t;mats[5].color.set('#ffffff');mats[5].needsUpdate=true;} // box faces: +x, -x, top, bottom, back, front
+setHead(null);
+(function(){const im=new Image();im.crossOrigin='anonymous';im.onload=()=>setHead(im);im.src=HEAD_URL;})();
+// the walk: three positions only, held and switched, never blended. 1 = left leg and right arm forward, 0 = standing, 2 = the other way.
+// The cycle is driven by distance walked (keys or touch alike), so the figure is still whenever you are.
+const AV_SWING=0.62,AV_STRIDE=4.6,AV_SEQ=[1,0,2,0]; // swing in radians; feet of travel for one full cycle of two steps
+function updateAvatar(dt,moved){const P=avatar.parts;
+  if(moved>1e-4){avatar.phase=(avatar.phase+moved/AV_STRIDE)%1;avatar.still=0;}else avatar.still+=dt;
+  const pose=avatar.still>0.12?0:AV_SEQ[Math.floor(avatar.phase*4)%4];
+  if(pose!==avatar.pose){avatar.pose=pose;const a=pose===1?AV_SWING:pose===2?-AV_SWING:0;P.legL.rotation.x=a;P.legR.rotation.x=-a;P.armL.rotation.x=-a;P.armR.rotation.x=a;}
+  avatar.g.position.copy(V(st.X,st.Y,0));avatar.g.rotation.y=st.yaw;P.neck.rotation.x=Math.max(-0.6,Math.min(0.6,st.pitch));}
 
 function quad(a,b,c,d,mat,parent){const g=new THREE.BufferGeometry();const p=[a,b,c,a,c,d].map(v=>V(v[0],v[1],v[2]));g.setFromPoints(p);g.computeVertexNormals();const m=new THREE.Mesh(g,mat);parent.add(m);return m;}
 // floor: measured room plus the open gym as far as the band runs
@@ -476,6 +564,7 @@ const SPOTS=[
   ['Facing B3',33,30,90],
   ['Facing M4 + B4',24.5,D-36,0],
   ['B4 Mirror Band run',M4W+6,D-12,-72],
+  ['Yourself in the mirrors',M4W+(MIR_S0+MIR_S1)/2,D-9,0],
   ['Facing the Viper (M7)',XMAX-48,D/2,-90],
   ['Facing the Tiger (M8)',BOXN+M8W/2,M8Y+40,180],
   ['Facing the east wall',(BX+BOXN)/2,M8Y+34,180],
@@ -502,12 +591,12 @@ function applyToggles(){
   gLabels.visible=$('tLabels').checked;gPart.visible=$('tPart').checked;gWallL.visible=st.mode!=='plan';gFloorL.visible=st.mode!=='walk';gPartW.visible=gLabels.visible&&st.mode!=='plan';gPartF.visible=gLabels.visible&&st.mode!=='walk';gCaps.visible=st.mode!=='walk';
   gCeil.visible=$('tCeil').checked&&st.mode==='walk';
   gGrid.visible=$('tGrid').checked;
-  gTrim.visible=gTrimP.visible=$('tTrim').checked;gMirror.visible=$('tMir').checked;gSect.visible=$('tSect').checked&&st.mode!=='plan';gMirL.visible=gLabels.visible&&st.mode!=='plan';
+  gTrim.visible=gTrimP.visible=$('tTrim').checked;gMirror.visible=$('tMir').checked;mirror.on=$('tRefl').checked;avatar.on=$('tMe').checked;$('tRefl').disabled=$('tMe').disabled=!gMirror.visible;gSect.visible=$('tSect').checked&&st.mode!=='plan';gMirL.visible=gLabels.visible&&st.mode!=='plan';
   const z=$('tZones').checked,ph=$('tPhotos').checked;gFill.visible=ph;const eyeOn=$('tEye').checked,measOn=$('tMeas').checked;gEye.visible=gEyeP.visible=eyeOn||measOn;gTape.visible=gTapeP.visible=measOn&&st.mode!=='plan';$('eyeBtn').setAttribute('aria-pressed',eyeOn);$('measBtn').setAttribute('aria-pressed',measOn);$('quick').hidden=st.mode!=='walk';gArt.visible=$('tArt').checked;
   Object.keys(skins).forEach(k=>{const s=skins[k],u=s.userData;if(u.photo&&ph)s.material=u.photo;else{if(u.plain)s.material=u.plain;s.material.color.setHex(z?u.tint:NEUTRAL);}});
   $('readout').hidden=!($('tRead').checked&&st.mode==='walk');
 }
-['tPhotos','tArt','tTrim','tMir','tSect','tEye','tMeas','tLabels','tPart','tZones','tCeil','tGrid','tRead'].forEach(id=>$(id).onchange=applyToggles);
+['tPhotos','tArt','tTrim','tMir','tRefl','tMe','tSect','tEye','tMeas','tLabels','tPart','tZones','tCeil','tGrid','tRead'].forEach(id=>$(id).onchange=applyToggles);
 
 /* ---------- menu ---------- */
 const sheet=$('sheet'),menuBtn=$('menuBtn');
@@ -611,22 +700,25 @@ function tick(now){const dt=Math.min(0.05,(now-last)/1000);last=now;updateEye();
     if(keys.KeyQ)turn+=1.6;if(keys.KeyE)turn-=1.6;
     st.yaw+=turn*dt;st.pitch=Math.max(-1.35,Math.min(1.35,st.pitch));
     const s=Math.sin(st.yaw),c=Math.cos(st.yaw);
-    const nx=st.X+(-s*fwd+c*strafe)*dt,ny=st.Y+(c*fwd+s*strafe)*dt;
+    const nx=st.X+(-s*fwd+c*strafe)*dt,ny=st.Y+(c*fwd+s*strafe)*dt,ox=st.X,oy=st.Y;
     if(!blocked(nx,st.Y))st.X=nx;if(!blocked(st.X,ny))st.Y=ny;
-    persp.position.copy(V(st.X,st.Y,EYE));persp.rotation.set(st.pitch,st.yaw,0);
+    persp.position.copy(V(st.X,st.Y,EYE));persp.rotation.set(st.pitch,st.yaw,0);persp.updateMatrixWorld();
+    updateAvatar(dt,Math.hypot(st.X-ox,st.Y-oy));avatar.g.visible=false;renderMirror(persp); // while walking you show only in the glass
     if(now-readT>160){readT=now;$('readout').textContent='B2 '+fmt(st.Y)+' · B3 '+fmt(st.X)+' · M4 '+fmt(D-st.Y)+eyeText;}
     for(const b of bills)b.rotation.set(0,st.yaw,0);
     renderer.render(scene,persp);
   }else if(st.mode==='orbit'){
     st.el=Math.max(0.12,Math.min(1.5,st.el));
     const t=V(st.tx,st.ty,4),ce=Math.cos(st.el);
-    persp.position.set(t.x+st.dist*ce*Math.sin(st.az),t.y+st.dist*Math.sin(st.el),t.z+st.dist*ce*Math.cos(st.az));persp.rotation.order='YXZ';persp.lookAt(t);
+    persp.position.set(t.x+st.dist*ce*Math.sin(st.az),t.y+st.dist*Math.sin(st.el),t.z+st.dist*ce*Math.cos(st.az));persp.rotation.order='YXZ';persp.lookAt(t);persp.updateMatrixWorld();
     for(const b of bills)b.quaternion.copy(persp.quaternion);
+    updateAvatar(dt,0);avatar.g.visible=avatar.on;renderMirror(persp);
     renderer.render(scene,persp);
   }else{
     const a=window.innerWidth/window.innerHeight,hw=st.span/2,hh=hw/a;
     ortho.left=-hw;ortho.right=hw;ortho.top=hh;ortho.bottom=-hh;ortho.updateProjectionMatrix();
     ortho.position.set(st.pcx,300,-st.pcy);ortho.up.set(1,0,0);ortho.lookAt(st.pcx,0,-st.pcy);for(const b of bills)b.visible=false;
+    updateAvatar(dt,0);avatar.g.visible=avatar.on;if(mirror.mesh)mirror.mesh.material=mirror.tile;
     renderer.render(scene,ortho);
   }
   requestAnimationFrame(tick);
@@ -723,7 +815,7 @@ function updateEye(){eyeText='';eyeRing.visible=eyeDot.visible=false;const measO
 $('measBtn').onclick=()=>{$('tMeas').checked=!$('tMeas').checked;applyToggles();};
 $('eyeBtn').onclick=()=>{$('tEye').checked=!$('tEye').checked;applyToggles();};
 $('levelBtn').onclick=()=>{st.pitch=0;};
-window.PPH={skins,state:st,setMode,setWallImage,setWallArt};
+window.PPH={skins,state:st,setMode,setWallImage,setWallArt,avatar,mirror,setHead};
 })();
 </script>
 
