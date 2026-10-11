@@ -1,7 +1,7 @@
 {
  "project": "Palmetto Pump House, Phase 2, Zone 3 band and mural walls",
  "generated_from": "index.html measurement constants, PPH Zone 3 Walkthrough V2",
- "version": "2026-10-11 rev 2: bottom trim on every wall, B4 mirrors placed, B4 Mirror Band named",
+ "version": "2026-10-11 rev 3: Wall 4 sections at the M4 size with pink section lines, M8 doors cut from the photo, door layers",
  "scale": {
   "px_per_inch": 10,
   "px_per_foot": 120,
@@ -17,16 +17,18 @@
   "height_in": 8.0,
   "px": 80,
   "text": "8 in",
-  "status": "PROVISIONAL, not taped: 8 in from Tripp's note on the 10-07 panorama. Other readings: 4 in taped on the Zone 4 hallway (M9 / C1) sheet; about 7 in read off the M7 photo. One constant (BASE) in index.html.",
+  "status": "Tripp's working value, 8 in (his note on the 10-07 panorama). No tape survey is planned: designs work to true measurements and ratios and an inch either way is fine. Other readings: 4 in on the Zone 4 hallway (M9 / C1) sheet; about 7 in off the M7 photo. One constant (BASE) in index.html.",
   "rule": "Every wall has a white bottom trim from the floor up to 80 px. It is not paintable and it is its own layer, laid over the wall photo and the design, so a photo that already shows the trim and one that does not end up the same. It breaks at every doorway (together with the door casing) and runs under windows. Anything that stands on the trim, like the B4 mirrors, starts at its top edge, 80 px up, never at the floor."
  },
  "layers": {
   "what": "Transparent PNG overlays at the exact canvas px, one per wall plus one per Wall 4 section. Stack them over a design to check it. Do not paint them into a design.",
   "trim": "layers/trim/<file id>.png, every wall and every Wall 4 section",
   "mirrors": "layers/mirrors/<file id>.png, Wall 4 (M4-B4) and the B4 sections only",
+  "doors": "layers/doors/<file id>.png, every wall with a door: each door and its casing cut out of the wall photo at canvas px, transparent elsewhere. kind 'door' entries are cut out of the wall in the 3D model; layers/doors/<file id>.png holds them cut from the wall photo",
+  "sections": "layers/sections/<file id>.png, Wall 4 and each of its sections: the pink dotted section lines and SECTION n tags",
   "file_id": "the wall or section id with + written as - (M4+B4 becomes M4-B4). B2's trim layer is cut to the B2 wall-face canvas.",
   "built_by": "tools/make_layers.py, from this spec. Never hand-edit; rerun it after make_spec.py.",
-  "stack_order": "wall photo, then design, then trim and mirrors on top"
+  "stack_order": "wall photo, then design, then doors, trim and mirrors, then the pink section guides on top"
  },
  "orientation": "Left and right are as seen standing in the room facing the wall. The band walks B2 > B3 > M4 > B4 > M7 > M8; the canvases join end to end in that order.",
  "vocabulary": "Every wall has three names that mean the same thing: the wall number (Wall 4), the section (Wall 4 Section 2) and the alias id (B4-1). Accept any; answer with all three. Write 'Section', never the section symbol.",
@@ -65,6 +67,8 @@
    "keepouts": [
     {
      "what": "doorway",
+     "kind": "door",
+     "casing_px": 40,
      "x_px": [
       1680,
       2055
@@ -92,7 +96,7 @@
       ]
      ],
      "layer": "layers/trim/Wall1.png",
-     "status": "PROVISIONAL, not taped: 8 in from Tripp's note on the 10-07 panorama. Other readings: 4 in taped on the Zone 4 hallway (M9 / C1) sheet; about 7 in read off the M7 photo. One constant (BASE) in index.html."
+     "status": "Tripp's working value, 8 in (his note on the 10-07 panorama). No tape survey is planned: designs work to true measurements and ratios and an inch either way is fine. Other readings: 4 in on the Zone 4 hallway (M9 / C1) sheet; about 7 in off the M7 photo. One constant (BASE) in index.html."
     }
    ]
   },
@@ -161,6 +165,8 @@
    "keepouts": [
     {
      "what": "double-door opening, 6 ft wide x 6 ft 7.5 in high",
+     "kind": "door",
+     "casing_px": 40,
      "x_px": [
       2180,
       2900
@@ -193,7 +199,7 @@
       ]
      ],
      "layer": "layers/trim/B2.png",
-     "status": "PROVISIONAL, not taped: 8 in from Tripp's note on the 10-07 panorama. Other readings: 4 in taped on the Zone 4 hallway (M9 / C1) sheet; about 7 in read off the M7 photo. One constant (BASE) in index.html.",
+     "status": "Tripp's working value, 8 in (his note on the 10-07 panorama). No tape survey is planned: designs work to true measurements and ratios and an inch either way is fine. Other readings: 4 in on the Zone 4 hallway (M9 / C1) sheet; about 7 in off the M7 photo. One constant (BASE) in index.html.",
      "note": "the trim layer is cut to the B2 wall-face canvas (the art/B2.png size), not the bulkhead"
     }
    ],
@@ -260,6 +266,8 @@
     },
     {
      "what": "Doors (glass)",
+     "kind": "door",
+     "casing_px": 40,
      "x_px": [
       3270,
       4190
@@ -301,7 +309,7 @@
       ]
      ],
      "layer": "layers/trim/B3.png",
-     "status": "PROVISIONAL, not taped: 8 in from Tripp's note on the 10-07 panorama. Other readings: 4 in taped on the Zone 4 hallway (M9 / C1) sheet; about 7 in read off the M7 photo. One constant (BASE) in index.html.",
+     "status": "Tripp's working value, 8 in (his note on the 10-07 panorama). No tape survey is planned: designs work to true measurements and ratios and an inch either way is fine. Other readings: 4 in on the Zone 4 hallway (M9 / C1) sheet; about 7 in off the M7 photo. One constant (BASE) in index.html.",
      "note": "runs under both windows; breaks only at the glass doors"
     }
    ],
@@ -372,7 +380,8 @@
      "art_file": null,
      "tex": "tex/M4.jpg",
      "layers": {
-      "trim": "layers/trim/M4.png"
+      "trim": "layers/trim/M4.png",
+      "sections": "layers/sections/M4.png"
      }
     },
     {
@@ -384,29 +393,30 @@
      ],
      "x_px": [
       5880,
-      11720
+      11760
      ],
-     "length_in": 584.0,
-     "length_text": "48 ft 8 in",
+     "length_in": 588,
+     "length_text": "49 ft",
      "height_in": 163.0,
      "height_text": "13 ft 7 in",
-     "status": "one third of the 146 ft B4 run; the split is a planning convenience, not a feature of the wall",
+     "status": "same width and height as M4 (Tripp 10-11), so the M4 mural is never cut and every section shares one canvas",
      "canvas": {
       "px": [
-       5840,
+       5880,
        1630
       ],
-      "ratio": 3.583,
-      "ratio_text": "3.583 : 1"
+      "ratio": 3.607,
+      "ratio_text": "3.607 : 1"
      },
      "art_file": null,
      "mirrors_x_px_in_section": [
       1080,
-      5840
+      5880
      ],
      "layers": {
       "trim": "layers/trim/B4-1.png",
-      "mirrors": "layers/mirrors/B4-1.png"
+      "mirrors": "layers/mirrors/B4-1.png",
+      "sections": "layers/sections/B4-1.png"
      }
     },
     {
@@ -417,30 +427,31 @@
       "B4 Mirror Band Section 2"
      ],
      "x_px": [
-      11720,
-      17560
+      11760,
+      17640
      ],
-     "length_in": 584.0,
-     "length_text": "48 ft 8 in",
+     "length_in": 588,
+     "length_text": "49 ft",
      "height_in": 163.0,
      "height_text": "13 ft 7 in",
-     "status": "one third of the 146 ft B4 run; the split is a planning convenience, not a feature of the wall",
+     "status": "same width and height as M4 (Tripp 10-11), so the M4 mural is never cut and every section shares one canvas",
      "canvas": {
       "px": [
-       5840,
+       5880,
        1630
       ],
-      "ratio": 3.583,
-      "ratio_text": "3.583 : 1"
+      "ratio": 3.607,
+      "ratio_text": "3.607 : 1"
      },
      "art_file": null,
      "mirrors_x_px_in_section": [
       0,
-      5840
+      5880
      ],
      "layers": {
       "trim": "layers/trim/B4-2.png",
-      "mirrors": "layers/mirrors/B4-2.png"
+      "mirrors": "layers/mirrors/B4-2.png",
+      "sections": "layers/sections/B4-2.png"
      }
     },
     {
@@ -451,34 +462,49 @@
       "B4 Mirror Band Section 3"
      ],
      "x_px": [
-      17560,
-      23400
+      17640,
+      23520
      ],
-     "length_in": 584.0,
-     "length_text": "48 ft 8 in",
+     "length_in": 588,
+     "length_text": "49 ft",
      "height_in": 163.0,
      "height_text": "13 ft 7 in",
-     "status": "one third of the 146 ft B4 run; the split is a planning convenience, not a feature of the wall",
+     "status": "same width and height as M4 (Tripp 10-11), so the M4 mural is never cut and every section shares one canvas",
      "canvas": {
       "px": [
-       5840,
+       5880,
        1630
       ],
-      "ratio": 3.583,
-      "ratio_text": "3.583 : 1"
+      "ratio": 3.607,
+      "ratio_text": "3.607 : 1"
      },
      "art_file": null,
      "mirrors_x_px_in_section": [
       0,
-      2540
+      2460
      ],
      "layers": {
       "trim": "layers/trim/B4-3.png",
-      "mirrors": "layers/mirrors/B4-3.png"
-     }
+      "mirrors": "layers/mirrors/B4-3.png",
+      "sections": "layers/sections/B4-3.png"
+     },
+     "past_corner_x_px_in_section": [
+      5760,
+      5880
+     ],
+     "note": "the wall reaches the M7 corner 48 ft into this section; the last 1 ft (120 px) of the canvas is past the corner and is not wall. Keep it empty or let it bleed."
     }
    ],
-   "section_naming_status": "CONFIRMED by Tripp 2026-10-11: the band right of M4 is B4, called the B4 Mirror Band. B5 is the band on the box face over M6 and is a different wall. Sections B4-1, B4-2, B4-3 stand.",
+   "section_naming_status": "CONFIRMED by Tripp 2026-10-11: the band right of M4 is B4, called the B4 Mirror Band. B5 is the band on the box face over M6 and is a different wall. Sections (Tripp 10-11): every section is the M4 size, 49 ft x 13 ft 7 in; Section 1 = M4, Sections 2 to 4 = B4-1, B4-2, B4-3. Pink dotted lines and tags mark them on the wall.",
+   "section_lines": {
+    "x_px": [
+     5880,
+     11760,
+     17640
+    ],
+    "layer": "layers/sections/M4-B4.png",
+    "look": "thin bright pink dotted vertical lines at each split, a small pink SECTION n tag at the top right of each section"
+   },
    "whole_B4": {
     "id": "B4",
     "name": "B4 Mirror Band",
@@ -504,7 +530,8 @@
    },
    "layers": {
     "trim": "layers/trim/M4-B4.png",
-    "mirrors": "layers/mirrors/M4-B4.png"
+    "mirrors": "layers/mirrors/M4-B4.png",
+    "sections": "layers/sections/M4-B4.png"
    },
    "keepouts": [
     {
@@ -528,7 +555,7 @@
       20400
      ],
      "layer": "layers/mirrors/M4-B4.png",
-     "status": "PROVISIONAL, not taped. 8 ft tall (Tripp 10-07), standing on the TOP EDGE of the bottom trim, not on the floor. Start about 8 to 10 ft past the end of M4 and stop about 25 to 30 ft before the M7 corner (Tripp 10-11); the model uses the middle of each range, 9 ft and 27 ft 6 in.",
+     "status": "Tripp's working values. 8 ft tall (Tripp 10-07), standing on the TOP EDGE of the bottom trim, not on the floor. Start about 8 to 10 ft past the end of M4 and stop about 25 to 30 ft before the M7 corner (Tripp 10-11); the model uses the middle of each range, 9 ft and 27 ft 6 in. Keep focal elements a foot or so clear of the mirror ends.",
      "band_above": "From the mirror tops (8 ft 8 in up) to the ceiling is about 4 ft 11 in; if the field sheet's 8 in crown is real, the paintable band is about 4 ft 3 in."
     },
     {
@@ -544,7 +571,7 @@
       ]
      ],
      "layer": "layers/trim/M4-B4.png",
-     "status": "PROVISIONAL, not taped: 8 in from Tripp's note on the 10-07 panorama. Other readings: 4 in taped on the Zone 4 hallway (M9 / C1) sheet; about 7 in read off the M7 photo. One constant (BASE) in index.html.",
+     "status": "Tripp's working value, 8 in (his note on the 10-07 panorama). No tape survey is planned: designs work to true measurements and ratios and an inch either way is fine. Other readings: 4 in on the Zone 4 hallway (M9 / C1) sheet; about 7 in off the M7 photo. One constant (BASE) in index.html.",
      "note": "runs the whole 195 ft; the mirrors stand on it"
     },
     {
@@ -592,6 +619,8 @@
    "keepouts": [
     {
      "what": "door 10 ft x 9 ft, hard against the right end, no trim",
+     "kind": "door",
+     "casing_px": 0,
      "x_px": [
       5840,
       7040
@@ -615,7 +644,7 @@
       ]
      ],
      "layer": "layers/trim/M7.png",
-     "status": "PROVISIONAL, not taped: 8 in from Tripp's note on the 10-07 panorama. Other readings: 4 in taped on the Zone 4 hallway (M9 / C1) sheet; about 7 in read off the M7 photo. One constant (BASE) in index.html."
+     "status": "Tripp's working value, 8 in (his note on the 10-07 panorama). No tape survey is planned: designs work to true measurements and ratios and an inch either way is fine. Other readings: 4 in on the Zone 4 hallway (M9 / C1) sheet; about 7 in off the M7 photo. One constant (BASE) in index.html."
     }
    ]
   },
@@ -645,6 +674,8 @@
    },
    "art_file": "art/M8.png (web copy 8192 x 1547)",
    "tex": "tex/M8.jpg",
+   "photo_bottom_pad_px": 50,
+   "photo_note": "the bottom of tex/M8.jpg is white padding, not floor; the trim layer covers it on the wall, and the door layer starts each doorway image above it",
    "left": {
     "neighbour": "M7",
     "corner": "inside corner"
@@ -655,7 +686,63 @@
    },
    "keepouts": [
     {
-     "what": "break room and service doors and windows exist; positions come from the photo and are NOT measured; nothing is cut out"
+     "what": "door 1, 28 x 80 in",
+     "kind": "door",
+     "casing_px": 40,
+     "x_px": [
+      4360,
+      4640
+     ],
+     "from_floor_px": [
+      0,
+      800
+     ],
+     "status": "read off the M8 photo, which is stretched to the V4 width; close enough per Tripp"
+    },
+    {
+     "what": "door 2, 29 x 81.5 in",
+     "kind": "door",
+     "casing_px": 40,
+     "x_px": [
+      6120,
+      6410
+     ],
+     "from_floor_px": [
+      0,
+      815
+     ],
+     "status": "read off the M8 photo, which is stretched to the V4 width; close enough per Tripp"
+    },
+    {
+     "what": "door 3, 27 x 81.5 in",
+     "kind": "door",
+     "casing_px": 40,
+     "x_px": [
+      6500,
+      6770
+     ],
+     "from_floor_px": [
+      0,
+      815
+     ],
+     "status": "read off the M8 photo, which is stretched to the V4 width; close enough per Tripp"
+    },
+    {
+     "what": "opening at the right end, 60 x 96 in",
+     "kind": "door",
+     "casing_px": 40,
+     "x_px": [
+      7960,
+      8560
+     ],
+     "from_floor_px": [
+      0,
+      960
+     ],
+     "status": "read off the M8 photo, which is stretched to the V4 width; close enough per Tripp"
+    },
+    {
+     "what": "two windows, not cut out of the model; keep focal elements off them (see tex/M8.jpg)"
     },
     {
      "what": "bottom trim, white, 8 in high, not paintable. Its own layer over the photo and the design.",
@@ -666,12 +753,27 @@
      "runs_x_px": [
       [
        0,
+       4320
+      ],
+      [
+       4680,
+       6080
+      ],
+      [
+       6450,
+       6460
+      ],
+      [
+       6810,
+       7920
+      ],
+      [
+       8600,
        8630
       ]
      ],
      "layer": "layers/trim/M8.png",
-     "status": "PROVISIONAL, not taped: 8 in from Tripp's note on the 10-07 panorama. Other readings: 4 in taped on the Zone 4 hallway (M9 / C1) sheet; about 7 in read off the M7 photo. One constant (BASE) in index.html.",
-     "note": "runs the full length for now: the M8 door gaps are not cut because the doors are not measured"
+     "status": "Tripp's working value, 8 in (his note on the 10-07 panorama). No tape survey is planned: designs work to true measurements and ratios and an inch either way is fine. Other readings: 4 in on the Zone 4 hallway (M9 / C1) sheet; about 7 in off the M7 photo. One constant (BASE) in index.html."
     }
    ]
   },
@@ -707,7 +809,7 @@
       ]
      ],
      "layer": "layers/trim/East.png",
-     "status": "PROVISIONAL, not taped: 8 in from Tripp's note on the 10-07 panorama. Other readings: 4 in taped on the Zone 4 hallway (M9 / C1) sheet; about 7 in read off the M7 photo. One constant (BASE) in index.html."
+     "status": "Tripp's working value, 8 in (his note on the 10-07 panorama). No tape survey is planned: designs work to true measurements and ratios and an inch either way is fine. Other readings: 4 in on the Zone 4 hallway (M9 / C1) sheet; about 7 in off the M7 photo. One constant (BASE) in index.html."
     }
    ]
   },
@@ -743,7 +845,7 @@
       ]
      ],
      "layer": "layers/trim/BoxEnd.png",
-     "status": "PROVISIONAL, not taped: 8 in from Tripp's note on the 10-07 panorama. Other readings: 4 in taped on the Zone 4 hallway (M9 / C1) sheet; about 7 in read off the M7 photo. One constant (BASE) in index.html."
+     "status": "Tripp's working value, 8 in (his note on the 10-07 panorama). No tape survey is planned: designs work to true measurements and ratios and an inch either way is fine. Other readings: 4 in on the Zone 4 hallway (M9 / C1) sheet; about 7 in off the M7 photo. One constant (BASE) in index.html."
     }
    ]
   },
@@ -785,7 +887,7 @@
       ]
      ],
      "layer": "layers/trim/M6-B5.png",
-     "status": "PROVISIONAL, not taped: 8 in from Tripp's note on the 10-07 panorama. Other readings: 4 in taped on the Zone 4 hallway (M9 / C1) sheet; about 7 in read off the M7 photo. One constant (BASE) in index.html.",
+     "status": "Tripp's working value, 8 in (his note on the 10-07 panorama). No tape survey is planned: designs work to true measurements and ratios and an inch either way is fine. Other readings: 4 in on the Zone 4 hallway (M9 / C1) sheet; about 7 in off the M7 photo. One constant (BASE) in index.html.",
      "note": "runs the full length for now: the M6 door is not placed, so its trim gap is not cut"
     }
    ]
@@ -812,11 +914,10 @@
   "Do not rename walls or sections; use the names here and raise naming questions with Tripp."
  ],
  "open_questions": [
-  "Bottom trim height (8 in from Tripp's panorama note; not taped).",
   "Band height and its top and bottom edges above the floor on each wall.",
   "B2 casing width (sets where the band starts beside the doors).",
-  "Mirror start and stop on B4 (Tripp's estimate: 8 to 10 ft past M4, 25 to 30 ft before the M7 corner; not taped).",
-  "M7 and M8 door details; a wall photo for the B4 run.",
+  "Mirror start and stop on B4 are Tripp's estimates (8 to 10 ft past M4, 25 to 30 ft before the M7 corner); the model uses the midpoints.",
+  "M6 door position on the box face (no M6 photo in the walkthrough yet); a wall photo for the B4 run.",
   "Females partition dimensions; the east stretch; B3 to column 1 distance."
  ]
 }

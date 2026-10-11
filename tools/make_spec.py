@@ -22,12 +22,14 @@ for stmt in re.findall(r"const ([^;]+);", blk):
 g = env
 need = ["W","D","WALL1","L","H","STEP","BH_UNDER","BH_PROJ","B2_DOOR_W","B2_DOOR_H","B2_DOOR_RIGHT",
         "M4W","BAND","XMAX","M7W","M8W","M6W","EYE","rEnd","rStart","dEnd","dStart","lEnd","lStart","SILL","COL_D","COL_FAR",
-        "TRIM","BASE","MIR_H","MIR_IN","MIR_OUT"]
+        "TRIM","BASE","MIR_H","MIR_IN","MIR_OUT","SEC"]
 missing = [k for k in need if k not in g]
 assert not missing, f"could not parse {missing} from index.html"
 w1 = re.search(r"const W1_D0=([\d.]+), W1_D1=ft\(([\d.]+),([\d.]+)\), W1_DH=ft\(([\d.]+),([\d.]+)\)", html)
 W1_D0, W1_D1, W1_DH = float(w1[1]), ft(float(w1[2]), float(w1[3])), ft(float(w1[4]), float(w1[5]))
 M8Y = g["D"] - g["M7W"]; BX = g["W"] + g["M6W"] + 8; BOXN = g["XMAX"] - g["M8W"]
+M8_DOORS = json.loads(re.search(r"const M8_DOORS=(\[\[.*?\]\]);", html)[1])   # inches: left, right, top
+DOOR_NOTE = "kind 'door' entries are cut out of the wall in the 3D model; layers/doors/<file id>.png holds them cut from the wall photo"
 
 # --- helpers -----------------------------------------------------------------------
 PX = 10
@@ -49,8 +51,9 @@ walls = []
 
 # --- bottom trim: its own layer on every wall, broken at doorways (with the casing), running under windows ---------
 BASE, CAS = g["BASE"], g["TRIM"]
-BASE_STATUS = ("PROVISIONAL, not taped: 8 in from Tripp's note on the 10-07 panorama. Other readings: 4 in taped on the "
-               "Zone 4 hallway (M9 / C1) sheet; about 7 in read off the M7 photo. One constant (BASE) in index.html.")
+BASE_STATUS = ("Tripp's working value, 8 in (his note on the 10-07 panorama). No tape survey is planned: designs work to true measurements "
+               "and ratios and an inch either way is fine. Other readings: 4 in on the Zone 4 hallway (M9 / C1) sheet; about 7 in off the M7 photo. "
+               "One constant (BASE) in index.html.")
 fid = lambda wid: wid.replace("+", "-")                   # file id: + becomes -
 def base_trim(wid, wf, gaps=(), note=None):
     runs, a = [], 0.0
@@ -66,7 +69,7 @@ def base_trim(wid, wf, gaps=(), note=None):
 walls.append({"wall": 1, "id": "Wall1", "aliases": ["B2.5", "Box side wall"], "name": "Box side wall, left of B2. No band, no art.", "art": False,
   **dims(g["WALL1"], L, "measured 19 ft 2 in; the same figure also appears as the column-to-M4 gap, one laser shot of Wall 1 settles it"),
   "tex": "tex/Wall1.jpg",
-  "keepouts": [{"what": "doorway", "x_px": [px(W1_D0), px(W1_D1)], "from_floor_px": [0, px(W1_DH)],
+  "keepouts": [{"what": "doorway", "kind": "door", "casing_px": 40, "x_px": [px(W1_D0), px(W1_D1)], "from_floor_px": [0, px(W1_DH)],
                 "status": "placed from the photo, not measured; x is from the wall's left end as you face it (the box end)"},
                base_trim("Wall1", g["WALL1"], [(W1_D0 - CAS, W1_D1 + CAS)])]})
 
@@ -79,7 +82,7 @@ walls.append({"wall": 2, "id": "B2", "aliases": ["Entrance band", "Wall 2"], "na
      "ratio": round(W / (L - g["BH_UNDER"]), 3), "from_floor_px": [px(g["BH_UNDER"]), px(L)], "art_file": "art/B2_bulkhead.png", "tex": "tex/B2_bulkhead.jpg"}],
   "left": {"neighbour": "Wall1", "corner": "inside corner"}, "right": {"neighbour": "B3", "corner": "inside corner"},
   "keepouts": [
-    {"what": f"double-door opening, {ftin(g['B2_DOOR_W'])} wide x {ftin(g['B2_DOOR_H'])} high", "x_px": [px(b2s0), px(b2s0 + g["B2_DOOR_W"])],
+    {"what": f"double-door opening, {ftin(g['B2_DOOR_W'])} wide x {ftin(g['B2_DOOR_H'])} high", "kind": "door", "casing_px": 40, "x_px": [px(b2s0), px(b2s0 + g["B2_DOOR_W"])],
      "from_floor_px": [0, px(g["B2_DOOR_H"])], "status": "position measured from the B3 corner (14 ft 11 in); the first canvas spec said x 1820 to 2420 and was wrong"},
     {"what": "white casing around the opening, not paintable", "width_px": 40, "status": "4 in, provisional until scaled from the photo"},
     base_trim("B2", W, [(b2s0 - CAS, b2s0 + g["B2_DOOR_W"] + CAS)], "the trim layer is cut to the B2 wall-face canvas (the art/B2.png size), not the bulkhead")],
@@ -93,38 +96,45 @@ walls.append({"wall": 3, "id": "B3", "aliases": ["Cardio window wall", "Wall 3"]
   "keepouts": [
     {"what": "low-ceiling stretch: the wall stops at the 12 ft 11 in ceiling; the strip above it is not wall", "x_px": [0, px(g["STEP"])], "from_floor_px": [px(L), px(H)]},
     {"what": "Window 1", "x_px": [px(g["lStart"]), px(g["lEnd"])], "from_floor_px": [px(g["SILL"]), px(g["SILL"] + ft(7, 7.5))], "status": "7 ft wide measured; height about 7 ft 7 1/2 in"},
-    {"what": "Doors (glass)", "x_px": [px(g["dStart"]), px(g["dEnd"])], "from_floor_px": [0, px(9)]},
+    {"what": "Doors (glass)", "kind": "door", "casing_px": 40, "x_px": [px(g["dStart"]), px(g["dEnd"])], "from_floor_px": [0, px(9)]},
     {"what": "Window 2", "x_px": [px(g["rStart"]), px(g["rEnd"])], "from_floor_px": [px(g["SILL"]), px(g["SILL"] + ft(7, 8))], "status": "sill provisional"},
     {"what": "white trim 40 px (4 in) around every opening, not paintable"},
     base_trim("B3", D, [(g["dStart"] - CAS, g["dEnd"] + CAS)], "runs under both windows; breaks only at the glass doors")],
   "notes": ["Openings are placed by working back from the M4 corner."]})
 
-M4W, BAND, XMAX = g["M4W"], g["BAND"], g["XMAX"]; sec = BAND / 3
+M4W, BAND, XMAX, sec = g["M4W"], g["BAND"], g["XMAX"], g["SEC"]
+NSEC = -(-round(XMAX * 12) // round(sec * 12))            # sections needed to cover the wall (ceil)
 MIR_H, MIR0, MIR1 = g["MIR_H"], M4W + g["MIR_IN"], XMAX - g["MIR_OUT"]   # mirrors, in Wall 4 feet from the B3 corner
-MIR_STATUS = ("PROVISIONAL, not taped. 8 ft tall (Tripp 10-07), standing on the TOP EDGE of the bottom trim, not on the floor. "
+MIR_STATUS = ("Tripp's working values. 8 ft tall (Tripp 10-07), standing on the TOP EDGE of the bottom trim, not on the floor. "
               "Start about 8 to 10 ft past the end of M4 and stop about 25 to 30 ft before the M7 corner (Tripp 10-11); "
-              f"the model uses the middle of each range, {ftin(g['MIR_IN'])} and {ftin(g['MIR_OUT'])}.")
+              f"the model uses the middle of each range, {ftin(g['MIR_IN'])} and {ftin(g['MIR_OUT'])}. Keep focal elements a foot or so clear of the mirror ends.")
 def clip(a, b, s0, s1):                                   # a range in Wall 4 feet, clipped to a section, in section px
     lo, hi = max(a, s0), min(b, s1)
     return [px(lo - s0), px(hi - s0)] if hi > lo else None
 sections = [{"section": 1, "id": "M4", "aliases": ["Wall 4 Section 1"], "what": "the existing painted M4 mural. DO NOT regenerate it.",
              "x_px": [0, px(M4W)], **dims(M4W, H, "49 ft per Tripp Oct 2026"), "art_file": None, "tex": "tex/M4.jpg",
-             "layers": {"trim": "layers/trim/M4.png"}}]
-for i in range(3):
-    s0, s1 = M4W + i * sec, M4W + (i + 1) * sec
-    s = {"section": i + 2, "id": f"B4-{i+1}", "aliases": [f"Wall 4 Section {i+2}", f"B4 Mirror Band Section {i+1}"], "x_px": [px(s0), px(s1)],
-         **dims(sec, H, "one third of the 146 ft B4 run; the split is a planning convenience, not a feature of the wall"), "art_file": None,
+             "layers": {"trim": "layers/trim/M4.png", "sections": "layers/sections/M4.png"}}]
+for i in range(1, NSEC):
+    s0, s1 = i * sec, (i + 1) * sec
+    s = {"section": i + 1, "id": f"B4-{i}", "aliases": [f"Wall 4 Section {i+1}", f"B4 Mirror Band Section {i}"], "x_px": [px(s0), px(s1)],
+         **dims(sec, H, "same width and height as M4 (Tripp 10-11), so the M4 mural is never cut and every section shares one canvas"), "art_file": None,
          "mirrors_x_px_in_section": clip(MIR0, MIR1, s0, s1),
-         "layers": {"trim": f"layers/trim/B4-{i+1}.png", "mirrors": f"layers/mirrors/B4-{i+1}.png"}}
+         "layers": {"trim": f"layers/trim/B4-{i}.png", "mirrors": f"layers/mirrors/B4-{i}.png", "sections": f"layers/sections/B4-{i}.png"}}
+    if s1 > XMAX:
+        s["past_corner_x_px_in_section"] = [px(XMAX - s0), px(sec)]
+        s["note"] = (f"the wall reaches the M7 corner {ftin(XMAX - s0)} into this section; the last {ftin(s1 - XMAX)} "
+                     f"({px(s1 - XMAX)} px) of the canvas is past the corner and is not wall. Keep it empty or let it bleed.")
     sections.append(s)
 walls.append({"wall": 4, "id": "M4+B4", "aliases": ["M4", "B4", "B4 Mirror Band", "Mirror Band", "Forward mirror wall", "Wall 4", "the 195 ft wall"],
   "name": "Mirror wall: the M4 mural, then the B4 Mirror Band, the band above the mirrors. One continuous wall, one tape 0 to 195 ft.", "art": True,
   **dims(M4W + BAND, H, "49 ft + 146 ft per Tripp Oct 2026 (V4 said 36 + 159); field sheet 195 ft 0 1/2 in x 13 ft 8 in with an 8 in crown, crown not modelled"),
   "left": {"neighbour": "B3", "corner": "inside corner"}, "right": {"neighbour": "M7", "corner": "inside corner"},
   "sections": sections,
-  "section_naming_status": "CONFIRMED by Tripp 2026-10-11: the band right of M4 is B4, called the B4 Mirror Band. B5 is the band on the box face over M6 and is a different wall. Sections B4-1, B4-2, B4-3 stand.",
+  "section_naming_status": "CONFIRMED by Tripp 2026-10-11: the band right of M4 is B4, called the B4 Mirror Band. B5 is the band on the box face over M6 and is a different wall. Sections (Tripp 10-11): every section is the M4 size, 49 ft x 13 ft 7 in; Section 1 = M4, Sections 2 to 4 = B4-1, B4-2, B4-3. Pink dotted lines and tags mark them on the wall.",
+  "section_lines": {"x_px": [px(k * sec) for k in range(1, NSEC)], "layer": "layers/sections/M4-B4.png",
+                    "look": "thin bright pink dotted vertical lines at each split, a small pink SECTION n tag at the top right of each section"},
   "whole_B4": {"id": "B4", "name": "B4 Mirror Band", "x_px": [px(M4W), px(XMAX)], **dims(BAND, H, "146 ft per Tripp Oct 2026, taped 146 ft 0 1/2 in"), "art_file": None, "tex": None},
-  "layers": {"trim": "layers/trim/M4-B4.png", "mirrors": "layers/mirrors/M4-B4.png"},
+  "layers": {"trim": "layers/trim/M4-B4.png", "mirrors": "layers/mirrors/M4-B4.png", "sections": "layers/sections/M4-B4.png"},
   "keepouts": [
     {"what": "mirrors under the B4 Mirror Band, not paintable. Their own layer over the design.", "x_px": [px(MIR0), px(MIR1)],
      "from_floor_px": [px(BASE), px(BASE + MIR_H)], "length_text": ftin(MIR1 - MIR0), "height_text": ftin(MIR_H),
@@ -140,16 +150,20 @@ M7W = g["M7W"]
 walls.append({"wall": 5, "id": "M7", "aliases": ["B7", "The Viper", "Separator wall", "Wall 5"], "name": "The Viper", "art": True,
   **dims(M7W, H, "width from V4"), "art_file": "art/M7.png", "tex": "tex/M7.jpg",
   "left": {"neighbour": "B4", "corner": "inside corner"}, "right": {"neighbour": "M8", "corner": "inside corner"},
-  "keepouts": [{"what": "door 10 ft x 9 ft, hard against the right end, no trim", "x_px": [px(M7W - 10), px(M7W)], "from_floor_px": [0, px(9)], "status": "per Tripp 2026-10-11"},
+  "keepouts": [{"what": "door 10 ft x 9 ft, hard against the right end, no trim", "kind": "door", "casing_px": 0, "x_px": [px(M7W - 10), px(M7W)], "from_floor_px": [0, px(9)], "status": "per Tripp 2026-10-11"},
                base_trim("M7", M7W, [(M7W - 10, M7W)])]})
 
 M8W = g["M8W"]
 walls.append({"wall": 6, "id": "M8", "aliases": ["B6", "The Tiger", "Breakroom wall", "Wall 6"], "name": "The Tiger", "art": True,
   **dims(M8W, H, f"width from V4, close enough per Tripp; the wall plane sits in line with the end of M7, about {ftin(M8Y)} in from the B2 line, provisional"),
-  "art_file": "art/M8.png (web copy 8192 x 1547)", "tex": "tex/M8.jpg",
+  "art_file": "art/M8.png (web copy 8192 x 1547)", "tex": "tex/M8.jpg", "photo_bottom_pad_px": px(g["M8_PHOTO_PAD"]),
+  "photo_note": "the bottom of tex/M8.jpg is white padding, not floor; the trim layer covers it on the wall, and the door layer starts each doorway image above it",
   "left": {"neighbour": "M7", "corner": "inside corner"}, "right": {"neighbour": "East", "corner": "flat continuation, unmeasured"},
-  "keepouts": [{"what": "break room and service doors and windows exist; positions come from the photo and are NOT measured; nothing is cut out"},
-               base_trim("M8", M8W, (), "runs the full length for now: the M8 door gaps are not cut because the doors are not measured")]})
+  "keepouts": [*[{"what": ("opening at the right end" if i == 3 else f"door {i+1}") + f", {round(d[1]-d[0])} x {d[2]:g} in",
+                  "kind": "door", "casing_px": 40, "x_px": [d[0] * PX, d[1] * PX], "from_floor_px": [0, round(d[2] * PX)],
+                  "status": "read off the M8 photo, which is stretched to the V4 width; close enough per Tripp"} for i, d in enumerate(M8_DOORS)],
+               {"what": "two windows, not cut out of the model; keep focal elements off them (see tex/M8.jpg)"},
+               base_trim("M8", M8W, [(d[0] / 12 - CAS, d[1] / 12 + CAS) for d in M8_DOORS])]})
 
 walls.append({"wall": 7, "id": "East", "name": "Unnamed stretch between the Tiger and the box", "art": False,
   **dims(BOXN - BX, H, "NOT MEASURED, placeholder"), "keepouts": [base_trim("East", BOXN - BX)]})
@@ -162,7 +176,7 @@ walls.append({"wall": 9, "id": "M6+B5", "aliases": ["M6", "B5", "Box face", "Wal
 spec = {
   "project": "Palmetto Pump House, Phase 2, Zone 3 band and mural walls",
   "generated_from": "index.html measurement constants, PPH Zone 3 Walkthrough V2",
-  "version": "2026-10-11 rev 2: bottom trim on every wall, B4 mirrors placed, B4 Mirror Band named",
+  "version": "2026-10-11 rev 3: Wall 4 sections at the M4 size with pink section lines, M8 doors cut from the photo, door layers",
   "scale": {"px_per_inch": PX, "px_per_foot": 12 * PX, "ppi": 120,
             "note": "10 px = 1 in. Every canvas and keep-out is in these px, measured from the LEFT edge as you face the wall and UP from the floor. Photoshop y from top = canvas height minus y from floor."},
   "eye_level": {"in": inch(g["EYE"]), "px_from_floor": px(g["EYE"]), "text": ftin(g["EYE"])},
@@ -174,9 +188,11 @@ spec = {
   "layers": {"what": "Transparent PNG overlays at the exact canvas px, one per wall plus one per Wall 4 section. Stack them over a design to check it. Do not paint them into a design.",
     "trim": "layers/trim/<file id>.png, every wall and every Wall 4 section",
     "mirrors": "layers/mirrors/<file id>.png, Wall 4 (M4-B4) and the B4 sections only",
+    "doors": "layers/doors/<file id>.png, every wall with a door: each door and its casing cut out of the wall photo at canvas px, transparent elsewhere. " + DOOR_NOTE,
+    "sections": "layers/sections/<file id>.png, Wall 4 and each of its sections: the pink dotted section lines and SECTION n tags",
     "file_id": "the wall or section id with + written as - (M4+B4 becomes M4-B4). B2's trim layer is cut to the B2 wall-face canvas.",
     "built_by": "tools/make_layers.py, from this spec. Never hand-edit; rerun it after make_spec.py.",
-    "stack_order": "wall photo, then design, then trim and mirrors on top"},
+    "stack_order": "wall photo, then design, then doors, trim and mirrors, then the pink section guides on top"},
   "orientation": "Left and right are as seen standing in the room facing the wall. The band walks B2 > B3 > M4 > B4 > M7 > M8; the canvases join end to end in that order.",
   "vocabulary": "Every wall has three names that mean the same thing: the wall number (Wall 4), the section (Wall 4 Section 2) and the alias id (B4-1). Accept any; answer with all three. Write 'Section', never the section symbol.",
   "live_site": LIVE, "repo": "https://github.com/TrippArt/PPH-PHASE-2-WALKTHROUGH",
@@ -199,11 +215,11 @@ spec = {
             "M4 and B4 are the same wall.",
             "Do not present provisional values as measured; carry each status string forward.",
             "Do not rename walls or sections; use the names here and raise naming questions with Tripp."],
-  "open_questions": ["Bottom trim height (8 in from Tripp's panorama note; not taped).",
+  "open_questions": [
                      "Band height and its top and bottom edges above the floor on each wall.",
                      "B2 casing width (sets where the band starts beside the doors).",
-                     "Mirror start and stop on B4 (Tripp's estimate: 8 to 10 ft past M4, 25 to 30 ft before the M7 corner; not taped).",
-                     "M7 and M8 door details; a wall photo for the B4 run.",
+                     "Mirror start and stop on B4 are Tripp's estimates (8 to 10 ft past M4, 25 to 30 ft before the M7 corner); the model uses the midpoints.",
+                     "M6 door position on the box face (no M6 photo in the walkthrough yet); a wall photo for the B4 run.",
                      "Females partition dimensions; the east stretch; B3 to column 1 distance."]}
 out = os.path.join(repo, "pph-zone3-spec.json")
 json.dump(spec, open(out, "w", encoding="utf-8", newline="\n"), indent=1, ensure_ascii=False)

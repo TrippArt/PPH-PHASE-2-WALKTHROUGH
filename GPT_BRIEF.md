@@ -36,11 +36,12 @@ Then wait for Tripp's go. This read-back is the whole point of the spec; it catc
 
 ## Bottom trim and mirrors (their own layers)
 
-- **Bottom trim:** every wall has a white bottom trim, 8 in high (80 px), not paintable. It stops at every doorway, together with the door casing, and runs under windows. **Provisional:** 8 in comes from Tripp's 7 October panorama note and is not taped.
-- **B4 mirrors:** 8 ft tall, standing on the **top edge of the trim**, not on the floor. That puts them 80 to 1040 px up. Along Wall 4 they run from 6960 to 20100 px (58 ft to 167 ft 6 in from the B3 corner), about 109 ft 6 in. **Provisional:** Tripp's estimate is a start 8 to 10 ft past M4 and a stop 25 to 30 ft before the M7 corner. The spec uses the middle of each range and carries both ranges. In the sections: B4-1 has mirrors from 1080 px to its right edge, B4-2 is mirrors all the way across, and B4-3 has mirrors from its left edge to 2540 px.
+- **Bottom trim:** every wall has a white bottom trim, 8 in high (80 px), not paintable. It stops at every doorway, together with the door casing, and runs under windows. 8 in is Tripp's working value (his 7 October panorama note). Designs work to true measurements and ratios; an inch either way is fine.
+- **B4 mirrors:** 8 ft tall, standing on the **top edge of the trim**, not on the floor. That puts them 80 to 1040 px up. Along Wall 4 they run from 6960 to 20100 px (58 ft to 167 ft 6 in from the B3 corner), about 109 ft 6 in. These are Tripp's working values: a start 8 to 10 ft past M4 and a stop 25 to 30 ft before the M7 corner. The spec uses the middle of each range and carries both ranges, so keep focal elements a foot or so clear of the mirror ends. In the sections: B4-1 has mirrors from 1080 px to its right edge, B4-2 is mirrors all the way across, and B4-3 has mirrors from its left edge to 2460 px.
 - Above the mirrors, the B4 Mirror Band has about 4 ft 11 in up to the ceiling (about 4 ft 3 in if the field sheet's 8 in crown is real).
-- **Layer files**, transparent PNGs at the exact canvas px: `layers/trim/<id>.png` for every wall and every Wall 4 section, and `layers/mirrors/<id>.png` for Wall 4 and B4-1/2/3. Write `+` as `-` in the file id (`M4-B4`). Fetch them at `https://trippart.github.io/PPH-PHASE-2-WALKTHROUGH/layers/...`.
-- The stacking order is wall photo, then design, then trim and mirrors on top. Lay the layers over your design to check it. Never paint the trim or the mirrors into a design.
+- **Layer files**, transparent PNGs at the exact canvas px: `layers/trim/<id>.png` for every wall and every Wall 4 section; `layers/mirrors/<id>.png` for Wall 4 and B4-1/2/3; `layers/doors/<id>.png`, each door and its casing cut out of the wall photo, for every wall with a door; `layers/sections/<id>.png`, the pink section lines and tags, for Wall 4 and each section. Write `+` as `-` in the file id (`M4-B4`). Fetch them at `https://trippart.github.io/PPH-PHASE-2-WALKTHROUGH/layers/...`.
+- **Doors:** every door is cut out of the wall in the 3D model and the trim breaks at it. On M8 the three doors and the 5 ft opening at the right end are placed where the photo shows them.
+- The stacking order is wall photo, then design, then doors, trim and mirrors, then the pink section guides on top. Lay the layers over your design to check it. Never paint the trim or the mirrors into a design.
 
 ## The walls (summary; the spec has the keep-outs)
 
@@ -51,11 +52,15 @@ Then wait for Tripp's go. This read-back is the whole point of the spec; it catc
 | 3 | B3 | 60 ft 7.5 in x 13 ft 7 in | 7275 x 1630 | 4.463 : 1 | length derived; 12 ft 11 in high for the first 16 ft 10 in |
 | 4 | M4+B4 | 195 ft x 13 ft 7 in | 23400 x 1630 | 14.356 : 1 | 49 + 146 per Tripp, Oct 2026 |
 | 4 Section 1 | M4 | 49 ft x 13 ft 7 in | 5880 x 1630 | 3.607 : 1 | existing mural, never regenerate |
-| 4 Sections 2 to 4 | B4-1, B4-2, B4-3 (the B4 Mirror Band) | 48 ft 8 in x 13 ft 7 in each | 5840 x 1630 | 3.583 : 1 | ids confirmed by Tripp 10-11; mirrors under it, ends provisional |
+| 4 Sections 2 to 4 | B4-1, B4-2, B4-3 (the B4 Mirror Band) | 49 ft x 13 ft 7 in each, the M4 size | 5880 x 1630 | 3.607 : 1 | Section 4 reaches the M7 corner at 5760 px; its last 120 px are past the corner |
 | 5 | M7 | 58 ft 8 in x 13 ft 7 in | 7040 x 1630 | 4.319 : 1 | width from V4 |
-| 6 | M8 | 71 ft 11 in x 13 ft 7 in | 8630 x 1630 | 5.294 : 1 | width from V4 |
+| 6 | M8 | 71 ft 11 in x 13 ft 7 in | 8630 x 1630 | 5.294 : 1 | width from V4; doors cut where the photo shows them |
 
 Walls 7 to 9 (East, BoxEnd, M6+B5) are in the spec for completeness and are not in play for designs yet. **B4 is the B4 Mirror Band. B5 is a different band, on the box face over M6.** Never call the mirror run B5.
+
+## Wall 4 sections
+
+Wall 4 is worked in sections the size of M4, so the M4 mural is never cut: every section is 49 ft x 13 ft 7 in, 5880 x 1630 px. Section 1 is M4 (0 to 5880 px). Section 2 is B4-1 (5880 to 11760), Section 3 is B4-2 (11760 to 17640), Section 4 is B4-3 (17640 to 23520). The wall ends at the M7 corner at 23400, so the last 120 px of Section 4's canvas are past the corner: keep them empty or let the design bleed. In the 3D walkthrough a thin pink dotted line marks each split and a small pink "SECTION n" tag sits at the top right of each section.
 
 ## Delivery rules
 
@@ -82,7 +87,7 @@ Walls 7 to 9 (East, BoxEnd, M6+B5) are in the spec for completeness and are not 
 
 ## Open questions (do not guess at these)
 
-The bottom trim height (8 in, not taped); band height and its top and bottom edges on each wall; B2 casing width; the taped mirror start and stop on B4; M7 and M8 door details (the M8 and M6 trim gaps are not cut yet); a wall photo for the B4 run.
+Band height and its top and bottom edges on each wall; B2 casing width; the M6 door position on the box face; a wall photo for the B4 run.
 
 ## Workflow
 
