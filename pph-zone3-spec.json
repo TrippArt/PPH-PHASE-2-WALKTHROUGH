@@ -1,0 +1,598 @@
+{
+ "project": "Palmetto Pump House, Phase 2, Zone 3 band and mural walls",
+ "generated_from": "index.html measurement constants, PPH Zone 3 Walkthrough V2",
+ "version": "2026-10-11",
+ "scale": {
+  "px_per_inch": 10,
+  "px_per_foot": 120,
+  "ppi": 120,
+  "note": "10 px = 1 in. Every canvas and keep-out is in these px, measured from the LEFT edge as you face the wall and UP from the floor. Photoshop y from top = canvas height minus y from floor."
+ },
+ "eye_level": {
+  "in": 69.0,
+  "px_from_floor": 690,
+  "text": "5 ft 9 in"
+ },
+ "orientation": "Left and right are as seen standing in the room facing the wall. The band walks B2 > B3 > M4 > B4 > M7 > M8; the canvases join end to end in that order.",
+ "vocabulary": "Every wall has three names that mean the same thing: the wall number (Wall 4), the section (Wall 4 Section 2) and the alias id (B4-1). Accept any; answer with all three. Write 'Section', never the section symbol.",
+ "live_site": "https://trippart.github.io/PPH-PHASE-2-WALKTHROUGH/",
+ "repo": "https://github.com/TrippArt/PPH-PHASE-2-WALKTHROUGH",
+ "file_urls": {
+  "pattern": "https://trippart.github.io/PPH-PHASE-2-WALKTHROUGH/<path>",
+  "example_photo": "https://trippart.github.io/PPH-PHASE-2-WALKTHROUGH/tex/B3.jpg",
+  "example_design": "https://trippart.github.io/PPH-PHASE-2-WALKTHROUGH/art/B3.png",
+  "page_source": "https://trippart.github.io/PPH-PHASE-2-WALKTHROUGH/index.html"
+ },
+ "walls": [
+  {
+   "wall": 1,
+   "id": "Wall1",
+   "aliases": [
+    "B2.5",
+    "Box side wall"
+   ],
+   "name": "Box side wall, left of B2. No band, no art.",
+   "art": false,
+   "length_in": 230.0,
+   "length_text": "19 ft 2 in",
+   "height_in": 155.0,
+   "height_text": "12 ft 11 in",
+   "status": "measured 19 ft 2 in; the same figure also appears as the column-to-M4 gap, one laser shot of Wall 1 settles it",
+   "canvas": {
+    "px": [
+     2300,
+     1550
+    ],
+    "ratio": 1.484,
+    "ratio_text": "1.484 : 1"
+   },
+   "tex": "tex/Wall1.jpg",
+   "keepouts": [
+    {
+     "what": "doorway",
+     "x_px": [
+      1680,
+      2055
+     ],
+     "from_floor_px": [
+      0,
+      810
+     ],
+     "status": "placed from the photo, not measured; x is from the wall's left end as you face it (the box end)"
+    }
+   ]
+  },
+  {
+   "wall": 2,
+   "id": "B2",
+   "aliases": [
+    "Entrance band",
+    "Wall 2"
+   ],
+   "name": "Entrance band wall plus its bulkhead",
+   "art": true,
+   "length_in": 469.0,
+   "length_text": "39 ft 1 in",
+   "height_in": 155.0,
+   "height_text": "12 ft 11 in",
+   "status": "measured",
+   "canvas": {
+    "px": [
+     4690,
+     1550
+    ],
+    "ratio": 3.026,
+    "ratio_text": "3.026 : 1"
+   },
+   "faces": [
+    {
+     "id": "B2",
+     "what": "wall face, floor to the bulkhead underside",
+     "px": [
+      4690,
+      1090
+     ],
+     "ratio": 4.303,
+     "from_floor_px": [
+      0,
+      1090
+     ],
+     "art_file": "art/B2.png",
+     "tex": "tex/B2.jpg"
+    },
+    {
+     "id": "B2_bulkhead",
+     "what": "bulkhead face above the wall face, stands 1 ft 5 in proud of the wall",
+     "px": [
+      4690,
+      460
+     ],
+     "ratio": 10.196,
+     "from_floor_px": [
+      1090,
+      1550
+     ],
+     "art_file": "art/B2_bulkhead.png",
+     "tex": "tex/B2_bulkhead.jpg"
+    }
+   ],
+   "left": {
+    "neighbour": "Wall1",
+    "corner": "inside corner"
+   },
+   "right": {
+    "neighbour": "B3",
+    "corner": "inside corner"
+   },
+   "keepouts": [
+    {
+     "what": "double-door opening, 6 ft wide x 6 ft 7.5 in high",
+     "x_px": [
+      2180,
+      2900
+     ],
+     "from_floor_px": [
+      0,
+      795
+     ],
+     "status": "position measured from the B3 corner (14 ft 11 in); the first canvas spec said x 1820 to 2420 and was wrong"
+    },
+    {
+     "what": "white casing around the opening, not paintable",
+     "width_px": 40,
+     "status": "4 in, provisional until scaled from the photo"
+    }
+   ],
+   "notes": [
+    "Horizontal split at 1090 px from the floor: wall face below, bulkhead face above.",
+    "A design may cross onto the bulkhead; deliver the two faces as two files that share the split line."
+   ]
+  },
+  {
+   "wall": 3,
+   "id": "B3",
+   "aliases": [
+    "Cardio window wall",
+    "Wall 3"
+   ],
+   "name": "Cardio window wall band",
+   "art": true,
+   "length_in": 727.53,
+   "length_text": "60 ft 7.5 in",
+   "height_in": 163.0,
+   "height_text": "13 ft 7 in",
+   "status": "length = the direct B2 to M4 reading (60 ft 7 1/2 in); the wall is 12 ft 11 in high for the first 16 ft 10 in from the B2 corner, then 13 ft 7 in",
+   "canvas": {
+    "px": [
+     7275,
+     1630
+    ],
+    "ratio": 4.463,
+    "ratio_text": "4.463 : 1"
+   },
+   "art_file": "art/B3.png",
+   "tex": "tex/B3.jpg",
+   "left": {
+    "neighbour": "B2",
+    "corner": "inside corner"
+   },
+   "right": {
+    "neighbour": "M4",
+    "corner": "inside corner"
+   },
+   "keepouts": [
+    {
+     "what": "low-ceiling stretch: the wall stops at the 12 ft 11 in ceiling; the strip above it is not wall",
+     "x_px": [
+      0,
+      2020
+     ],
+     "from_floor_px": [
+      1550,
+      1630
+     ]
+    },
+    {
+     "what": "Window 1",
+     "x_px": [
+      960,
+      1800
+     ],
+     "from_floor_px": [
+      170,
+      1085
+     ],
+     "status": "7 ft wide measured; height about 7 ft 7 1/2 in"
+    },
+    {
+     "what": "Doors (glass)",
+     "x_px": [
+      3270,
+      4190
+     ],
+     "from_floor_px": [
+      0,
+      1080
+     ]
+    },
+    {
+     "what": "Window 2",
+     "x_px": [
+      5655,
+      6575
+     ],
+     "from_floor_px": [
+      170,
+      1090
+     ],
+     "status": "sill provisional"
+    },
+    {
+     "what": "white trim 40 px (4 in) around every opening, not paintable"
+    }
+   ],
+   "notes": [
+    "Openings are placed by working back from the M4 corner."
+   ]
+  },
+  {
+   "wall": 4,
+   "id": "M4+B4",
+   "aliases": [
+    "M4",
+    "B4",
+    "Forward mirror wall",
+    "Wall 4",
+    "the 195 ft wall"
+   ],
+   "name": "Mirror wall: the M4 mural, then the B4 band run above the mirrors. One continuous wall, one tape 0 to 195 ft.",
+   "art": true,
+   "length_in": 2340,
+   "length_text": "195 ft",
+   "height_in": 163.0,
+   "height_text": "13 ft 7 in",
+   "status": "49 ft + 146 ft per Tripp Oct 2026 (V4 said 36 + 159); field sheet 195 ft 0 1/2 in x 13 ft 8 in with an 8 in crown, crown not modelled",
+   "canvas": {
+    "px": [
+     23400,
+     1630
+    ],
+    "ratio": 14.356,
+    "ratio_text": "14.356 : 1"
+   },
+   "left": {
+    "neighbour": "B3",
+    "corner": "inside corner"
+   },
+   "right": {
+    "neighbour": "M7",
+    "corner": "inside corner"
+   },
+   "sections": [
+    {
+     "section": 1,
+     "id": "M4",
+     "aliases": [
+      "Wall 4 Section 1"
+     ],
+     "what": "the existing painted M4 mural. DO NOT regenerate it.",
+     "x_px": [
+      0,
+      5880
+     ],
+     "length_in": 588,
+     "length_text": "49 ft",
+     "height_in": 163.0,
+     "height_text": "13 ft 7 in",
+     "status": "49 ft per Tripp Oct 2026",
+     "canvas": {
+      "px": [
+       5880,
+       1630
+      ],
+      "ratio": 3.607,
+      "ratio_text": "3.607 : 1"
+     },
+     "art_file": null,
+     "tex": "tex/M4.jpg"
+    },
+    {
+     "section": 2,
+     "id": "B4-1",
+     "aliases": [
+      "Wall 4 Section 2"
+     ],
+     "x_px": [
+      5880,
+      11720
+     ],
+     "length_in": 584.0,
+     "length_text": "48 ft 8 in",
+     "height_in": 163.0,
+     "height_text": "13 ft 7 in",
+     "status": "one third of the 146 ft B4 run; the split is a planning convenience, not a feature of the wall",
+     "canvas": {
+      "px": [
+       5840,
+       1630
+      ],
+      "ratio": 3.583,
+      "ratio_text": "3.583 : 1"
+     },
+     "art_file": null
+    },
+    {
+     "section": 3,
+     "id": "B4-2",
+     "aliases": [
+      "Wall 4 Section 3"
+     ],
+     "x_px": [
+      11720,
+      17560
+     ],
+     "length_in": 584.0,
+     "length_text": "48 ft 8 in",
+     "height_in": 163.0,
+     "height_text": "13 ft 7 in",
+     "status": "one third of the 146 ft B4 run; the split is a planning convenience, not a feature of the wall",
+     "canvas": {
+      "px": [
+       5840,
+       1630
+      ],
+      "ratio": 3.583,
+      "ratio_text": "3.583 : 1"
+     },
+     "art_file": null
+    },
+    {
+     "section": 4,
+     "id": "B4-3",
+     "aliases": [
+      "Wall 4 Section 4"
+     ],
+     "x_px": [
+      17560,
+      23400
+     ],
+     "length_in": 584.0,
+     "length_text": "48 ft 8 in",
+     "height_in": 163.0,
+     "height_text": "13 ft 7 in",
+     "status": "one third of the 146 ft B4 run; the split is a planning convenience, not a feature of the wall",
+     "canvas": {
+      "px": [
+       5840,
+       1630
+      ],
+      "ratio": 3.583,
+      "ratio_text": "3.583 : 1"
+     },
+     "art_file": null
+    }
+   ],
+   "section_naming_status": "PROVISIONAL. Tripp has called the run right of M4 'B5'; the walkthrough and V4 call it B4, and B5 is the band on the box face over M6. Section ids B4-1/2/3 wait on Tripp's call. Do not rename.",
+   "whole_B4": {
+    "id": "B4",
+    "x_px": [
+     5880,
+     23400
+    ],
+    "length_in": 1752,
+    "length_text": "146 ft",
+    "height_in": 163.0,
+    "height_text": "13 ft 7 in",
+    "status": "146 ft per Tripp Oct 2026, taped 146 ft 0 1/2 in",
+    "canvas": {
+     "px": [
+      17520,
+      1630
+     ],
+     "ratio": 10.748,
+     "ratio_text": "10.748 : 1"
+    },
+    "art_file": null,
+    "tex": null
+   },
+   "keepouts": [
+    {
+     "what": "mirrors under the B4 band",
+     "x_px": [
+      5880,
+      23400
+     ],
+     "from_floor_px": [
+      0,
+      960
+     ],
+     "status": "NOT in the model. 8 ft tall per Tripp 10-07 (estimate); start about 6 in off the floor and stop 10 to 15 ft before the Viper corner, untaped. The band strip above them is about 5 ft 7 in."
+    },
+    {
+     "what": "the M4 / B4 line at 5880 px (49 ft) and the section lines are flat continuations, not corners"
+    },
+    {
+     "what": "the M4 photo on the page is laid on unstretched and runs about 1 ft 6 in past the 49 ft mark onto B4 (foliage and blue wall)"
+    }
+   ]
+  },
+  {
+   "wall": 5,
+   "id": "M7",
+   "aliases": [
+    "B7",
+    "The Viper",
+    "Separator wall",
+    "Wall 5"
+   ],
+   "name": "The Viper",
+   "art": true,
+   "length_in": 704.0,
+   "length_text": "58 ft 8 in",
+   "height_in": 163.0,
+   "height_text": "13 ft 7 in",
+   "status": "width from V4",
+   "canvas": {
+    "px": [
+     7040,
+     1630
+    ],
+    "ratio": 4.319,
+    "ratio_text": "4.319 : 1"
+   },
+   "art_file": "art/M7.png",
+   "tex": "tex/M7.jpg",
+   "left": {
+    "neighbour": "B4",
+    "corner": "inside corner"
+   },
+   "right": {
+    "neighbour": "M8",
+    "corner": "inside corner"
+   },
+   "keepouts": [
+    {
+     "what": "door 10 ft x 9 ft, hard against the right end, no trim",
+     "x_px": [
+      5840,
+      7040
+     ],
+     "from_floor_px": [
+      0,
+      1080
+     ],
+     "status": "per Tripp 2026-10-11"
+    }
+   ]
+  },
+  {
+   "wall": 6,
+   "id": "M8",
+   "aliases": [
+    "B6",
+    "The Tiger",
+    "Breakroom wall",
+    "Wall 6"
+   ],
+   "name": "The Tiger",
+   "art": true,
+   "length_in": 863.0,
+   "length_text": "71 ft 11 in",
+   "height_in": 163.0,
+   "height_text": "13 ft 7 in",
+   "status": "width from V4, close enough per Tripp; the wall plane sits in line with the end of M7, about 1 ft 11.5 in in from the B2 line, provisional",
+   "canvas": {
+    "px": [
+     8630,
+     1630
+    ],
+    "ratio": 5.294,
+    "ratio_text": "5.294 : 1"
+   },
+   "art_file": "art/M8.png (web copy 8192 x 1547)",
+   "tex": "tex/M8.jpg",
+   "left": {
+    "neighbour": "M7",
+    "corner": "inside corner"
+   },
+   "right": {
+    "neighbour": "East",
+    "corner": "flat continuation, unmeasured"
+   },
+   "keepouts": [
+    {
+     "what": "break room and service doors and windows exist; positions come from the photo and are NOT measured; nothing is cut out"
+    }
+   ]
+  },
+  {
+   "wall": 7,
+   "id": "East",
+   "name": "Unnamed stretch between the Tiger and the box",
+   "art": false,
+   "length_in": 487.0,
+   "length_text": "40 ft 7 in",
+   "height_in": 163.0,
+   "height_text": "13 ft 7 in",
+   "status": "NOT MEASURED, placeholder",
+   "canvas": {
+    "px": [
+     4870,
+     1630
+    ],
+    "ratio": 2.988,
+    "ratio_text": "2.988 : 1"
+   }
+  },
+  {
+   "wall": 8,
+   "id": "BoxEnd",
+   "name": "Box end",
+   "art": false,
+   "length_in": 206.47,
+   "length_text": "17 ft 2.5 in",
+   "height_in": 163.0,
+   "height_text": "13 ft 7 in",
+   "status": "derived; the box is about 8 ft longer than the females partition",
+   "canvas": {
+    "px": [
+     2065,
+     1630
+    ],
+    "ratio": 1.267,
+    "ratio_text": "1.267 : 1"
+   }
+  },
+  {
+   "wall": 9,
+   "id": "M6+B5",
+   "aliases": [
+    "M6",
+    "B5",
+    "Box face",
+    "Wall 9"
+   ],
+   "name": "Box face, the wings mural and its band",
+   "art": false,
+   "length_in": 425.0,
+   "length_text": "35 ft 5 in",
+   "height_in": 163.0,
+   "height_text": "13 ft 7 in",
+   "status": "width from V4; placed at the Wall 1 end of the box face; its 76 x 86 1/2 in door is not placed; not in the current canvases",
+   "canvas": {
+    "px": [
+     4250,
+     1630
+    ],
+    "ratio": 2.607,
+    "ratio_text": "2.607 : 1"
+   }
+  }
+ ],
+ "delivery": {
+  "format": "PNG with a transparent background, sRGB",
+  "extent": "full image width = the wall or section's full length, left edge = the named left corner or split line; full image height = the full wall height. Never crop to the band alone: where the band sits in the height is part of the design.",
+  "size": "either the exact canvas px, or the exact ratio at the largest size the tool allows, with the delivered px stated",
+  "naming": "art/<id>.png, for example art/B4-1.png",
+  "keepouts": "for the designer's eye only; the 3D model trims openings and trim automatically, so a band may run straight across a window",
+  "corners": "a design that turns an inside corner is two files that share the corner edge, column for column",
+  "flat_splits": "the M4 / B4 line and the B4 section lines are not corners; neighbouring sections must be continuous across the line"
+ },
+ "rules": [
+  "Real scale controls artwork placement. Never deform a wall to fit art.",
+  "Do not regenerate the existing M4 mural.",
+  "White window and door trim is not paintable.",
+  "Wall 1 stays blank.",
+  "M4 and B4 are the same wall.",
+  "Do not present provisional values as measured; carry each status string forward.",
+  "Do not rename walls or sections; use the names here and raise naming questions with Tripp."
+ ],
+ "open_questions": [
+  "Section ids on Wall 4 (B4-1/2/3 vs Tripp's 'B5').",
+  "Band height and its top and bottom edges above the floor on each wall.",
+  "B2 casing width (sets where the band starts beside the doors).",
+  "Mirror start and stop on B4 (untaped).",
+  "M7 and M8 door details; a wall photo for the B4 run.",
+  "Females partition dimensions; the east stretch; B3 to column 1 distance."
+ ]
+}

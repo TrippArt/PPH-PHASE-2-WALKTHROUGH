@@ -19,6 +19,15 @@ GitHub Pages serves the `main` branch root; every push to `main` redeploys withi
 
 Serve the repository root with any static file server and open `index.html`. Opening the file directly from disk also works in most browsers because every asset path is relative.
 
+## For ChatGPT and other reviewers
+
+- `GPT_BRIEF.md` is the standing brief: what the project is, how to read a wall back, delivery rules.
+- `pph-zone3-spec.json` is the machine-readable wall spec (sizes, canvas px at 10 px = 1 in, ratios, neighbours, keep-outs, status). It is generated from the measurement constants in `index.html` by `tools/make_spec.py`; regenerate it whenever those constants change:
+
+```
+python tools/make_spec.py .
+```
+
 ## Editing
 
 The scene geometry, measurements, wall ids and labels encode surveyed and provisional dimensions. Do not change them as part of a visual edit; dimension changes go through the Phase 2 spec first. Provisional values are not measured values.
