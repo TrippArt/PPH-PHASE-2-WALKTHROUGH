@@ -10,6 +10,11 @@ A static site with no build step. `index.html` at the root is the whole app; it 
 | `art/` | Band and mural artwork as transparent PNGs, web size (long side capped at 8192 px) |
 | `sm/` | Phone-size copies (long side 4096 px) of the heavier art and textures |
 
+**Live:** https://trippart.github.io/PPH-PHASE-2-WALKTHROUGH/
+**Repo:** https://github.com/TrippArt/PPH-PHASE-2-WALKTHROUGH
+
+GitHub Pages serves the `main` branch root; every push to `main` redeploys within about a minute.
+
 ## Running it
 
 Serve the repository root with any static file server and open `index.html`. Opening the file directly from disk also works in most browsers because every asset path is relative.
