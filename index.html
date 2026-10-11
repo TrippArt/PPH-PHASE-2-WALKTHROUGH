@@ -60,6 +60,22 @@ button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid
 #intro .more{font-size:17px;line-height:1.35;color:var(--ink);margin:0;max-width:20em;min-height:2.7em}
 #intro .skip{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 64px);text-align:center;font-size:14px;color:var(--ink-dim);letter-spacing:.04em}
 @media (prefers-reduced-motion:reduce){#intro .tips{animation:none!important}#intro,#intro .card{transition:none}}
+#markBtn{position:fixed;top:calc(env(safe-area-inset-top,0px) + 12px);left:calc(env(safe-area-inset-left,0px) + 12px);width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:rgba(21,26,28,.78);display:grid;place-items:center;cursor:pointer;z-index:5;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+#markBtn i{display:block;width:18px;height:18px;border-radius:50%;background:var(--brush,#ff3b30);border:2px solid rgba(255,255,255,.85)}
+#markBtn[aria-pressed="true"]{border-color:var(--brush,#ff3b30);box-shadow:0 0 0 2px var(--brush,#ff3b30)}
+#mark{position:fixed;top:calc(env(safe-area-inset-top,0px) + 66px);left:calc(env(safe-area-inset-left,0px) + 12px);width:min(300px,calc(100% - 24px));max-height:calc(100% - 90px);overflow-y:auto;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;z-index:6;display:flex;flex-direction:column;gap:10px;font-size:14px}
+#mark[hidden]{display:none}
+#mark h2{font-family:var(--font-sign);font-weight:600;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim);margin:0}
+#mark .cols{display:flex;gap:8px}
+#mark .cols button{width:34px;height:34px;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0}
+#mark .cols button[aria-pressed="true"]{box-shadow:0 0 0 2px var(--panel),0 0 0 4px #fff}
+#mark label{display:flex;align-items:center;gap:10px;font-variant-numeric:tabular-nums}
+#mark input[type=range]{flex:1;accent-color:var(--accent);min-width:0}
+#mark .row{display:flex;gap:6px;flex-wrap:wrap}
+#mark .row button{border:1px solid var(--line);background:var(--panel-2);color:var(--ink);border-radius:8px;padding:8px 10px;font:inherit;font-size:13px;cursor:pointer}
+#mark .row button.go{background:var(--accent);border-color:var(--accent);color:#06211d;font-weight:600}
+#mark p{margin:0;color:var(--ink-dim);font-size:12.5px;line-height:1.4}
+#mark textarea{width:100%;height:64px;font:11px monospace;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:6px;box-sizing:border-box}
 #fail{position:fixed;inset:0;display:grid;place-items:center;padding:24px;text-align:center;font-size:16px;line-height:1.5;z-index:9;background:var(--bg)}
 
 #sheet{position:fixed;top:0;right:0;bottom:0;width:min(360px,100%);background:var(--panel);border-left:1px solid var(--line);z-index:6;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:calc(env(safe-area-inset-top,0px) + 16px) 18px calc(env(safe-area-inset-bottom,0px) + 24px);display:flex;flex-direction:column;gap:20px;-webkit-user-select:text;user-select:text}
@@ -94,12 +110,22 @@ details[open] summary{margin-bottom:8px}
 <div id="hint"></div>
 <div id="tag" hidden><b id="tagA"></b><span id="tagB"></span></div>
 <div id="quick"><button id="measBtn" aria-pressed="true">Measure</button><button id="eyeBtn" aria-pressed="false">Eye line</button><button id="levelBtn" aria-label="Reset the view to level">Reset</button></div>
+<button id="markBtn" aria-label="Markup brush" aria-pressed="false"><i></i></button>
+<div id="mark" hidden aria-label="Markup brush">
+  <h2>Markup brush</h2>
+  <div class="cols" id="markCols"></div>
+  <label>Size <input type="range" id="markSize" min="0.5" max="12" step="0.5" value="2"> <span id="markSizeV">2″</span></label>
+  <p>In Walk view, point the dot at a wall, hold the <b>right mouse button</b> and move the mouse to draw. Let go to stop. Esc frees the mouse pointer.</p>
+  <div class="row"><button id="markUndo">Undo</button><button id="markClear">Clear unsaved</button><button id="markHide">Hide marks</button><button id="markSave" class="go">Save for the team</button></div>
+  <p id="markStat"></p>
+  <div id="markOut" hidden><p>Save opens a GitHub issue with the data filled in. If the data did not arrive, paste this into the issue between the two ``` lines (it is also on your clipboard):</p><textarea id="markJson" readonly></textarea></div>
+</div>
 <div id="intro" hidden aria-live="polite"><div class="card"><div class="count" id="introN"></div><div class="stage"><div class="track"></div><div class="tips"><div class="tip"></div><div class="tip"></div></div></div><p class="say" id="introSay"></p><p class="more" id="introMore"></p></div><div class="skip">Touch the screen to start</div></div>
 <div id="fail" hidden>The 3D view could not start on this device. Try reopening the page, or open it in Safari or Chrome.</div>
 
 <aside id="sheet" hidden aria-label="Menu">
   <header>
-    <div><h1>PPH Zone 3</h1><p class="sub">Walkthrough V2 · every wall and corner named · site photos on M4, the Viper, the Tiger, B3, B2 and Wall 1 · designs on B2, B3, the Viper and the Tiger · bottom trim on every wall · planned mirrors under the B4 Mirror Band that reflect the room, with you in them as a blocky figure · pink section lines on M4 + B4 · tape measure on the eye line · planning model, not a survey</p></div>
+    <div><h1>PPH Zone 3</h1><p class="sub">Walkthrough V2 · every wall and corner named · site photos on M4, the Viper, the Tiger, B3, B2 and Wall 1 · designs on B2, B3, the Viper and the Tiger · bottom trim on every wall · planned mirrors under the B4 Mirror Band that reflect the room, with you in them as a blocky figure · your arms and legs in view as you walk · draw on the walls with the right mouse button and save the marks for the team · pink section lines on M4 + B4 · tape measure on the eye line · planning model, not a survey</p></div>
     <button id="closeBtn">Close</button>
   </header>
   <section><h2>View</h2>
@@ -126,7 +152,8 @@ details[open] summary{margin-bottom:8px}
       <label><input type="checkbox" id="tTrim" checked> Bottom trim, 8″ (its own layer)</label>
       <label><input type="checkbox" id="tMir" checked> Mirrors on B4 (planned)</label>
       <label><input type="checkbox" id="tRefl" checked> Mirrors reflect the room (live)</label>
-      <label><input type="checkbox" id="tMe" checked> You in the mirrors (blocky figure)</label>
+      <label><input type="checkbox" id="tMe" checked> You: arms and legs in view, whole figure in the mirrors</label>
+      <label><input type="checkbox" id="tMark" checked> Markups on the walls (off = clean walls)</label>
       <label><input type="checkbox" id="tSect" checked> Section lines on M4 + B4 (pink)</label>
       <label><input type="checkbox" id="tMeas" checked> Tape measure on the eye line and wall size</label>
       <label><input type="checkbox" id="tEye"> Eye-level line at 5′9″ and view circle</label>
@@ -142,6 +169,7 @@ details[open] summary{margin-bottom:8px}
     <ul>
       <li><b>Phone or tablet:</b> touch anywhere and push up to walk forward, pull down to back up, slide sideways to turn. A short push walks at the regular pace. Push all the way up and you move twice as fast.</li>
       <li><b>Two fingers:</b> slide up to look up, down to look down.</li>
+      <li><b>Right mouse button (computer):</b> hold it down to draw on the wall the dot is pointing at, and let go to stop. The brush button at the top left picks one of five colours and a size from ½″ to 12″. Marks are temporary until you press <b>Save for the team</b>, which opens a GitHub issue from your own account with the marks filled in; submit it and a bot adds them to the site for everyone within a few minutes. Untick "Markups on the walls" in the menu to see the clean walls.</li>
       <li><b>Computer:</b> click the view once. Then the arrow keys or W A S D walk forward, back and step sideways, and moving the mouse looks around. Q and E turn. Hold Shift to go three times faster. Esc frees the mouse pointer, M opens this menu. If the mouse pointer stays visible after the click, hold the button and drag to look.</li>
       <li><b>Overview and Plan:</b> drag to turn or pan, pinch or scroll to zoom.</li>
     </ul>
@@ -171,7 +199,8 @@ details[open] summary{margin-bottom:8px}
       <li>M8 is set in line with the end of M7, about 2′ in from the B2 line.</li>
       <li>B3 openings are placed by working back from the M4 corner. B2 opening top is 6′7½″ with a 4″ casing until scaled from the photo.</li>
       <li>Four columns, each 12½″ across and 19′2″ from M4, in one line down the hall. Column 1 is assumed on the Wall 1 line, 39′1″ from B3, and the others repeat that spacing.</li>
-      <li>The B4 mirrors reflect the room for real: every frame the model is drawn once more from a camera mirrored through the glass, so you see the far walls, the ceiling and the floor behind you as a mirror would show them (lettering reads backwards, as it should). You appear in them as a simple blocky figure at the 5′9″ eye line, about 6′2″ tall. Its arms and legs hold one of three positions and switch only while you are moving, with the keys or with a finger. The face is <code>avatar/head.png</code>, a square PNG that becomes the front of the head; the picture's top rows colour the top of the head and its outer columns colour the sides. Until that file exists a placeholder face is drawn. Overview and Plan show the figure standing where you are.</li>
+      <li>The B4 mirrors reflect the room for real: every frame the model is drawn once more from a camera mirrored through the glass, so you see the far walls, the ceiling and the floor behind you as a mirror would show them (lettering reads backwards, as it should). You appear in them as a simple blocky figure at the 5′9″ eye line, about 6′2″ tall. Its arms and legs hold one of three positions and switch only while you are moving, with the keys or with a finger. The face is <code>avatar/head.png</code>, a square PNG that becomes the front of the head; the picture's top rows colour the top of the head and its outer columns colour the sides. Until that file exists a placeholder face is drawn. Overview and Plan show the figure standing where you are. While you walk, your own arms hang in view at the bottom of the screen and swing with your steps, and looking down shows your body and feet, as in a game.</li>
+      <li>Wall markups: anyone can draw on a wall with the right mouse button. Saved marks live in <code>markups.json</code> in the repository, written by a bot from the GitHub issue the Save button opens, with the author's GitHub name. The file is capped at 200 KB; when a save would push it past that, every earlier mark is erased and the site starts again with that save.</li>
       <li>Wall photos are stretched to fit the measured walls, with doors and windows pinned to their measured positions. The Viper (M7), the Tiger (M8), B3, B2 with its bulkhead and Wall 1 carry photos so far. The M8 photo is stretched to the V4 width. Its three doors (about 28″ wide, 6′8″ to 6′10″ high) and the 5′ × 8′ opening at its right end are cut out of the wall where the photo shows them, so the trim and the designs stop there. The M8 windows are not cut.</li>
       <li>Designs are Tripp's Photoshop canvas exports from 11 October, laid over the photos on B2, the B2 bulkhead, B3, the Viper and the Tiger. M4 and B4 have no design yet. Phones and tablets load 4096 px copies; computers load the full exports.</li>
       <li>The M4 mural photo is laid on unstretched, floor to ceiling from the B3 corner. At that size it is about 50′6″ long, so its last 1′6″ of foliage and blue wall runs past the 49′ mark onto B4.</li>
@@ -378,9 +407,9 @@ function renderMirror(cam){
   mirClip.multiplyScalar(2/mirClip.dot(mirQ));
   e[2]=mirClip.x;e[6]=mirClip.y;e[10]=mirClip.z+1-0.003;e[14]=mirClip.w;
   sizeMirror();
-  const wasAv=avatar.g.visible;gMirror.visible=false;avatar.g.visible=avatar.on;
+  gMirror.visible=false;avatarView('full');
   renderer.setRenderTarget(mirror.rt);renderer.render(scene,vcam);renderer.setRenderTarget(null);
-  gMirror.visible=true;avatar.g.visible=wasAv;
+  gMirror.visible=true;
   m.material=mirror.live;return true;}
 
 /* ---------- you, as a blocky figure: seen in the mirrors while walking, and standing on the floor in Overview and Plan ---------- */
@@ -399,7 +428,13 @@ scene.add(avatar.g);avatar.g.visible=false;
   P.armL=limb(-6,22,12,4,mat(shirt),mat(skin),2);P.armR=limb(6,22,12,4,mat(shirt),mat(skin),2); // arms pivot 2 units below the shoulder top
   P.neck=new THREE.Group();P.neck.position.y=24*u;g.add(P.neck);
   P.head=box(8,8,8,0,[0,1,2,3,4,5].map(()=>mat(skin)));P.neck.add(P.head);
+  // first-person arms: a game's view model, hung in front of the camera and shown only while walking
+  P.vm=new THREE.Group();scene.add(P.vm);P.vm.visible=false;
+  const vmArm=x=>{const j=new THREE.Group();j.position.set(x,-1.0,-1.7);j.scale.setScalar(0.6);j.rotation.order='YXZ';j.rotation.set(1.5,x<0?-0.14:0.14,x<0?0.05:-0.05);j.add(box(4,4,4,-4,mat(shirt)),box(4,8,4,-12,mat(skin)));P.vm.add(j);return j;};
+  P.vmL=vmArm(-0.85);P.vmR=vmArm(0.85);
 })();
+// which parts show: 'first' = your own arms in view, body and legs below you, no head (the camera is inside it); 'full' = the whole figure; 'none'
+function avatarView(v){const P=avatar.parts,on=avatar.on;avatar.g.visible=on&&v!=='none';P.vm.visible=on&&v==='first';const full=v==='full';P.head.visible=full;P.armL.visible=P.armR.visible=full;}
 // the face. A square PNG at avatar/head.png is the FRONT of the head; its top two rows colour the top of the head, its outer columns colour the sides and back.
 // Until that file exists a placeholder face is drawn here.
 const HEAD_URL='avatar/head.png';
@@ -423,7 +458,8 @@ const AV_SWING=0.62,AV_STRIDE=4.6,AV_SEQ=[1,0,2,0]; // swing in radians; feet of
 function updateAvatar(dt,moved){const P=avatar.parts;
   if(moved>1e-4){avatar.phase=(avatar.phase+moved/AV_STRIDE)%1;avatar.still=0;}else avatar.still+=dt;
   const pose=avatar.still>0.12?0:AV_SEQ[Math.floor(avatar.phase*4)%4];
-  if(pose!==avatar.pose){avatar.pose=pose;const a=pose===1?AV_SWING:pose===2?-AV_SWING:0;P.legL.rotation.x=a;P.legR.rotation.x=-a;P.armL.rotation.x=-a;P.armR.rotation.x=a;}
+  if(pose!==avatar.pose){avatar.pose=pose;const a=pose===1?AV_SWING:pose===2?-AV_SWING:0;P.legL.rotation.x=a;P.legR.rotation.x=-a;P.armL.rotation.x=-a;P.armR.rotation.x=a;
+    const d=pose===1?-0.16:pose===2?0.16:0;P.vmL.rotation.set(1.5+d,-0.14,0.05);P.vmR.rotation.set(1.5-d,0.14,-0.05);}
   avatar.g.position.copy(V(st.X,st.Y,0));avatar.g.rotation.y=st.yaw;P.neck.rotation.x=Math.max(-0.6,Math.min(0.6,st.pitch));}
 
 function quad(a,b,c,d,mat,parent){const g=new THREE.BufferGeometry();const p=[a,b,c,a,c,d].map(v=>V(v[0],v[1],v[2]));g.setFromPoints(p);g.computeVertexNormals();const m=new THREE.Mesh(g,mat);parent.add(m);return m;}
@@ -555,6 +591,12 @@ function buildSections(){const fr=F.M4,p=[],z=0.1,hw=0.035,dash=0.45,gap=0.35,n=
     m.geometry.translate(right-0.35-w/2,H-0.3-h/2,0.11);m.geometry.applyMatrix4(fr);gSect.add(m);}}
 fontReady.then(buildSections);
 
+// markup state lives up here because the menu toggles read it before the markup code further down runs
+const gMark=new THREE.Group();scene.add(gMark);
+const MARK_COLS=['#ff3b30','#ffd60a','#30d158','#0a84ff','#ffffff'],REPO='https://github.com/TrippArt/PPH-PHASE-2-WALKTHROUGH';
+const mark={col:MARK_COLS[0],w:2/12,strokes:[],saved:[],live:null,down:false,ndc:null,mats:{}};
+const markEl=$('mark'),markBtn=$('markBtn');
+
 /* ---------- state ---------- */
 const st={mode:'walk',X:W-B2_DOOR_RIGHT-3+0,Y:7,yaw:0,pitch:0,az:2.35,el:0.8,dist:250,tx:92,ty:D/2,pcx:XMAX/2,pcy:D/2,span:110};
 st.X=B2_DOOR_RIGHT+3; // centre of the B2 opening
@@ -591,12 +633,12 @@ function applyToggles(){
   gLabels.visible=$('tLabels').checked;gPart.visible=$('tPart').checked;gWallL.visible=st.mode!=='plan';gFloorL.visible=st.mode!=='walk';gPartW.visible=gLabels.visible&&st.mode!=='plan';gPartF.visible=gLabels.visible&&st.mode!=='walk';gCaps.visible=st.mode!=='walk';
   gCeil.visible=$('tCeil').checked&&st.mode==='walk';
   gGrid.visible=$('tGrid').checked;
-  gTrim.visible=gTrimP.visible=$('tTrim').checked;gMirror.visible=$('tMir').checked;mirror.on=$('tRefl').checked;avatar.on=$('tMe').checked;$('tRefl').disabled=$('tMe').disabled=!gMirror.visible;gSect.visible=$('tSect').checked&&st.mode!=='plan';gMirL.visible=gLabels.visible&&st.mode!=='plan';
+  gTrim.visible=gTrimP.visible=$('tTrim').checked;gMirror.visible=$('tMir').checked;mirror.on=$('tRefl').checked;avatar.on=$('tMe').checked;$('tRefl').disabled=!gMirror.visible;gMark.visible=$('tMark').checked;$('markHide').textContent=gMark.visible?'Hide marks':'Show marks';gSect.visible=$('tSect').checked&&st.mode!=='plan';gMirL.visible=gLabels.visible&&st.mode!=='plan';
   const z=$('tZones').checked,ph=$('tPhotos').checked;gFill.visible=ph;const eyeOn=$('tEye').checked,measOn=$('tMeas').checked;gEye.visible=gEyeP.visible=eyeOn||measOn;gTape.visible=gTapeP.visible=measOn&&st.mode!=='plan';$('eyeBtn').setAttribute('aria-pressed',eyeOn);$('measBtn').setAttribute('aria-pressed',measOn);$('quick').hidden=st.mode!=='walk';gArt.visible=$('tArt').checked;
   Object.keys(skins).forEach(k=>{const s=skins[k],u=s.userData;if(u.photo&&ph)s.material=u.photo;else{if(u.plain)s.material=u.plain;s.material.color.setHex(z?u.tint:NEUTRAL);}});
   $('readout').hidden=!($('tRead').checked&&st.mode==='walk');
 }
-['tPhotos','tArt','tTrim','tMir','tRefl','tMe','tSect','tEye','tMeas','tLabels','tPart','tZones','tCeil','tGrid','tRead'].forEach(id=>$(id).onchange=applyToggles);
+['tPhotos','tArt','tTrim','tMir','tRefl','tMe','tMark','tSect','tEye','tMeas','tLabels','tPart','tZones','tCeil','tGrid','tRead'].forEach(id=>$(id).onchange=applyToggles);
 
 /* ---------- menu ---------- */
 const sheet=$('sheet'),menuBtn=$('menuBtn');
@@ -642,9 +684,10 @@ document.addEventListener('pointerlockchange',()=>{if(locked()){everLocked=true;
 document.addEventListener('pointerlockerror',()=>{if(!everLocked&&!lockFail){lockFail=true;say('Hold the mouse button and drag to look around · arrow keys walk');}});
 window.addEventListener('focus',()=>{if(hint.dataset.stay){hint.dataset.stay='';hint.classList.add('gone');}});
 canvas.addEventListener('pointerdown',e=>{if(!sheet.hidden)closeSheet();focusView();try{canvas.setPointerCapture(e.pointerId);}catch(_){}
-  const mouse=e.pointerType==='mouse';if(mouse&&e.button===0)holdMouse();
+  const mouse=e.pointerType==='mouse';if(mouse&&e.button===2){if(st.mode==='walk')markStart(e);return;}if(mouse&&e.button===0)holdMouse();
   ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY,sx:e.clientX,sy:e.clientY,mouse});rebase();dropHint();if(!mouse)e.preventDefault();});
 canvas.addEventListener('pointermove',e=>{
+  if(mark.down&&mark.ndc)mark.ndc.set(e.clientX/window.innerWidth*2-1,-(e.clientY/window.innerHeight)*2+1);
   if(locked()){if(st.mode==='walk'){const mx=e.movementX||0,my=e.movementY||0;if(Math.abs(mx)<400&&Math.abs(my)<400){st.yaw-=mx*LOOK;st.pitch-=my*LOOK;}}return;}
   const p=ptrs.get(e.pointerId);if(!p)return;const dx=e.clientX-p.x,dy=e.clientY-p.y;p.x=e.clientX;p.y=e.clientY;
   if(ptrs.size>=2){const n=twoState();if(two){const dcx=n.cx-two.cx,dcy=n.cy-two.cy,k=two.sp/n.sp;
@@ -655,17 +698,17 @@ canvas.addEventListener('pointermove',e=>{
   if(st.mode==='walk'){if(p.mouse){st.yaw-=dx*0.0042;st.pitch-=dy*0.0042;}}
   else if(st.mode==='orbit'){st.az-=dx*0.006;st.el+=dy*0.005;}
   else{const u=st.span/window.innerWidth;st.pcy+=dx*u;st.pcx+=dy*u;}});
-function up(e){ptrs.delete(e.pointerId);rebase();}
+function up(e){if(mark.down&&(e.button===2||e.type==='pointercancel'))markEnd();ptrs.delete(e.pointerId);rebase();}
 canvas.addEventListener('pointerup',up);canvas.addEventListener('pointercancel',up);
 canvas.addEventListener('wheel',e=>{e.preventDefault();const k=Math.exp(e.deltaY*0.0012);if(st.mode==='orbit')st.dist=Math.max(20,Math.min(520,st.dist*k));else if(st.mode==='plan')st.span=Math.max(18,Math.min(460,st.span*k));},{passive:false});
 canvas.addEventListener('contextmenu',e=>e.preventDefault());['gesturestart','gesturechange'].forEach(n=>document.addEventListener(n,e=>e.preventDefault()));
 const keys={};
 window.addEventListener('keydown',e=>{if(e.metaKey||e.ctrlKey||e.altKey)return;if(e.target&&/INPUT|BUTTON|SUMMARY/.test(e.target.tagName)&&!/^Arrow|^Key[WASDQE]/.test(e.code))return;
-  if(e.code==='Escape'){closeSheet();return;}if(e.code==='KeyM'){if(sheet.hidden){freeMouse();openSheet();}else closeSheet();return;}
+  if(e.code==='Escape'){closeSheet();return;}if(e.code==='KeyB'){markBtn.click();return;}if(e.code==='KeyM'){if(sheet.hidden){freeMouse();openSheet();}else closeSheet();return;}
   keys[e.code]=true;if(/^Arrow/.test(e.code))e.preventDefault();dropHint();});
 window.addEventListener('keyup',e=>{keys[e.code]=false;});
 function dropKeys(){for(const k in keys)keys[k]=false;ptrs.clear();two=null;}
-window.addEventListener('blur',()=>{dropKeys();if(st.mode==='walk')say('Click the view to keep walking with the keys',true);});
+window.addEventListener('blur',()=>{dropKeys();markEnd();if(st.mode==='walk')say('Click the view to keep walking with the keys',true);});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)dropKeys();});
 
 /* ---------- frame ---------- */
@@ -703,7 +746,8 @@ function tick(now){const dt=Math.min(0.05,(now-last)/1000);last=now;updateEye();
     const nx=st.X+(-s*fwd+c*strafe)*dt,ny=st.Y+(c*fwd+s*strafe)*dt,ox=st.X,oy=st.Y;
     if(!blocked(nx,st.Y))st.X=nx;if(!blocked(st.X,ny))st.Y=ny;
     persp.position.copy(V(st.X,st.Y,EYE));persp.rotation.set(st.pitch,st.yaw,0);persp.updateMatrixWorld();
-    updateAvatar(dt,Math.hypot(st.X-ox,st.Y-oy));avatar.g.visible=false;renderMirror(persp); // while walking you show only in the glass
+    updateAvatar(dt,Math.hypot(st.X-ox,st.Y-oy));avatar.parts.vm.position.copy(persp.position);avatar.parts.vm.quaternion.copy(persp.quaternion);
+    markTick();renderMirror(persp);avatarView('first');avatar.g.position.x+=Math.sin(st.yaw)*0.35;avatar.g.position.z+=Math.cos(st.yaw)*0.35; // the body sits 4 in behind the eye so the floor and your feet show when you look down
     if(now-readT>160){readT=now;$('readout').textContent='B2 '+fmt(st.Y)+' · B3 '+fmt(st.X)+' · M4 '+fmt(D-st.Y)+eyeText;}
     for(const b of bills)b.rotation.set(0,st.yaw,0);
     renderer.render(scene,persp);
@@ -712,13 +756,13 @@ function tick(now){const dt=Math.min(0.05,(now-last)/1000);last=now;updateEye();
     const t=V(st.tx,st.ty,4),ce=Math.cos(st.el);
     persp.position.set(t.x+st.dist*ce*Math.sin(st.az),t.y+st.dist*Math.sin(st.el),t.z+st.dist*ce*Math.cos(st.az));persp.rotation.order='YXZ';persp.lookAt(t);persp.updateMatrixWorld();
     for(const b of bills)b.quaternion.copy(persp.quaternion);
-    updateAvatar(dt,0);avatar.g.visible=avatar.on;renderMirror(persp);
+    updateAvatar(dt,0);renderMirror(persp);avatarView('full');
     renderer.render(scene,persp);
   }else{
     const a=window.innerWidth/window.innerHeight,hw=st.span/2,hh=hw/a;
     ortho.left=-hw;ortho.right=hw;ortho.top=hh;ortho.bottom=-hh;ortho.updateProjectionMatrix();
     ortho.position.set(st.pcx,300,-st.pcy);ortho.up.set(1,0,0);ortho.lookAt(st.pcx,0,-st.pcy);for(const b of bills)b.visible=false;
-    updateAvatar(dt,0);avatar.g.visible=avatar.on;if(mirror.mesh)mirror.mesh.material=mirror.tile;
+    updateAvatar(dt,0);avatarView('full');if(mirror.mesh)mirror.mesh.material=mirror.tile;
     renderer.render(scene,ortho);
   }
   requestAnimationFrame(tick);
@@ -762,7 +806,7 @@ Object.keys(ART).forEach(k=>setWallArt(k,BIG+ART[k]));
 const eyeMat=new THREE.MeshBasicMaterial({color:0xffe14a,fog:false,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-6,polygonOffsetUnits:-6});
 Object.keys(skins).forEach(k=>{const u=skins[k].userData;if(!u.fr||u.height<EYE)return;
   const g=new THREE.PlaneGeometry(u.width,0.1);g.translate(u.width/2,EYE,0.09);g.applyMatrix4(u.fr);(k.indexOf('WFR')===0?gEyeP:gEye).add(new THREE.Mesh(g,eyeMat));});
-const eyeRing=new THREE.Mesh(new THREE.RingGeometry(0.985,1,128),eyeMat),eyeDot=new THREE.Mesh(new THREE.CircleGeometry(0.18,24),eyeMat);
+const eyeRing=new THREE.Mesh(new THREE.RingGeometry(0.985,1,128),eyeMat),eyeDot=new THREE.Mesh(new THREE.CircleGeometry(0.18,24),eyeMat.clone());
 gEye.add(eyeRing,eyeDot);
 /* ---------- tape measure on the eye line ---------- */
 // A run is one wall as the crew reads it, left to right as you face it. M4 and B4 are one run.
@@ -806,6 +850,7 @@ function updateEye(){eyeText='';eyeRing.visible=eyeDot.visible=false;const measO
   const n=hit.face.normal.clone();if(n.dot(d)>0)n.negate();const r=hit.distance*CONE,c=hit.point.clone().addScaledVector(n,0.09);
   eyeRing.position.copy(c);eyeRing.scale.set(r,r,1);eyeRing.lookAt(c.clone().add(n));eyeDot.position.copy(c);eyeDot.lookAt(c.clone().add(n));
   const ds=Math.max(1,hit.distance/22);eyeDot.scale.set(ds,ds,1);
+  if(mark.down||!markEl.hidden){eyeDot.material.color.set(mark.col);const k=Math.max(ds,mark.w/2/0.18);eyeDot.scale.set(k,k,1);}else eyeDot.material.color.setHex(0xffe14a);
   eyeDot.visible=true;eyeRing.visible=eyeOn;if(eyeOn)eyeText=' · 60° view circle '+fmt(2*r)+' across';
   const u=hit.object.userData,run=u.run;if(!measOn||!run||introOn){tagEl.hidden=true;return;}
   tagP.copy(hit.point).applyMatrix4(u.inv);const s=Math.max(0,Math.min(run.total,u.off+tagP.x));
@@ -815,7 +860,47 @@ function updateEye(){eyeText='';eyeRing.visible=eyeDot.visible=false;const measO
 $('measBtn').onclick=()=>{$('tMeas').checked=!$('tMeas').checked;applyToggles();};
 $('eyeBtn').onclick=()=>{$('tEye').checked=!$('tEye').checked;applyToggles();};
 $('levelBtn').onclick=()=>{st.pitch=0;};
-window.PPH={skins,state:st,setMode,setWallImage,setWallArt,avatar,mirror,setHead};
+/* ---------- markup: draw on the walls with the right mouse button; save for the team through a GitHub issue ---------- */
+Object.keys(skins).forEach(k=>{skins[k].userData.id=k;});
+function markMat(c){return mark.mats[c]||(mark.mats[c]=new THREE.MeshBasicMaterial({color:c,side:THREE.DoubleSide,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-8,polygonOffsetUnits:-8}));}
+// a stroke is a polyline in the wall's own feet (s along, v up) drawn as a ribbon with round joins, lifted 0.13 ft off the wall so it sits over every other layer
+function strokeGeom(k){const u=skins[k.wall].userData,r=k.w/2,z=k.z+0.13,pos=[],N=10;
+  const tri=(a,b,c)=>pos.push(a[0],a[1],z,b[0],b[1],z,c[0],c[1],z);
+  k.p.forEach((p,i)=>{for(let j=0;j<N;j++){const a0=j/N*Math.PI*2,a1=(j+1)/N*Math.PI*2;tri(p,[p[0]+r*Math.cos(a0),p[1]+r*Math.sin(a0)],[p[0]+r*Math.cos(a1),p[1]+r*Math.sin(a1)]);}
+    if(i){const q=k.p[i-1],dx=p[0]-q[0],dy=p[1]-q[1],L=Math.hypot(dx,dy)||1,nx=-dy/L*r,ny=dx/L*r;tri([q[0]+nx,q[1]+ny],[q[0]-nx,q[1]-ny],[p[0]-nx,p[1]-ny]);tri([q[0]+nx,q[1]+ny],[p[0]-nx,p[1]-ny],[p[0]+nx,p[1]+ny]);}});
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.applyMatrix4(u.fr);return g;}
+function showStroke(k){if(k.mesh){k.mesh.geometry.dispose();k.mesh.geometry=strokeGeom(k);return;}k.mesh=new THREE.Mesh(strokeGeom(k),markMat(k.c));gMark.add(k.mesh);}
+function dropStroke(k){if(k.mesh){gMark.remove(k.mesh);k.mesh.geometry.dispose();k.mesh=null;}}
+const markRay=new THREE.Raycaster(),markP=new THREE.Vector3();
+function markHit(){const list=Object.keys(skins).map(k=>skins[k]).filter(m=>m.userData.fr&&m.userData.inv&&(gPart.visible||m.parent!==gPart));
+  if(mark.ndc)markRay.setFromCamera(mark.ndc,persp);else{const cp=Math.cos(st.pitch);markRay.set(V(st.X,st.Y,EYE),new THREE.Vector3(-Math.sin(st.yaw)*cp,Math.sin(st.pitch),-Math.cos(st.yaw)*cp));}
+  const h=markRay.intersectObjects(list,false)[0];if(!h||h.distance<0.3)return null;const u=h.object.userData;markP.copy(h.point).applyMatrix4(u.inv);return {wall:u.id,s:markP.x,v:markP.y,z:markP.z};}
+function markStart(e){mark.down=true;mark.live=null;mark.ndc=locked()?null:new THREE.Vector2(e.clientX/window.innerWidth*2-1,-(e.clientY/window.innerHeight)*2+1);dropHint();}
+function markEnd(){if(!mark.down)return;mark.down=false;mark.live=null;mark.ndc=null;markStat();}
+function markTick(){if(!mark.down)return;const h=markHit();if(!h)return;
+  let k=mark.live;if(!k||k.wall!==h.wall){k=mark.live={wall:h.wall,z:h.z,w:mark.w,c:mark.col,p:[[h.s,h.v]]};mark.strokes.push(k);showStroke(k);markStat();return;}
+  const q=k.p[k.p.length-1];if(Math.hypot(h.s-q[0],h.v-q[1])<Math.max(0.02,k.w*0.3)||k.p.length>=1500)return;k.p.push([h.s,h.v]);showStroke(k);}
+MARK_COLS.forEach((c,i)=>{const b=document.createElement('button');b.style.background=c;b.setAttribute('aria-pressed',i===0);b.setAttribute('aria-label','Colour '+(i+1));
+  b.onclick=()=>{mark.col=c;document.querySelectorAll('#markCols button').forEach(x=>x.setAttribute('aria-pressed',x===b));document.documentElement.style.setProperty('--brush',c);};$('markCols').appendChild(b);});
+$('markSize').oninput=e=>{const v=+e.target.value;mark.w=v/12;$('markSizeV').textContent=(v%1?(Math.floor(v)||'')+'½':v)+'″';};
+markBtn.onclick=()=>{const open=markEl.hidden;markEl.hidden=!open;markBtn.setAttribute('aria-pressed',open);if(open){freeMouse();closeSheet();}else focusView();};
+$('markUndo').onclick=()=>{const k=mark.strokes.pop();if(k)dropStroke(k);markStat();};
+$('markClear').onclick=()=>{mark.strokes.forEach(dropStroke);mark.strokes=[];markStat();};
+$('markHide').onclick=()=>{$('tMark').checked=!$('tMark').checked;applyToggles();};
+function markStat(){const n=mark.strokes.length,m=mark.saved.length;$('markStat').textContent=(n?n+' unsaved stroke'+(n>1?'s':'')+', gone on refresh':'No unsaved strokes')+' · '+(m?m+' saved stroke'+(m>1?'s':'')+' on the site':'nothing saved on the site yet');}
+$('markSave').onclick=()=>{if(!mark.strokes.length){say('Nothing to save yet: draw on a wall first');return;}
+  const data={v:1,strokes:mark.strokes.map(k=>({wall:k.wall,z:+k.z.toFixed(2),w:+k.w.toFixed(3),c:k.c,p:k.p.map(q=>[+q[0].toFixed(2),+q[1].toFixed(2)])}))},json=JSON.stringify(data),n=mark.strokes.length;
+  const body='Markup from the PPH walkthrough: '+n+' stroke'+(n>1?'s':'')+'. Submit this issue as it is; a bot adds the marks to the site within a few minutes.\n\n```json\n'+json+'\n```\n';
+  $('markJson').value=json;$('markOut').hidden=false;try{navigator.clipboard.writeText(json).catch(()=>{});}catch(_){}
+  const title='[markup] '+n+' stroke'+(n>1?'s':''),base=REPO+'/issues/new?title='+encodeURIComponent(title)+'&body=';let url=base+encodeURIComponent(body);
+  if(url.length>7500)url=base+encodeURIComponent('Markup from the PPH walkthrough. The data is on your clipboard: paste it between the two ``` lines below, then submit.\n\n```json\n\n```\n');
+  const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';document.body.appendChild(a);a.click();a.remove();
+  mark.saved=mark.saved.concat(mark.strokes);mark.strokes=[];markStat();};
+markStat();
+// marks saved by the team, from the repository
+fetch('markups.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(d=>{if(!d||!d.batches)return;
+  d.batches.forEach(b=>(b.strokes||[]).forEach(k=>{if(!skins[k.wall]||!Array.isArray(k.p)||!k.p.length)return;const t={wall:k.wall,z:+k.z||0,w:Math.min(1.5,Math.max(0.02,+k.w||0.1)),c:/^#[0-9a-f]{6}$/i.test(k.c)?k.c:MARK_COLS[0],p:k.p,by:b.by};showStroke(t);mark.saved.push(t);}));markStat();}).catch(()=>{});
+window.PPH={skins,state:st,setMode,setWallImage,setWallArt,avatar,mirror,setHead,mark,showStroke};
 })();
 </script>
 
