@@ -446,7 +446,7 @@
      "art_file": null,
      "mirrors_x_px_in_section": [
       0,
-      5880
+      960
      ],
      "layers": {
       "trim": "layers/trim/B4-2.png",
@@ -479,10 +479,7 @@
       "ratio_text": "3.607 : 1"
      },
      "art_file": null,
-     "mirrors_x_px_in_section": [
-      0,
-      2460
-     ],
+     "mirrors_x_px_in_section": null,
      "layers": {
       "trim": "layers/trim/B4-3.png",
       "mirrors": "layers/mirrors/B4-3.png",
@@ -538,13 +535,13 @@
      "what": "mirrors under the B4 Mirror Band, not paintable. Their own layer over the design.",
      "x_px": [
       6960,
-      20100
+      12720
      ],
      "from_floor_px": [
       80,
       1040
      ],
-     "length_text": "109 ft 6 in",
+     "length_text": "48 ft",
      "height_text": "8 ft",
      "start_range_x_px": [
       6840,
@@ -555,7 +552,7 @@
       20400
      ],
      "layer": "layers/mirrors/M4-B4.png",
-     "status": "Tripp's working values. 8 ft tall (Tripp 10-07), standing on the TOP EDGE of the bottom trim, not on the floor. Start about 8 to 10 ft past the end of M4 and stop about 25 to 30 ft before the M7 corner (Tripp 10-11); the model uses the middle of each range, 9 ft and 27 ft 6 in. Keep focal elements a foot or so clear of the mirror ends.",
+     "status": "Michael bought 48 ft of mirror (2026-10-11): that is the run length. 8 ft tall (Tripp 10-07), standing on the TOP EDGE of the bottom trim, not on the floor. Placed starting 9 ft past the end of M4 (Tripp's working value, 8 to 10 ft), so it ends 89 ft before the M7 corner. Where along the wall the 48 ft sits is still open. Keep focal elements a foot or so clear of the mirror ends.",
      "band_above": "From the mirror tops (8 ft 8 in up) to the ceiling is about 4 ft 11 in; if the field sheet's 8 in crown is real, the paintable band is about 4 ft 3 in."
     },
     {

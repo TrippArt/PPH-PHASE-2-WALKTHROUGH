@@ -190,7 +190,7 @@ details[open] summary{margin-bottom:8px}
       <li>Keyboard walking is 4½′ a second, an ordinary walking pace, and eases in and out like a person starting and stopping. Shift is three times that.</li>
       <li>M4 is 49′ and the B4 band runs 146′ past it, per the October measurements. V4 carried 36′ and 159′. B4 is the Mirror Band, the band above the mirrors (Tripp, 11 October). B5 is a different band, on the box face over M6.</li>
       <li>The bottom trim is drawn 8″ high along the foot of every wall, Tripp's working value from his note on the 7 October panorama. (The only taped trim figure is 4″, in the Zone 4 hallway; the Viper photo reads about 7″.) Designs work to true measurements and ratios, so an inch either way is fine. The trim is its own layer laid over the wall photos and designs, so a photo that already shows the trim and one that does not end up the same. It stops at every doorway, together with the door casing, and runs under the windows.</li>
-      <li>The B4 mirrors are planned: 8′ tall, standing on the top edge of the bottom trim, so 8″ to 8′8″ off the floor. They start about 9′ past the end of M4 (Tripp: 8′ to 10′) and stop about 27′6″ short of the M7 corner (Tripp: 25′ to 30′), about 109′6″ long. These are Tripp's working values. From the mirror tops to the ceiling is about 4′11″ of band. The mirrors are their own layer, drawn as plain glass, not as a reflection.</li>
+      <li>The B4 mirrors: Michael bought 48′ of mirror (11 October), 8′ tall, standing on the top edge of the bottom trim, so 8″ to 8′8″ off the floor. The model starts them 9′ past the end of M4 (Tripp's working value, 8′ to 10′) and runs the 48′ from there, so they end 57′ past M4 with 89′ of plain wall to the M7 corner. Where the 48′ sits along the wall is still open. From the mirror tops to the ceiling is about 4′11″ of band. The mirrors are their own layer; they reflect the room live.</li>
       <li>Wall 4 is worked in sections the size of M4: 49′ × 13′7″ (5880 × 1630 px). Section 1 is M4. Sections 2, 3 and 4 (B4-1, B4-2, B4-3) repeat that size along the B4 Mirror Band, so the M4 mural is never cut and every section shares one canvas. Section 4 reaches the M7 corner after 48′, so the last 1′ of its canvas is past the corner. A thin pink dotted line marks each split and a small pink tag sits at the top right of each section.</li>
       <li>M7 (the Viper) is 58′8″ and M8 (the Tiger) is 71′11″, from V4. The M7 door is 10′ wide and 9′ high, at the far right end of the wall.</li>
       <li>The box is drawn about 8′ longer than the females partition, which makes it about 43′5″ long. The east wall between the box and M8, about 40′7″, is not measured and has no name yet.</li>
@@ -234,7 +234,7 @@ const B2_DOOR_W=6, B2_DOOR_H=ft(6,7.5), B2_DOOR_RIGHT=ft(14,11);
 const TRIM=4/12;
 const BASE=8/12;                  // bottom trim height: 8 in, Tripp's working value (10-07 pano note)
 const M4W=49, BAND=146, XMAX=M4W+BAND;
-const MIR_H=8, MIR_IN=9, MIR_OUT=ft(27,6); // B4 mirrors: 8 ft tall, standing on the bottom trim. Start about 8-10 ft past M4, stop about 25-30 ft before the M7 corner (Tripp 10-11); middle of each range
+const MIR_H=8, MIR_IN=9, MIR_W=48, MIR_OUT=BAND-MIR_IN-MIR_W; // B4 mirrors: 8 ft tall, standing on the bottom trim. Michael bought 48 ft of mirror (10-11), so the run is 48 ft; it starts 9 ft past M4, Tripp's working value (8-10 ft), and the end follows from that
 const SEC=M4W;                    // Wall 4 sections: every section is the M4 width and height (Tripp 10-11); Section 4 runs 1 ft past the M7 corner on its canvas
 const M8_DOORS=[[436,464,80],[612,641,81.5],[650,677,81.5],[796,856,96]]; // M8 openings in inches from the M8 left end: left, right, top. Read off the M8 photo (stretched to the V4 width)
 const M8_PHOTO_PAD=5/12;          // the bottom 5 in of the M8 photo is white padding, not floor; doorways start their image above it
@@ -543,9 +543,9 @@ function buildLabels(){
   sign(F.M4,M4W/2,7,'M4 + B4','Forward mirror wall mural · 49′','m',5,30);
   [22,70,122].forEach(x=>sign(F.BAND,x,11.1,'B4 MIRROR BAND','The band above the mirrors · 146′ run right of M4','m',5,30));
   // mirrors: labels ride with the mirror layer
-  wallLabel(F.BAND,(MIR_S0+MIR_S1)/2,BASE+MIR_H-1.2,['Mirrors · 8′ tall, standing on the '+fmt(BASE).replace(/^0′/,'')+' bottom trim','about '+fmt(MIR_S1-MIR_S0)+' long · '+fmt(BASE).replace(/^0′/,'')+' to '+fmt(BASE+MIR_H)+' off the floor · Tripp’s working values'],'d',1.5,22,0.1,gMirL);
+  wallLabel(F.BAND,(MIR_S0+MIR_S1)/2,BASE+MIR_H-1.2,['Mirrors · 8′ tall, standing on the '+fmt(BASE).replace(/^0′/,'')+' bottom trim',fmt(MIR_S1-MIR_S0)+' bought (Michael) · '+fmt(BASE).replace(/^0′/,'')+' to '+fmt(BASE+MIR_H)+' off the floor · placed at Tripp’s working value'],'d',1.5,22,0.1,gMirL);
   wallLabel(F.BAND,MIR_S0+4.6,BASE+MIR_H-3.4,['Mirrors start about '+fmt(MIR_IN)+' past M4','Tripp: 8′ to 10′'],'d',1.2,8.4,0.1,gMirL);
-  wallLabel(F.BAND,MIR_S1-5.4,BASE+MIR_H-3.4,['Mirrors stop about '+fmt(MIR_OUT)+' before the M7 corner','Tripp: 25′ to 30′'],'d',1.2,10,0.1,gMirL);
+  wallLabel(F.BAND,MIR_S1-5.4,BASE+MIR_H-3.4,['Mirrors end here, '+fmt(MIR_S1)+' past M4','48′ bought · '+fmt(MIR_OUT)+' of plain wall to the M7 corner'],'d',1.2,10,0.1,gMirL);
   sign(F.M7,12.5,7,'M7 + B7','The Viper · separator wall · 58′8″','m',4.8,21);
   sign(F.M7,36,7,'M7 + B7','The Viper · separator wall · 58′8″','m',4.8,21);
   wallLabel(F.M7,M7W-5,10.6,['Door 10′ wide × 9′ high','at the far right end of the wall'],'m',1.4,9);
@@ -587,7 +587,7 @@ function buildLabels(){
   floorLabel(6,D/2+6,['B3','Cardio window wall · 60′7½″'],'d',5,null,null,true);
   floorLabel(M4W/2,D-6.5,['M4 + B4','Mirror wall mural · 49′'],'m',5,null,null,true);
   floorLabel(M4W+BAND/2,D-6.5,['B4 MIRROR BAND','Band above the mirrors · 146′'],'m',5,null,null,true);
-  floorLabel(M4W+(MIR_S0+MIR_S1)/2,D-2.2,['Mirrors · about '+fmt(MIR_S1-MIR_S0)+' · Tripp’s working values'],'d',1.6);
+  floorLabel(M4W+(MIR_S0+MIR_S1)/2,D-2.2,['Mirrors · '+fmt(MIR_S1-MIR_S0)+' bought · placed at Tripp’s working value'],'d',1.6);
   floorLabel(XMAX-6,D/2,['M7 + B7','The Viper · 58′8″'],'m',5,null,null,true);
   floorLabel(BOXN+M8W/2,M8Y+7,['M8 + B6','The Tiger · 71′11″'],'m',5,null,null,true);
   floorLabel(W+M6W/2,WALL1+4,['M6 + B5','Box face · 35′5″'],'m',3.4,null,null,true);
@@ -828,7 +828,7 @@ const BIG=(coarse||renderer.capabilities.maxTextureSize<8192)?'sm/':'';
 const PHOTOS={M7:'tex/M7.jpg',B3:'tex/B3.jpg',B2:'tex/B2.jpg',B2_bulkhead:'tex/B2_bulkhead.jpg',Wall1:'tex/Wall1.jpg',M8:BIG+'tex/M8.jpg'};
 skins.M8.userData.pad=M8_PHOTO_PAD;
 Object.keys(PHOTOS).forEach(k=>setWallImage(k,PHOTOS[k]));
-const ART={B2:'art/B2.png',B2_bulkhead:'art/B2_bulkhead.png',B3:'art/B3.png',M7:'art/M7.png',M8:'art/M8.png'};
+const ART={B2:'art/B2.png',B2_bulkhead:'art/B2_bulkhead.png',B3:'art/B3.png',B4:'art/B4.png',M7:'art/M7.png',M8:'art/M8.png'}; // B4 = the 3-section Mirror Band composite (rough v01, 2026-10-11), trimmed to the 146 ft wall with the Viper scales pinned at the M7 corner
 Object.keys(ART).forEach(k=>setWallArt(k,BIG+ART[k]));
 /* ---------- eye-level line and view circle ---------- */
 const eyeMat=new THREE.MeshBasicMaterial({color:0xffe14a,fog:false,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-6,polygonOffsetUnits:-6});

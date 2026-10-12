@@ -105,9 +105,9 @@ walls.append({"wall": 3, "id": "B3", "aliases": ["Cardio window wall", "Wall 3"]
 M4W, BAND, XMAX, sec = g["M4W"], g["BAND"], g["XMAX"], g["SEC"]
 NSEC = -(-round(XMAX * 12) // round(sec * 12))            # sections needed to cover the wall (ceil)
 MIR_H, MIR0, MIR1 = g["MIR_H"], M4W + g["MIR_IN"], XMAX - g["MIR_OUT"]   # mirrors, in Wall 4 feet from the B3 corner
-MIR_STATUS = ("Tripp's working values. 8 ft tall (Tripp 10-07), standing on the TOP EDGE of the bottom trim, not on the floor. "
-              "Start about 8 to 10 ft past the end of M4 and stop about 25 to 30 ft before the M7 corner (Tripp 10-11); "
-              f"the model uses the middle of each range, {ftin(g['MIR_IN'])} and {ftin(g['MIR_OUT'])}. Keep focal elements a foot or so clear of the mirror ends.")
+MIR_STATUS = (f"Michael bought {ftin(MIR1 - MIR0)} of mirror (2026-10-11): that is the run length. 8 ft tall (Tripp 10-07), standing on the TOP EDGE of the bottom trim, not on the floor. "
+              f"Placed starting {ftin(g['MIR_IN'])} past the end of M4 (Tripp's working value, 8 to 10 ft), so it ends {ftin(g['MIR_OUT'])} before the M7 corner. "
+              "Where along the wall the 48 ft sits is still open. Keep focal elements a foot or so clear of the mirror ends.")
 def clip(a, b, s0, s1):                                   # a range in Wall 4 feet, clipped to a section, in section px
     lo, hi = max(a, s0), min(b, s1)
     return [px(lo - s0), px(hi - s0)] if hi > lo else None
