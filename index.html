@@ -167,14 +167,19 @@ details[open] summary{margin-bottom:8px}
       <label><input type="checkbox" id="tRead" checked> Distance from each wall</label>
     </div>
   </section>
-  <section id="rackControls"><h2>Rack placeholder</h2>
-    <div class="checks"><label><input type="checkbox" id="tRack" checked> Show one rack near the Viper</label></div>
+  <section id="rackControls"><h2>Equipment placeholders</h2>
+    <div class="checks">
+      <label><input type="checkbox" id="tMono" checked> Three monolifts on the left</label>
+      <label><input type="checkbox" id="tRack" checked> Two squat racks on the right</label>
+      <label><input type="checkbox" id="tBars" checked> Bars on all five units</label>
+    </div>
     <p class="note">Tripp supplied: 49″ outside width, 89″ height, 3″ uprights; 43″ clear inside (derived). Rear pegs extend 12″ beyond each side.</p>
-    <p class="note" style="color:var(--provisional)">Provisional: 48″ outside depth, four square posts, simple rails, two 1″ diameter pegs per side at 36″ and 60″. Placement and facing direction are provisional. Visual only: you can walk through it.</p>
-    <label class="rackSlider" for="rackAlong">From B4 | M7 corner: <output id="rackAlongV">24′</output><input type="range" id="rackAlong" min="8" max="40" step="0.5" value="24"></label>
+    <p class="note" style="color:var(--provisional)">Monolifts: reference size 65″ wide × 72″ deep × 109″ maximum height from <a href="https://elitefts.com/products/elitefts-signature-monolift" target="_blank" rel="noopener">EliteFTS Signature</a>; provisional for this gym. Simplified frame, counterweights, swing hooks and jack.</p>
+    <p class="note" style="color:var(--provisional)">Rack depth 48″, four square posts, simple rails and two 1″ diameter pegs per side at 36″ and 60″ are provisional. Bars are provisionally 86.6″ long at 60″ high. No plates. All placement and detail geometry are provisional. Visual only: you can walk through the equipment.</p>
+    <label class="rackSlider" for="rackAlong">Shift row along wall: <output id="rackAlongV">0′</output><input type="range" id="rackAlong" min="-1" max="4" step="0.5" value="0"></label>
     <label class="rackSlider" for="rackAway">Centre from Viper wall: <output id="rackAwayV">6′</output><input type="range" id="rackAway" min="4" max="14" step="0.5" value="6"></label>
-    <div class="grid2"><button id="rackView">Look at rack</button><button id="rackReset">Reset placement</button></div>
-    <p class="note">Floor level; back toward M7, front toward the hall. Moves last until refresh. Reset restores 24′ along and 6′ from the wall.</p>
+    <div class="grid2"><button id="rackView">Look at equipment</button><button id="rackReset">Reset placement</button></div>
+    <p class="note">Facing M7: three monolifts left, two racks right, all fronts toward the hall. Centres start 5′, 13′6″, 22′, 30′6″ and 39′ from the B4 | M7 corner, spaced 8′6″. Reset restores this row, 6′ from the wall. Moves last until refresh.</p>
   </section>
   <section><h2>How to move</h2>
     <ul>
@@ -221,7 +226,7 @@ details[open] summary{margin-bottom:8px}
       <li>Measure puts a tape on the 5′9″ eye line of every wall. It counts in feet from the wall's left end as you face it, with a number every 5′, and each end carries the wall's full width and height. The tag above the dot gives the wall you are looking at, its width and height, and how far the dot is from the left and right ends. M4 and B4 are one wall, so their tape runs 0 to 195′ without a break. Heights are floor to ceiling: 12′11″ under the low ceiling, 13′7″ elsewhere.</li>
       <li>The high ceiling carries the black 2′ × 2′ tile ceiling on one continuous grid starting at the B2 | B3 corner. Where the real grid starts is not measured. The low ceiling by B2 stays white, as in the B3 photo. Lights are not modeled.</li>
       <li>Wall thickness is 6″ for looks only.</li>
-      <li>Not in this model: the lobby side of B2 (M2), other equipment, the hallway to Zone 4. The one rack is a provisional foreground placeholder; see its menu controls.</li>
+      <li>Not in this model: the lobby side of B2 (M2), other equipment, the hallway to Zone 4. The three monolifts and two racks are provisional foreground placeholders; see their menu controls.</li>
     </ul>
   </details>
 </aside>
@@ -302,33 +307,74 @@ const skins={}; // id → mesh; photo and artwork textures attach here later
 
 /* ---------- foreground equipment: independent of architecture, artwork and wall hit tests ---------- */
 const gEquipment=new THREE.Group();gEquipment.name='Foreground equipment';scene.add(gEquipment);
-const rack=new THREE.Group();rack.name='One squat-rack placeholder';gEquipment.add(rack);
+const gRacks=new THREE.Group(),gMonolifts=new THREE.Group();gRacks.name='Two squat racks';gMonolifts.name='Three monolifts';gEquipment.add(gMonolifts,gRacks);
 // Inches supplied by Tripp; these do not change the architectural measurement block.
 const RACK={width:49/12,height:89/12,upright:3/12,peg:12/12,
   depth:48/12,pegDiameter:1/12,pegHeights:[36/12,60/12]};
-// All construction choices other than width, height, upright thickness and peg projection are PROVISIONAL.
-const rackFrame=new THREE.Group();rackFrame.name='Frame (49 in outside, 43 in clear)';rack.add(rackFrame);
+// Manufacturer REFERENCE dimensions, not a survey of this gym's equipment:
+// https://elitefts.com/products/elitefts-signature-monolift (65 W x 72 D x 109 maximum H inches).
+const MONO={width:65/12,depth:72/12,height:109/12};
+const ROW=[5,13.5,22,30.5,39]; // PROVISIONAL centres from B4 | M7, matching Tripp's left-to-right mockups
 const rackSteel=new THREE.MeshLambertMaterial({color:0x16191b});
 const rackPegMat=new THREE.MeshLambertMaterial({color:0xb9c1c5});
-function rackBox(w,h,d,x,y,z){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),rackSteel);m.position.set(x,y,z);rackFrame.add(m);return m;}
-const ru=RACK.upright,rx=(RACK.width-ru)/2,rz=(RACK.depth-ru)/2;
-[-1,1].forEach(side=>{
-  [-1,1].forEach(end=>rackBox(ru,RACK.height,ru,side*rx,RACK.height/2,end*rz));
-  // Provisional top and floor side rails, within the 48 in outside depth.
-  [ru/2,RACK.height-ru/2].forEach(y=>rackBox(ru,ru,RACK.depth-2*ru,side*rx,y,0));
-});
-[-1,1].forEach(end=>rackBox(RACK.width-2*ru,ru,ru,0,RACK.height-ru/2,end*rz));
-const rackPegGeo=new THREE.CylinderGeometry(RACK.pegDiameter/2,RACK.pegDiameter/2,RACK.peg,12);
-[-1,1].forEach(side=>RACK.pegHeights.forEach(y=>{
-  const m=new THREE.Mesh(rackPegGeo,rackPegMat);m.name='Provisional rear storage peg';m.rotation.z=Math.PI/2;
-  // Projection datum is the outside upright face: 12 in outward on BOTH sides (73 in overall envelope).
-  m.position.set(side*(RACK.width/2+RACK.peg/2),y,-rz);rack.add(m);
-}));
-rack.rotation.y=-Math.PI/2; // local +z front points into the hall (-model X); rear is toward M7
+function equipmentBox(parent,w,h,d,x,y,z,mat=rackSteel){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);m.position.set(x,y,z);parent.add(m);return m;}
+function equipmentRod(parent,r,length,x,y,z,mat=rackPegMat){const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,length,12),mat);m.position.set(x,y,z);parent.add(m);return m;}
+function equipmentBeam(parent,a,b,w,d){const from=new THREE.Vector3(...a),to=new THREE.Vector3(...b),delta=to.clone().sub(from);const m=equipmentBox(parent,w,delta.length(),d,0,0,0);m.position.copy(from.add(to).multiplyScalar(0.5));m.quaternion.setFromUnitVectors(UP,delta.normalize());return m;}
+const equipmentBars=[];
+function addEquipmentBar(unit,z){
+  const bar=new THREE.Group();bar.name='Provisional bar: 86.6 in long, 60 in high';unit.add(bar);equipmentBars.push(bar);
+  equipmentRod(bar,1.1/24,51.6/12,0,60/12,z).rotation.z=Math.PI/2;
+  [-1,1].forEach(side=>equipmentRod(bar,2/24,17.5/12,side*34.55/12,60/12,z).rotation.z=Math.PI/2);
+}
+function makeRack(){
+  const unit=new THREE.Group();unit.name='Squat-rack placeholder';gRacks.add(unit);
+  const frame=new THREE.Group();frame.name='Frame (49 in outside, 43 in clear)';unit.add(frame);unit.userData.frame=frame;
+  const ru=RACK.upright,rx=(RACK.width-ru)/2,rz=(RACK.depth-ru)/2;
+  [-1,1].forEach(side=>{
+    [-1,1].forEach(end=>equipmentBox(frame,ru,RACK.height,ru,side*rx,RACK.height/2,end*rz));
+    [ru/2,RACK.height-ru/2].forEach(y=>equipmentBox(frame,ru,ru,RACK.depth-2*ru,side*rx,y,0));
+    // Provisional J-cups on the front pair, supporting the bar at 60 in centre height.
+    equipmentBox(unit,ru,2/12,5/12,side*rx,(60-0.55-1)/12,rz+2.5/12);
+    equipmentBox(unit,ru,3/12,1/12,side*rx,(60-0.55+0.5)/12,rz+4.5/12);
+    RACK.pegHeights.forEach(y=>{
+      const m=equipmentRod(unit,RACK.pegDiameter/2,RACK.peg,side*(RACK.width/2+RACK.peg/2),y,-rz);
+      m.name='Rear storage peg: 12 in beyond outer upright face';m.rotation.z=Math.PI/2;
+    });
+  });
+  [-1,1].forEach(end=>equipmentBox(frame,RACK.width-2*ru,ru,ru,0,RACK.height-ru/2,end*rz));
+  addEquipmentBar(unit,rz+2.5/12);return unit;
+}
+function makeMonolift(){
+  const unit=new THREE.Group();unit.name='Monolift placeholder (manufacturer reference, provisional here)';gMonolifts.add(unit);
+  const frame=new THREE.Group();frame.name='Provisional monolift frame';unit.add(frame);unit.userData.frame=frame;
+  const x=(MONO.width-5/12)/2,z=-10/12;
+  [-1,1].forEach(side=>{
+    equipmentBox(frame,5/12,3/12,MONO.depth,side*x,1.5/12,0);
+    equipmentBox(frame,4/12,93/12,4/12,side*x,49.5/12,z);
+    equipmentBeam(frame,[side*x,5/12,28/12],[side*x,40/12,z],3/12,3/12);
+    equipmentBox(frame,4/12,6/12,28/12,side*x,93/12,2/12);
+    // Swing arms and hooks: static, simplified shapes read from Tripp's reference silhouette.
+    equipmentBox(unit,3/12,30/12,3/12,side*23/12,75/12,14/12);
+    equipmentBox(unit,3/12,2/12,7/12,side*23/12,(60-0.55-1)/12,16/12);
+    equipmentBox(unit,3/12,3/12,1/12,side*23/12,(60-0.55+0.5)/12,19/12);
+    equipmentBeam(frame,[side*x,90/12,2/12],[side*x,104/12,-14/12],2/12,2/12);
+    const weight=new THREE.Mesh(new THREE.CylinderGeometry(5/12,5/12,3/12,16),rackSteel);
+    weight.rotation.z=Math.PI/2;weight.position.set(side*x,104/12,-14/12);frame.add(weight); // top reaches the 109 in reference envelope
+    [36/12,60/12].forEach(y=>{const peg=equipmentRod(unit,1/24,12/12,side*(MONO.width/2+0.5),y,-10/12);peg.rotation.z=Math.PI/2;});
+  });
+  equipmentBox(frame,MONO.width-5/12,3/12,4/12,0,1.5/12,-28/12);
+  [-10/12,14/12].forEach(depth=>equipmentBox(frame,MONO.width-5/12,6/12,4/12,0,93/12,depth));
+  equipmentRod(unit,2/12,36/12,-20/12,21/12,z,rackSteel);
+  equipmentRod(unit,1/12,24/12,-20/12,51/12,z); // schematic hydraulic jack
+  addEquipmentBar(unit,16/12);return unit;
+}
+const monolifts=Array.from({length:3},makeMonolift),racks=Array.from({length:2},makeRack),equipmentUnits=monolifts.concat(racks);
+// Local +z front points into the hall (-model X); local +x is viewer-right while facing M7.
+equipmentUnits.forEach((unit,i)=>{unit.rotation.y=-Math.PI/2;unit.userData.along=ROW[i];});
 function placeRack(){
   const along=+$('rackAlong').value,away=+$('rackAway').value;
-  rack.position.copy(V(XMAX-away,D-along,0));
-  $('rackAlongV').textContent=fmt(along);$('rackAwayV').textContent=fmt(away);
+  equipmentUnits.forEach(unit=>unit.position.copy(V(XMAX-away,D-unit.userData.along-along,0)));
+  $('rackAlongV').textContent=(along<0?'−':along>0?'+':'')+fmt(Math.abs(along));$('rackAwayV').textContent=fmt(away);
 }
 ['rackAlong','rackAway'].forEach(id=>$(id).oninput=placeRack);placeRack();
 
@@ -701,7 +747,7 @@ function setMode(m){st.mode=m;for(const b of bills)b.visible=true;document.query
 document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{setMode(b.dataset.mode);closeSheet();});
 
 function applyToggles(){
-  gEquipment.visible=$('tRack').checked;
+  gMonolifts.visible=$('tMono').checked;gRacks.visible=$('tRack').checked;equipmentBars.forEach(bar=>bar.visible=$('tBars').checked);
   gLabels.visible=$('tLabels').checked;gPart.visible=$('tPart').checked;gWallL.visible=st.mode!=='plan';gFloorL.visible=st.mode!=='walk';gPartW.visible=gLabels.visible&&st.mode!=='plan';gPartF.visible=gLabels.visible&&st.mode!=='walk';gCaps.visible=st.mode!=='walk';
   gCeil.visible=$('tCeil').checked&&st.mode==='walk';
   gGrid.visible=$('tGrid').checked;
@@ -710,17 +756,18 @@ function applyToggles(){
   Object.keys(skins).forEach(k=>{const s=skins[k],u=s.userData;if(u.photo&&ph)s.material=u.photo;else{if(u.plain)s.material=u.plain;s.material.color.setHex(z?u.tint:NEUTRAL);}});
   $('readout').hidden=!($('tRead').checked&&st.mode==='walk');
 }
-['tRack','tPhotos','tArt','tTrim','tMir','tRefl','tMe','tMark','tSect','tEye','tMeas','tLabels','tPart','tZones','tCeil','tGrid','tRead'].forEach(id=>$(id).onchange=applyToggles);
+['tMono','tRack','tBars','tPhotos','tArt','tTrim','tMir','tRefl','tMe','tMark','tSect','tEye','tMeas','tLabels','tPart','tZones','tCeil','tGrid','tRead'].forEach(id=>$(id).onchange=applyToggles);
 
 /* ---------- menu ---------- */
 const sheet=$('sheet'),menuBtn=$('menuBtn');
 function openSheet(){sheet.hidden=false;menuBtn.setAttribute('aria-expanded','true');$('closeBtn').focus();}
 function closeSheet(){const was=!sheet.hidden;sheet.hidden=true;menuBtn.setAttribute('aria-expanded','false');if(was&&sheet.contains(document.activeElement))focusView();}
 menuBtn.onclick=()=>{if(sheet.hidden){freeMouse();openSheet();}else closeSheet();};$('closeBtn').onclick=closeSheet;
-$('rackReset').onclick=()=>{$('rackAlong').value=24;$('rackAway').value=6;placeRack();};
+$('rackReset').onclick=()=>{$('rackAlong').value=0;$('rackAway').value=6;placeRack();};
 $('rackView').onclick=()=>{
-  $('tRack').checked=true;st.X=rack.position.x-12;st.Y=-rack.position.z;st.yaw=-Math.PI/2;st.pitch=-0.15;
-  kv.f=kv.s=0;setMode('walk');closeSheet();
+  // An oblique sightline clears the existing column without moving any architecture.
+  $('tRack').checked=$('tMono').checked=true;st.X=XMAX-(+$('rackAway').value)-44;st.Y=D-22-(+$('rackAlong').value)-8;st.yaw=-Math.atan2(44,8);st.pitch=-0.04;
+  kv.f=kv.s=0;setMode('walk');closeSheet();endIntro();dropHint();
 };
 
 /* ---------- input ---------- */
@@ -977,7 +1024,7 @@ markStat();
 // marks saved by the team, from the repository
 fetch('markups.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(d=>{if(!d||!d.batches)return;
   d.batches.forEach(b=>(b.strokes||[]).forEach(k=>{if(!skins[k.wall]||!Array.isArray(k.p)||!k.p.length)return;const t={wall:k.wall,z:+k.z||0,w:Math.min(1.5,Math.max(0.02,+k.w||0.1)),c:/^#[0-9a-f]{6}$/i.test(k.c)?k.c:MARK_COLS[0],p:k.p,by:b.by};showStroke(t);mark.saved.push(t);}));markStat();}).catch(()=>{});
-window.PPH={skins,state:st,setMode,setWallImage,setWallArt,avatar,mirror,setHead,mark,showStroke,VM,vmPose,equipment:gEquipment,rack,rackFrame};
+window.PPH={skins,state:st,setMode,setWallImage,setWallArt,avatar,mirror,setHead,mark,showStroke,VM,vmPose,equipment:gEquipment,racks,monolifts,equipmentBars};
 })();
 </script>
 
