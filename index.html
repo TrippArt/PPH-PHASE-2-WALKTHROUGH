@@ -282,6 +282,7 @@ const NEUTRAL=0xc9c6bf;
 const wallMat=new THREE.MeshLambertMaterial({color:NEUTRAL,side:THREE.DoubleSide});
 const trimMat=new THREE.MeshLambertMaterial({color:0xffffff});
 const glassMat=new THREE.MeshBasicMaterial({color:0x7d97a3});
+const blackMat=new THREE.MeshBasicMaterial({color:0x000000}); // an open doorway with nothing modelled behind it (the locker-room doors): solid black inside the cut, behind the trim
 const voidMat=new THREE.MeshBasicMaterial({color:0x07090a});
 const edgeMat=new THREE.LineBasicMaterial({color:0x2c3235});
 
@@ -314,6 +315,7 @@ function buildWall(def){
       localBox(fr,o.s0,o.s1,o.v1,o.v1+TRIM,0,0.08,trimMat,grp);
       if(o.kind==='window')localBox(fr,o.s0,o.s1,o.v0-TRIM,o.v0,0,0.08,trimMat,grp);}
     if(o.fill==='glass')localBox(fr,o.s0,o.s1,o.v0,o.v1,-T*0.6,-T*0.5,glassMat,grp);
+    else if(o.fill==='black')localBox(fr,o.s0,o.s1,o.v0,o.v1,-T*0.6,-T*0.5,blackMat,grp);
     else localBox(fr,o.s0,o.s1,o.v0,o.v1,-T-0.04,-T,voidMat,grp);
   });
   baseTrim(fr,def.w,doors,def.grp===gPart?gTrimP:gTrim);
@@ -344,7 +346,7 @@ F.M4=buildWall({id:'M4',left:[0,D,0],n:[0,-1,0],w:M4W,top:[[M4W,H],[0,H]],tint:Z
 F.BAND=buildWall({id:'B4',left:[M4W,D,0],n:[0,-1,0],w:BAND,top:flat(BAND,H),tint:ZONE_CONT});
 F.M7=buildWall({id:'M7',left:[XMAX,D,0],n:[-1,0,0],w:M7W,top:flat(M7W,H),tint:ZONE_M7,openings:[{kind:'door',fill:'void',noTrim:true,s0:M7W-10,s1:M7W,v0:0,v1:9}]});
 F.M8=buildWall({id:'M8',left:[XMAX,M8Y,0],n:[0,1,0],w:M8W,top:flat(M8W,H),tint:ZONE_M8,
-  openings:M8_DOORS.map(d=>({kind:'door',fill:'void',s0:d[0]/12,s1:d[1]/12,v0:0,v1:d[2]/12}))});
+  openings:M8_DOORS.map((d,i)=>({kind:'door',fill:i?'void':'black',s0:d[0]/12,s1:d[1]/12,v0:0,v1:d[2]/12}))}); // the first = the locker-room double doors: black inside the opening (Tripp 2026-10-12), the photo does not show through there
 F.EAST=buildWall({id:'East',left:[BOXN,M8Y,0],n:[0,1,0],w:BOXN-BX,top:flat(BOXN-BX,H)});
 F.BOXEND=buildWall({id:'BoxEnd',left:[BX,M8Y,0],n:[1,0,0],w:WALL1-M8Y,top:flat(WALL1-M8Y,H)});
 F.BOX=buildWall({id:'Box',left:[BX,WALL1,0],n:[0,1,0],w:8,top:flat(8,H)});
@@ -808,7 +810,7 @@ function setWallImage(id,url){const s=skins[id];if(!s)return;loader.load(url,t=>
   u.photo=new THREE.MeshBasicMaterial({map:t,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2});
   // the same photo shows through the door and window openings
   const fm=new THREE.MeshBasicMaterial({map:t});
-  (u.ops||[]).forEach(o=>{const g=new THREE.PlaneGeometry(o.s1-o.s0,o.v1-o.v0);g.translate((o.s0+o.s1)/2,(o.v0+o.v1)/2,-0.03);
+  (u.ops||[]).filter(o=>o.fill!=='black').forEach(o=>{const g=new THREE.PlaneGeometry(o.s1-o.s0,o.v1-o.v0);g.translate((o.s0+o.s1)/2,(o.v0+o.v1)/2,-0.03);
     const p=g.attributes.position,q=g.attributes.uv;for(let i=0;i<p.count;i++)q.setXY(i,p.getX(i)/u.width,Math.max(p.getY(i),u.pad||0)/u.height);
     g.applyMatrix4(u.fr);gFill.add(new THREE.Mesh(g,fm));});
   applyToggles();});}
