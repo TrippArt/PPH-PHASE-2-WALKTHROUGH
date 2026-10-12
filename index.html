@@ -88,6 +88,8 @@ button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid
 .seg.two{grid-template-columns:1fr 1fr}
 #sheet p.note{color:var(--ink-dim);font-size:13px;margin-top:8px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.rackSlider{display:block;margin:12px 0;color:var(--provisional);font-variant-numeric:tabular-nums}
+.rackSlider input{display:block;width:100%;margin:8px 0;accent-color:var(--provisional);min-height:32px}
 .seg button,.grid2 button{border:1px solid var(--line);background:var(--panel-2);color:var(--ink);border-radius:8px;padding:11px 8px;font:inherit;font-size:14px;cursor:pointer;text-align:center}
 .seg button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#06211d;font-weight:600}
 .checks{display:flex;flex-direction:column;gap:2px}
@@ -165,6 +167,15 @@ details[open] summary{margin-bottom:8px}
       <label><input type="checkbox" id="tRead" checked> Distance from each wall</label>
     </div>
   </section>
+  <section id="rackControls"><h2>Rack placeholder</h2>
+    <div class="checks"><label><input type="checkbox" id="tRack" checked> Show one rack near the Viper</label></div>
+    <p class="note">Tripp supplied: 49″ outside width, 89″ height, 3″ uprights; 43″ clear inside (derived). Rear pegs extend 12″ beyond each side.</p>
+    <p class="note" style="color:var(--provisional)">Provisional: 48″ outside depth, four square posts, simple rails, two 1″ diameter pegs per side at 36″ and 60″. Placement and facing direction are provisional. Visual only: you can walk through it.</p>
+    <label class="rackSlider" for="rackAlong">From B4 | M7 corner: <output id="rackAlongV">24′</output><input type="range" id="rackAlong" min="8" max="40" step="0.5" value="24"></label>
+    <label class="rackSlider" for="rackAway">Centre from Viper wall: <output id="rackAwayV">6′</output><input type="range" id="rackAway" min="4" max="14" step="0.5" value="6"></label>
+    <div class="grid2"><button id="rackView">Look at rack</button><button id="rackReset">Reset placement</button></div>
+    <p class="note">Floor level; back toward M7, front toward the hall. Moves last until refresh. Reset restores 24′ along and 6′ from the wall.</p>
+  </section>
   <section><h2>How to move</h2>
     <ul>
       <li><b>Phone or tablet:</b> touch anywhere and push up to walk forward, pull down to back up, slide sideways to turn. A short push walks at the regular pace. Push all the way up and you move twice as fast.</li>
@@ -210,7 +221,7 @@ details[open] summary{margin-bottom:8px}
       <li>Measure puts a tape on the 5′9″ eye line of every wall. It counts in feet from the wall's left end as you face it, with a number every 5′, and each end carries the wall's full width and height. The tag above the dot gives the wall you are looking at, its width and height, and how far the dot is from the left and right ends. M4 and B4 are one wall, so their tape runs 0 to 195′ without a break. Heights are floor to ceiling: 12′11″ under the low ceiling, 13′7″ elsewhere.</li>
       <li>The high ceiling carries the black 2′ × 2′ tile ceiling on one continuous grid starting at the B2 | B3 corner. Where the real grid starts is not measured. The low ceiling by B2 stays white, as in the B3 photo. Lights are not modeled.</li>
       <li>Wall thickness is 6″ for looks only.</li>
-      <li>Not in this model: the lobby side of B2 (M2), equipment, the hallway to Zone 4.</li>
+      <li>Not in this model: the lobby side of B2 (M2), other equipment, the hallway to Zone 4. The one rack is a provisional foreground placeholder; see its menu controls.</li>
     </ul>
   </details>
 </aside>
@@ -288,6 +299,38 @@ const edgeMat=new THREE.LineBasicMaterial({color:0x2c3235});
 const gArch=new THREE.Group(),gSkins=new THREE.Group(),gCeil=new THREE.Group(),gGrid=new THREE.Group(),gPart=new THREE.Group(),gLabels=new THREE.Group(),gWallL=new THREE.Group(),gFloorL=new THREE.Group();gLabels.add(gWallL,gFloorL);
 const gPartW=new THREE.Group(),gPartF=new THREE.Group(),gCaps=new THREE.Group();gPart.add(gPartW,gPartF);const gFill=new THREE.Group(),gArt=new THREE.Group(),gEye=new THREE.Group(),gEyeP=new THREE.Group(),gTape=new THREE.Group(),gTapeP=new THREE.Group();gPart.add(gEyeP,gTapeP);const gTrim=new THREE.Group(),gTrimP=new THREE.Group(),gMirror=new THREE.Group(),gMirL=new THREE.Group();gPart.add(gTrimP);gMirror.add(gMirL);scene.add(gTrim,gMirror);scene.add(gTape);scene.add(gEye);scene.add(gArch,gSkins,gCeil,gGrid,gLabels,gPart,gCaps,gFill,gArt);
 const skins={}; // id → mesh; photo and artwork textures attach here later
+
+/* ---------- foreground equipment: independent of architecture, artwork and wall hit tests ---------- */
+const gEquipment=new THREE.Group();gEquipment.name='Foreground equipment';scene.add(gEquipment);
+const rack=new THREE.Group();rack.name='One squat-rack placeholder';gEquipment.add(rack);
+// Inches supplied by Tripp; these do not change the architectural measurement block.
+const RACK={width:49/12,height:89/12,upright:3/12,peg:12/12,
+  depth:48/12,pegDiameter:1/12,pegHeights:[36/12,60/12]};
+// All construction choices other than width, height, upright thickness and peg projection are PROVISIONAL.
+const rackFrame=new THREE.Group();rackFrame.name='Frame (49 in outside, 43 in clear)';rack.add(rackFrame);
+const rackSteel=new THREE.MeshLambertMaterial({color:0x727d83});
+const rackPegMat=new THREE.MeshLambertMaterial({color:0xb9c1c5});
+function rackBox(w,h,d,x,y,z){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),rackSteel);m.position.set(x,y,z);rackFrame.add(m);return m;}
+const ru=RACK.upright,rx=(RACK.width-ru)/2,rz=(RACK.depth-ru)/2;
+[-1,1].forEach(side=>{
+  [-1,1].forEach(end=>rackBox(ru,RACK.height,ru,side*rx,RACK.height/2,end*rz));
+  // Provisional top and floor side rails, within the 48 in outside depth.
+  [ru/2,RACK.height-ru/2].forEach(y=>rackBox(ru,ru,RACK.depth-2*ru,side*rx,y,0));
+});
+[-1,1].forEach(end=>rackBox(RACK.width-2*ru,ru,ru,0,RACK.height-ru/2,end*rz));
+const rackPegGeo=new THREE.CylinderGeometry(RACK.pegDiameter/2,RACK.pegDiameter/2,RACK.peg,12);
+[-1,1].forEach(side=>RACK.pegHeights.forEach(y=>{
+  const m=new THREE.Mesh(rackPegGeo,rackPegMat);m.name='Provisional rear storage peg';m.rotation.z=Math.PI/2;
+  // Projection datum is the outside upright face: 12 in outward on BOTH sides (73 in overall envelope).
+  m.position.set(side*(RACK.width/2+RACK.peg/2),y,-rz);rack.add(m);
+}));
+rack.rotation.y=-Math.PI/2; // local +z front points into the hall (-model X); rear is toward M7
+function placeRack(){
+  const along=+$('rackAlong').value,away=+$('rackAway').value;
+  rack.position.copy(V(XMAX-away,D-along,0));
+  $('rackAlongV').textContent=fmt(along);$('rackAwayV').textContent=fmt(away);
+}
+['rackAlong','rackAway'].forEach(id=>$(id).oninput=placeRack);placeRack();
 
 function shapeOf(pts,holes){const s=new THREE.Shape();pts.forEach((p,i)=>i?s.lineTo(p[0],p[1]):s.moveTo(p[0],p[1]));s.closePath();
   (holes||[]).forEach(h=>{const p=new THREE.Path();p.moveTo(h[0],h[1]);p.lineTo(h[2],h[1]);p.lineTo(h[2],h[3]);p.lineTo(h[0],h[3]);p.closePath();s.holes.push(p);});return s;}
@@ -658,6 +701,7 @@ function setMode(m){st.mode=m;for(const b of bills)b.visible=true;document.query
 document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{setMode(b.dataset.mode);closeSheet();});
 
 function applyToggles(){
+  gEquipment.visible=$('tRack').checked;
   gLabels.visible=$('tLabels').checked;gPart.visible=$('tPart').checked;gWallL.visible=st.mode!=='plan';gFloorL.visible=st.mode!=='walk';gPartW.visible=gLabels.visible&&st.mode!=='plan';gPartF.visible=gLabels.visible&&st.mode!=='walk';gCaps.visible=st.mode!=='walk';
   gCeil.visible=$('tCeil').checked&&st.mode==='walk';
   gGrid.visible=$('tGrid').checked;
@@ -666,13 +710,18 @@ function applyToggles(){
   Object.keys(skins).forEach(k=>{const s=skins[k],u=s.userData;if(u.photo&&ph)s.material=u.photo;else{if(u.plain)s.material=u.plain;s.material.color.setHex(z?u.tint:NEUTRAL);}});
   $('readout').hidden=!($('tRead').checked&&st.mode==='walk');
 }
-['tPhotos','tArt','tTrim','tMir','tRefl','tMe','tMark','tSect','tEye','tMeas','tLabels','tPart','tZones','tCeil','tGrid','tRead'].forEach(id=>$(id).onchange=applyToggles);
+['tRack','tPhotos','tArt','tTrim','tMir','tRefl','tMe','tMark','tSect','tEye','tMeas','tLabels','tPart','tZones','tCeil','tGrid','tRead'].forEach(id=>$(id).onchange=applyToggles);
 
 /* ---------- menu ---------- */
 const sheet=$('sheet'),menuBtn=$('menuBtn');
 function openSheet(){sheet.hidden=false;menuBtn.setAttribute('aria-expanded','true');$('closeBtn').focus();}
 function closeSheet(){const was=!sheet.hidden;sheet.hidden=true;menuBtn.setAttribute('aria-expanded','false');if(was&&sheet.contains(document.activeElement))focusView();}
 menuBtn.onclick=()=>{if(sheet.hidden){freeMouse();openSheet();}else closeSheet();};$('closeBtn').onclick=closeSheet;
+$('rackReset').onclick=()=>{$('rackAlong').value=24;$('rackAway').value=6;placeRack();};
+$('rackView').onclick=()=>{
+  $('tRack').checked=true;st.X=rack.position.x-12;st.Y=-rack.position.z;st.yaw=-Math.PI/2;st.pitch=-0.15;
+  kv.f=kv.s=0;setMode('walk');closeSheet();
+};
 
 /* ---------- input ---------- */
 const coarse=window.matchMedia&&matchMedia('(pointer:coarse)').matches;
@@ -928,7 +977,7 @@ markStat();
 // marks saved by the team, from the repository
 fetch('markups.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(d=>{if(!d||!d.batches)return;
   d.batches.forEach(b=>(b.strokes||[]).forEach(k=>{if(!skins[k.wall]||!Array.isArray(k.p)||!k.p.length)return;const t={wall:k.wall,z:+k.z||0,w:Math.min(1.5,Math.max(0.02,+k.w||0.1)),c:/^#[0-9a-f]{6}$/i.test(k.c)?k.c:MARK_COLS[0],p:k.p,by:b.by};showStroke(t);mark.saved.push(t);}));markStat();}).catch(()=>{});
-window.PPH={skins,state:st,setMode,setWallImage,setWallArt,avatar,mirror,setHead,mark,showStroke,VM,vmPose};
+window.PPH={skins,state:st,setMode,setWallImage,setWallArt,avatar,mirror,setHead,mark,showStroke,VM,vmPose,equipment:gEquipment,rack,rackFrame};
 })();
 </script>
 
