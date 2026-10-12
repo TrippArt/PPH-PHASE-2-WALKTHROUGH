@@ -14,7 +14,7 @@ Live site: https://trippart.github.io/PPH-PHASE-2-WALKTHROUGH/ (GitHub Pages ser
 | `tex/trim.png`, `tex/mirror.png` | Tiles the page repeats, GENERATED | Never by hand |
 | `tex/` (other files) | Wall photos and the ceiling tile (JPEG) | Only when asked |
 | `art/` | Tripp's designs, transparent PNGs, long side at most 8192 px | Only when asked |
-| `avatar/head.png` | The front of the walker's head: a square PNG, see `avatar/README.md`. A placeholder face is drawn until it exists | Only when asked |
+| `avatar/head.png` | The walker's head (Michael): a transparent cutout PNG hung on the neck as a thin plate, see `avatar/README.md`. A square PNG is painted onto the block head instead; a placeholder face is drawn until the file exists | Only when asked |
 | `sm/` | Phone copies of the heavy images, long side 4096 px | Keep in step with `art/` and `tex/` |
 | `tools/make_spec.py`, `tools/make_layers.py` | Generators (Python 3 + Pillow) | Yes, if the task is about them |
 | `markups.json` | The team's wall markups, written by the markup bot from "[markup]" issues (`.github/workflows/markups.yml` + `tools/add_markup.py`). Capped at 200 KB; past that it resets | Only to delete marks, and only when asked |

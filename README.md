@@ -9,7 +9,7 @@ A static site with no build step. `index.html` at the root is the whole app; it 
 | `tex/` | Wall, ceiling and bulkhead textures (JPEG) |
 | `art/` | Band and mural artwork as transparent PNGs, web size (long side capped at 8192 px) |
 | `sm/` | Phone-size copies (long side 4096 px) of the heavier art and textures |
-| `avatar/` | `head.png`, the front of the walker's blocky head (square PNG). See `avatar/README.md` |
+| `avatar/` | `head.png`, the walker's head (Michael's hat-and-beard cutout, hung as a plate on the blocky body). See `avatar/README.md` |
 | `markups.json` | Wall markups saved by the team. The page's Save button opens a GitHub issue; `.github/workflows/markups.yml` runs `tools/add_markup.py`, which appends the strokes here and closes the issue. Capped at 200 KB, then it resets |
 | `layers/` | Overlay PNGs at exact canvas px (10 px = 1 in): `trim/` the bottom trim, `mirrors/` the B4 mirrors, `doors/` each door cut from its wall photo, `sections/` the pink Wall 4 section guides. Built by `tools/make_layers.py` |
 
