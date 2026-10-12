@@ -683,7 +683,21 @@
    },
    "keepouts": [
     {
-     "what": "door 1, 28 x 80 in",
+     "what": "door 1, 72 x 80 in",
+     "kind": "door",
+     "casing_px": 40,
+     "x_px": [
+      40,
+      760
+     ],
+     "from_floor_px": [
+      0,
+      800
+     ],
+     "status": "read off the M8 photo, which is stretched to the V4 width; close enough per Tripp"
+    },
+    {
+     "what": "door 2, 28 x 80 in",
      "kind": "door",
      "casing_px": 40,
      "x_px": [
@@ -697,7 +711,7 @@
      "status": "read off the M8 photo, which is stretched to the V4 width; close enough per Tripp"
     },
     {
-     "what": "door 2, 29 x 81.5 in",
+     "what": "door 3, 29 x 81.5 in",
      "kind": "door",
      "casing_px": 40,
      "x_px": [
@@ -711,7 +725,7 @@
      "status": "read off the M8 photo, which is stretched to the V4 width; close enough per Tripp"
     },
     {
-     "what": "door 3, 27 x 81.5 in",
+     "what": "opening at the right end, 27 x 81.5 in",
      "kind": "door",
      "casing_px": 40,
      "x_px": [
@@ -725,7 +739,7 @@
      "status": "read off the M8 photo, which is stretched to the V4 width; close enough per Tripp"
     },
     {
-     "what": "opening at the right end, 60 x 96 in",
+     "what": "door 5, 60 x 96 in",
      "kind": "door",
      "casing_px": 40,
      "x_px": [
@@ -749,7 +763,7 @@
      ],
      "runs_x_px": [
       [
-       0,
+       800,
        4320
       ],
       [
