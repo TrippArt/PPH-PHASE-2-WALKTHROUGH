@@ -127,7 +127,7 @@ details[open] summary{margin-bottom:8px}
 
 <aside id="sheet" hidden aria-label="Menu">
   <header>
-    <div><h1>PPH Zone 3</h1><p class="sub">Walkthrough V2 · every wall and corner named · site photos on M4, the Viper, the Tiger, B3, B2 and Wall 1 · designs on B2, B3, the Viper and the Tiger · bottom trim on every wall · planned mirrors under the B4 Mirror Band that reflect the room, with you in them as a blocky figure · your arms and legs in view as you walk · draw on the walls with the right mouse button and save the marks for the team · pink section lines on M4 + B4 · tape measure on the eye line · planning model, not a survey</p></div>
+    <div><h1>PPH Zone 3</h1><p class="sub">Walkthrough V2 · every wall and corner named · site photos on the Viper, the Tiger, B3, B2 and Wall 1 · designs on M4, the B4 Mirror Band, B2, B3, the Viper and the Tiger · bottom trim on every wall · planned mirrors under the B4 Mirror Band that reflect the room, with you in them as a blocky figure · your arms and legs in view as you walk · draw on the walls with the right mouse button and save the marks for the team · pink section lines on M4 + B4 · tape measure on the eye line · planning model, not a survey</p></div>
     <button id="closeBtn">Close</button>
   </header>
   <section><h2>View</h2>
@@ -214,11 +214,11 @@ details[open] summary{margin-bottom:8px}
       <li>The females room partition is planned. Its length, depth (11′) and height (10′) are placeholders.</li>
       <li>M8 is set in line with the end of M7, about 2′ in from the B2 line.</li>
       <li>B3 openings are placed by working back from the M4 corner. B2 opening top is 6′7½″ with a 4″ casing until scaled from the photo.</li>
-      <li>Four columns, each 12½″ across and 19′2″ from M4, in one line down the hall. Column 1 is assumed on the Wall 1 line, 39′1″ from B3, and the others repeat that spacing.</li>
+      <li>Four columns, each 22½″ across (1.8 × the earlier 12½″, Tripp, 12 October) and 19′2″ from M4, in one line down the hall. Column 1 is assumed on the Wall 1 line, 39′1″ from B3, and the others repeat that spacing.</li>
       <li>The B4 mirrors reflect the room for real: every frame the model is drawn once more from a camera mirrored through the glass, so you see the far walls, the ceiling and the floor behind you as a mirror would show them (lettering reads backwards, as it should). You appear in them as a simple blocky figure at the 5′9″ eye line, about 6′2″ tall. Its arms and legs hold one of three positions and switch only while you are moving, with the keys or with a finger. The face is <code>avatar/head.png</code>: Michael's head, hat and beard as a transparent cutout, hung on the neck as a thin plate in front of the block head so the mirror sees it from any angle (a square picture would be painted onto the front of the block instead). Overview and Plan show the figure standing where you are. While you walk, your own forearms hang under your shoulders just inside the bottom corners of the screen and swing with your steps; look down a little and you see more of them, then your body and feet, as in a game. The tee is white with PUMP IT! on the chest.</li>
       <li>Wall markups: anyone can draw on a wall with the right mouse button. Saved marks live in <code>markups.json</code> in the repository, written by a bot from the GitHub issue the Save button opens, with the author's GitHub name. The file is capped at 200 KB; when a save would push it past that, every earlier mark is erased and the site starts again with that save.</li>
       <li>Wall photos are stretched to fit the measured walls, with doors and windows pinned to their measured positions. The Viper (M7), the Tiger (M8), B3, B2 with its bulkhead and Wall 1 carry photos so far. The M8 photo is stretched to the V4 width. Its three doors (about 28″ wide, 6′8″ to 6′10″ high) and the 5′ × 8′ opening at its right end are cut out of the wall where the photo shows them, so the trim and the designs stop there. The locker-room double doors at its far left, their left edge on the Viper corner (Tripp, 12 October), are cut as a standard 6′ × 6′8″ pair; they are not in the photo and their size is provisional. The M8 windows are not cut.</li>
-      <li>Designs are Tripp's Photoshop canvas exports from 11 October, laid over the photos on B2, the B2 bulkhead, B3, the Viper and the Tiger. M4 and B4 have no design yet. Phones and tablets load 4096 px copies; computers load the full exports.</li>
+      <li>Designs are Tripp's Photoshop canvas exports from 11 October, laid over the photos on B2, the B2 bulkhead, B3, the Viper and the Tiger. M4 and B4 carry Tripp's fixed three-section design from 12 October, cut at the 49′ line (M4 is Section 1, B4 runs Sections 2 to 4 to the Viper corner), over his background wall colour, with the bottom trim and the mirrors in front. Phones and tablets load 4096 px copies; computers load the full exports.</li>
       <li>The M4 mural photo is laid on unstretched, floor to ceiling from the B3 corner. At that size it is about 50′6″ long, so its last 1′6″ of foliage and blue wall runs past the 49′ mark onto B4.</li>
       <li>The Wall 1 doorway is new and comes from the photo: about 3′1½″ wide and 6′9″ high, with its near edge about 7½″ from the bulkhead. The photo is pinned to the bulkhead edge and underside, and the spare length is taken up in the blank wall left of the doorway.</li>
       <li>On B2 the photo stops about 2′ short of the Wall 1 corner, so the curved end is stretched to reach it. B3 Window 1 is squeezed to its measured 7′; in the photo it looks the same size as Window 2.</li>
@@ -254,7 +254,7 @@ const MIR_H=8, MIR_IN=9, MIR_W=48, MIR_OUT=BAND-MIR_IN-MIR_W; // B4 mirrors: 8 f
 const SEC=M4W;                    // Wall 4 sections: every section is the M4 width and height (Tripp 10-11); Section 4 runs 1 ft past the M7 corner on its canvas
 const M8_DOORS=[[4,76,80],[436,464,80],[612,641,81.5],[650,677,81.5],[796,856,96]]; // M8 openings in inches from the M8 left end: left, right, top. The first = the locker-room double doors at the far left, their left edge on the M7 corner (Tripp 2026-10-12; standard 6 ft x 6 ft 8 in assumed, not in the photo, PROVISIONAL). The rest are read off the M8 photo (stretched to the V4 width)
 const M8_PHOTO_PAD=5/12;          // the bottom 5 in of the M8 photo is white padding, not floor; doorways start their image above it
-const COL_D=12.5/12, COL_FAR=ft(19,2);
+const COL_D=22.5/12, COL_FAR=ft(19,2); // column diameter 1.8 x the earlier 12.5 in (Tripp 2026-10-12)
 const M7W=ft(58,8), M8W=ft(71,11), M6W=ft(35,5);
 const BOXN=XMAX-M8W;          // where M8 starts
 const BX=W+M6W+8;            // box end: the box is about 8 ft longer than the females partition (Tripp)
@@ -920,13 +920,14 @@ function setWallArt(id,url){const s=skins[id];if(!s)return;loader.load(url,t=>{p
 // a photo laid flat over a stretch of wall at its own proportions, free to run past the end of one named wall
 function addPhotoPlane(fr,s0,s1,v0,v1,url){loader.load(url,t=>{prep(t);const g=new THREE.PlaneGeometry(s1-s0,v1-v0);g.translate((s0+s1)/2,(v0+v1)/2,0.03);g.applyMatrix4(fr);
   gFill.add(new THREE.Mesh(g,new THREE.MeshBasicMaterial({map:t,polygonOffset:true,polygonOffsetFactor:-3,polygonOffsetUnits:-3})));});}
-addPhotoPlane(F.M4,0,H*3.72093,0,H,'tex/M4.jpg');
+// M4 used to carry tex/M4.jpg here as a fit-height photo plane (50 ft 6.5 in, past the 49 ft line). Tripp's M4 mural in art/M4.png replaces it (2026-10-12); the file stays in tex/.
 // full-size images on computers; 4096 px copies on phones and tablets, which run out of graphics memory on the big ones
 const BIG=(coarse||renderer.capabilities.maxTextureSize<8192)?'sm/':'';
-const PHOTOS={M7:'tex/M7.jpg',B3:'tex/B3.jpg',B2:'tex/B2.jpg',B2_bulkhead:'tex/B2_bulkhead.jpg',Wall1:'tex/Wall1.jpg',M8:BIG+'tex/M8.jpg'};
+// M4 and B4: Tripp's wall background colour (PSD layer WALL BK COLOR_Tripp, 2026-10-12) sits under the designs, in the photo slot
+const PHOTOS={M4:'tex/M4_wall.jpg',B4:'tex/B4_wall.jpg',M7:'tex/M7.jpg',B3:'tex/B3.jpg',B2:'tex/B2.jpg',B2_bulkhead:'tex/B2_bulkhead.jpg',Wall1:'tex/Wall1.jpg',M8:BIG+'tex/M8.jpg'};
 skins.M8.userData.pad=M8_PHOTO_PAD;
 Object.keys(PHOTOS).forEach(k=>setWallImage(k,PHOTOS[k]));
-const ART={B2:'art/B2.png',B2_bulkhead:'art/B2_bulkhead.png',B3:'art/B3.png',B4:'art/B4.png',M7:'art/M7.png',M8:'art/M8.png'}; // B4 = the 3-section Mirror Band composite (rough v01, 2026-10-11), trimmed to the 146 ft wall with the Viper scales pinned at the M7 corner
+const ART={M4:'art/M4.png',B2:'art/B2.png',B2_bulkhead:'art/B2_bulkhead.png',B3:'art/B3.png',B4:'art/B4.png',M7:'art/M7.png',M8:'art/M8.png'}; // M4 + B4 = Tripp's fixed 3-section design (PSD layer PNG OF ALL ART_1, 2026-10-12), cut at the 49 ft line: M4 = Section 1, B4 = Sections 2-4 across the 146 ft wall to the M7 corner; the baked-in mirror glass is cleared, the 3D mirrors draw it
 Object.keys(ART).forEach(k=>setWallArt(k,BIG+ART[k]));
 /* ---------- eye-level line and view circle ---------- */
 const eyeMat=new THREE.MeshBasicMaterial({color:0xffe14a,fog:false,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-6,polygonOffsetUnits:-6});

@@ -377,8 +377,8 @@
       "ratio": 3.607,
       "ratio_text": "3.607 : 1"
      },
-     "art_file": null,
-     "tex": "tex/M4.jpg",
+     "art_file": "art/M4.png",
+     "tex": "tex/M4_wall.jpg",
      "layers": {
       "trim": "layers/trim/M4.png",
       "sections": "layers/sections/M4.png"
@@ -522,8 +522,8 @@
      "ratio": 10.748,
      "ratio_text": "10.748 : 1"
     },
-    "art_file": null,
-    "tex": null
+    "art_file": "art/B4.png (web copy 8192 x 762, Sections 2-4 as one image to the M7 corner)",
+    "tex": "tex/B4_wall.jpg"
    },
    "layers": {
     "trim": "layers/trim/M4-B4.png",

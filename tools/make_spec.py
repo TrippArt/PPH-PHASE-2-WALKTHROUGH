@@ -112,7 +112,7 @@ def clip(a, b, s0, s1):                                   # a range in Wall 4 fe
     lo, hi = max(a, s0), min(b, s1)
     return [px(lo - s0), px(hi - s0)] if hi > lo else None
 sections = [{"section": 1, "id": "M4", "aliases": ["Wall 4 Section 1"], "what": "the existing painted M4 mural. DO NOT regenerate it.",
-             "x_px": [0, px(M4W)], **dims(M4W, H, "49 ft per Tripp Oct 2026"), "art_file": None, "tex": "tex/M4.jpg",
+             "x_px": [0, px(M4W)], **dims(M4W, H, "49 ft per Tripp Oct 2026"), "art_file": "art/M4.png", "tex": "tex/M4_wall.jpg",
              "layers": {"trim": "layers/trim/M4.png", "sections": "layers/sections/M4.png"}}]
 for i in range(1, NSEC):
     s0, s1 = i * sec, (i + 1) * sec
@@ -133,7 +133,7 @@ walls.append({"wall": 4, "id": "M4+B4", "aliases": ["M4", "B4", "B4 Mirror Band"
   "section_naming_status": "CONFIRMED by Tripp 2026-10-11: the band right of M4 is B4, called the B4 Mirror Band. B5 is the band on the box face over M6 and is a different wall. Sections (Tripp 10-11): every section is the M4 size, 49 ft x 13 ft 7 in; Section 1 = M4, Sections 2 to 4 = B4-1, B4-2, B4-3. Pink dotted lines and tags mark them on the wall.",
   "section_lines": {"x_px": [px(k * sec) for k in range(1, NSEC)], "layer": "layers/sections/M4-B4.png",
                     "look": "thin bright pink dotted vertical lines at each split, a small pink SECTION n tag at the top right of each section"},
-  "whole_B4": {"id": "B4", "name": "B4 Mirror Band", "x_px": [px(M4W), px(XMAX)], **dims(BAND, H, "146 ft per Tripp Oct 2026, taped 146 ft 0 1/2 in"), "art_file": None, "tex": None},
+  "whole_B4": {"id": "B4", "name": "B4 Mirror Band", "x_px": [px(M4W), px(XMAX)], **dims(BAND, H, "146 ft per Tripp Oct 2026, taped 146 ft 0 1/2 in"), "art_file": "art/B4.png (web copy 8192 x 762, Sections 2-4 as one image to the M7 corner)", "tex": "tex/B4_wall.jpg"},
   "layers": {"trim": "layers/trim/M4-B4.png", "mirrors": "layers/mirrors/M4-B4.png", "sections": "layers/sections/M4-B4.png"},
   "keepouts": [
     {"what": "mirrors under the B4 Mirror Band, not paintable. Their own layer over the design.", "x_px": [px(MIR0), px(MIR1)],

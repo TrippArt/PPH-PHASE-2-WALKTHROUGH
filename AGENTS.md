@@ -40,7 +40,7 @@ Live site: https://trippart.github.io/PPH-PHASE-2-WALKTHROUGH/ (GitHub Pages ser
 
 Search for these names: the measurement block (constants) · `buildWall` (walls, openings, casing) · `baseTrim` (bottom trim) · `MIR_S0` (mirrors) · `buildLabels` (wall names, notes, corners) · `buildSections` (pink section lines and tags) · `SPOTS` (the "Stand at" menu) · `applyToggles` (menu checkboxes) · `renderMirror` (the live reflection in the B4 mirrors) · `avatar`, `updateAvatar` and `avatarView` (the blocky figure, its three-position walk, first-person arms) · `markTick`, `showStroke` and `markSave` (right-mouse wall markups and the save-to-issue flow) · `PHOTOS` and `ART` (which image goes on which wall) · `RUNS` (the tape measure).
 
-Designs attach to a whole wall skin (`ART` map). B4 carries `art/B4.png`, the three-section Mirror Band composite as one image across the 146 ft wall (a rough, trimmed to length with the Viper scales pinned at the M7 corner). The B4 sections do not have their own skins yet. If a task needs per-section artwork on B4, propose the approach in the pull request before building it.
+Designs attach to a whole wall skin (`ART` map). M4 carries `art/M4.png` (Section 1) and B4 carries `art/B4.png` (Sections 2 to 4 as one image across the 146 ft wall to the M7 corner): Tripp's fixed three-section design of 12 October, cut at the 49 ft line. Under both sits Tripp's background wall colour (`tex/M4_wall.jpg`, `tex/B4_wall.jpg`, loaded in the `PHOTOS` slot); the trim and mirrors stand in front. The B4 sections do not have their own skins yet. If a task needs per-section artwork on B4, propose the approach in the pull request before building it.
 
 ## Test before you open the pull request
 
