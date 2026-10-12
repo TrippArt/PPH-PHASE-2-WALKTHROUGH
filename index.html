@@ -31,6 +31,16 @@ button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid
 #readout{position:fixed;left:calc(env(safe-area-inset-left,0px) + 12px);bottom:calc(env(safe-area-inset-bottom,0px) + 10px);font-family:var(--font-sign);font-weight:500;font-size:14px;letter-spacing:.04em;color:var(--ink);background:rgba(13,16,18,.6);padding:5px 10px;border-radius:6px;pointer-events:none;font-variant-numeric:tabular-nums;z-index:3;max-width:calc(100% - 236px)}
 #hint{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 56px);width:max-content;max-width:calc(100% - 32px);text-align:center;font-size:15px;line-height:1.4;background:rgba(13,16,18,.82);border:1px solid var(--line);padding:10px 16px;border-radius:10px;pointer-events:none;transition:opacity .6s;z-index:3}
 #hint.gone{opacity:0}
+@media (max-width:640px){#hint{bottom:calc(env(safe-area-inset-bottom,0px) + 162px)}} /* clears the view switch on phones */
+/* view switch, lower left: a small shifter gate, the knob sits in the active view's slot */
+#shift{position:fixed;left:calc(env(safe-area-inset-left,0px) + 12px);bottom:calc(env(safe-area-inset-bottom,0px) + 64px);display:flex;flex-direction:column;padding:5px 9px 5px 6px;background:rgba(13,16,18,.62);border:1px solid var(--line);border-radius:12px;z-index:4;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+#shift::before{content:'';position:absolute;left:14px;top:16px;bottom:16px;width:2px;border-radius:1px;background:rgba(255,255,255,.28)}
+#shift button{position:relative;display:flex;align-items:center;gap:7px;height:24px;padding:0;border:0;background:none;color:var(--ink-dim);font:inherit;font-size:11px;letter-spacing:.03em;cursor:pointer;text-align:left;white-space:nowrap}
+#shift button i{width:18px;height:18px;flex:none;display:grid;place-items:center}
+#shift button i::after{content:'';width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.45);transition:all .18s}
+#shift button[aria-pressed="true"]{color:var(--ink);font-weight:600}
+#shift button[aria-pressed="true"] i::after{width:15px;height:15px;background:var(--accent);box-shadow:0 0 0 2px rgba(13,16,18,.9),0 1px 4px rgba(0,0,0,.6)}
+@media (prefers-reduced-motion:reduce){#shift button i::after{transition:none}}
 #quick{position:fixed;right:calc(env(safe-area-inset-right,0px) + 10px);bottom:calc(env(safe-area-inset-bottom,0px) + 10px);display:flex;gap:6px;z-index:4}
 #quick button{border:1px solid var(--line);background:rgba(21,26,28,.78);color:var(--ink);border-radius:6px;padding:6px 9px;font-family:var(--font-sign);font-weight:500;font-size:13px;letter-spacing:.04em;cursor:pointer;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 #quick button[aria-pressed="true"]{background:var(--derived);border-color:var(--derived);color:#241b00;font-weight:600}
@@ -61,6 +71,12 @@ button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid
 #intro .skip{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 64px);text-align:center;font-size:14px;color:var(--ink-dim);letter-spacing:.04em}
 @media (prefers-reduced-motion:reduce){#intro .tips{animation:none!important}#intro,#intro .card{transition:none}}
 #markBtn{position:fixed;top:calc(env(safe-area-inset-top,0px) + 12px);left:calc(env(safe-area-inset-left,0px) + 12px);width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:rgba(21,26,28,.78);display:grid;place-items:center;cursor:pointer;z-index:5;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+#markBar{position:fixed;top:calc(env(safe-area-inset-top,0px) + 12px);left:calc(env(safe-area-inset-left,0px) + 12px);display:flex;align-items:center;gap:8px;z-index:5}
+#markBar>#markBtn{position:static}
+#markBar .pill{height:46px;min-width:46px;padding:0 14px;border-radius:23px;border:1px solid var(--line);background:rgba(21,26,28,.78);color:var(--ink);font:inherit;font-size:15px;font-weight:600;cursor:pointer;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);font-variant-numeric:tabular-nums}
+#paintBtn[aria-pressed="true"]{background:#30d158;border-color:#30d158;color:#06210f}
+#markTip{font-size:12px;color:var(--ink-dim);background:rgba(21,26,28,.6);border-radius:6px;padding:4px 8px;pointer-events:none}
+#markBar [hidden]{display:none}
 #markBtn i{display:block;width:18px;height:18px;border-radius:50%;background:var(--brush,#ff3b30);border:2px solid rgba(255,255,255,.85)}
 #markBtn[aria-pressed="true"]{border-color:var(--brush,#ff3b30);box-shadow:0 0 0 2px var(--brush,#ff3b30)}
 #mark{position:fixed;top:calc(env(safe-area-inset-top,0px) + 66px);left:calc(env(safe-area-inset-left,0px) + 12px);width:min(300px,calc(100% - 24px));max-height:calc(100% - 90px);overflow-y:auto;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;z-index:6;display:flex;flex-direction:column;gap:10px;font-size:14px}
@@ -109,15 +125,16 @@ details[open] summary{margin-bottom:8px}
 <canvas id="gl" tabindex="0" aria-label="Walkable 3D model of Palmetto Pump House Zone 3"></canvas>
 <button id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span></button>
 <div id="readout"></div>
+<nav id="shift" aria-label="View"><button data-mode="plan" aria-pressed="false"><i></i>Top down</button><button data-mode="orbit" aria-pressed="false"><i></i>Overview</button><button data-mode="walk" aria-pressed="true"><i></i>3D walk</button></nav>
 <div id="hint"></div>
 <div id="tag" hidden><b id="tagA"></b><span id="tagB"></span></div>
 <div id="quick"><button id="measBtn" aria-pressed="true">Measure</button><button id="eyeBtn" aria-pressed="false">Eye line</button><button id="levelBtn" aria-label="Reset the view to level">Reset</button></div>
-<button id="markBtn" aria-label="Markup brush" aria-pressed="false"><i></i></button>
+<div id="markBar"><button id="markBtn" aria-label="Markup brush: colours, size, undo and save" aria-pressed="false"><i></i></button><button id="paintBtn" class="pill" aria-pressed="false" hidden>Paint</button><button id="sizeBtn" class="pill" aria-label="Brush size" hidden>2″</button><span id="markTip" hidden>Right-click and drag to paint</span></div>
 <div id="mark" hidden aria-label="Markup brush">
   <h2>Markup brush</h2>
   <div class="cols" id="markCols"></div>
   <label>Size <input type="range" id="markSize" min="0.5" max="12" step="0.5" value="2"> <span id="markSizeV">2″</span></label>
-  <p>In Walk view, point the dot at a wall, hold the <b>right mouse button</b> and move the mouse to draw. Let go to stop. Esc frees the mouse pointer.</p>
+  <p id="markHow">In Walk view, point the dot at a wall, hold the <b>right mouse button</b> and move the mouse to draw. Let go to stop. Esc frees the mouse pointer.</p>
   <div class="row"><button id="markUndo">Undo</button><button id="markClear">Clear unsaved</button><button id="markHide">Hide marks</button><button id="markSave" class="go">Save for the team</button></div>
   <p id="markStat"></p>
   <div id="markOut" hidden><p>Save opens a GitHub issue with the data filled in. If the data did not arrive, paste this into the issue between the two ``` lines (it is also on your clipboard):</p><textarea id="markJson" readonly></textarea></div>
@@ -216,7 +233,8 @@ details[open] summary{margin-bottom:8px}
       <li>B3 openings are placed by working back from the M4 corner. B2 opening top is 6′7½″ with a 4″ casing until scaled from the photo.</li>
       <li>Four columns, each 22½″ across (1.8 × the earlier 12½″, Tripp, 12 October) and 19′2″ from M4, in one line down the hall. Column 1 is assumed on the Wall 1 line, 39′1″ from B3, and the others repeat that spacing.</li>
       <li>The B4 mirrors reflect the room for real: every frame the model is drawn once more from a camera mirrored through the glass, so you see the far walls, the ceiling and the floor behind you as a mirror would show them (lettering reads backwards, as it should). You appear in them as a simple blocky figure at the 5′9″ eye line, about 6′2″ tall. Its arms and legs hold one of three positions and switch only while you are moving, with the keys or with a finger. The face is <code>avatar/head.png</code>: Michael's head, hat and beard as a transparent cutout, hung on the neck as a thin plate in front of the block head so the mirror sees it from any angle (a square picture would be painted onto the front of the block instead). Overview and Plan show the figure standing where you are. While you walk, your own forearms hang under your shoulders just inside the bottom corners of the screen and swing with your steps; look down a little and you see more of them, then your body and feet, as in a game. The tee is white with PUMP IT! on the chest.</li>
-      <li>Wall markups: anyone can draw on a wall with the right mouse button. Saved marks live in <code>markups.json</code> in the repository, written by a bot from the GitHub issue the Save button opens, with the author's GitHub name. The file is capped at 200 KB; when a save would push it past that, every earlier mark is erased and the site starts again with that save.</li>
+      <li>The small switch in the lower left changes the view: Top down, Overview or 3D walk, the same as the view buttons in this menu.</li>
+      <li>Wall markups: anyone can draw on a wall with the right mouse button on a computer. On a phone or tablet, tap <b>Paint</b> beside the brush so it turns green, then drag one finger: the view turns and the dot paints, and you stay put. The size button beside it changes the brush. Saved marks live in <code>markups.json</code> in the repository, written by a bot from the GitHub issue the Save button opens, with the author's GitHub name. The file is capped at 200 KB; when a save would push it past that, every earlier mark is erased and the site starts again with that save.</li>
       <li>Wall photos are stretched to fit the measured walls, with doors and windows pinned to their measured positions. The Viper (M7), the Tiger (M8), B3, B2 with its bulkhead and Wall 1 carry photos so far. The M8 photo is stretched to the V4 width. Its three doors (about 28″ wide, 6′8″ to 6′10″ high) and the 5′ × 8′ opening at its right end are cut out of the wall where the photo shows them, so the trim and the designs stop there. The locker-room double doors at its far left, their left edge on the Viper corner (Tripp, 12 October), are cut as a standard 6′ × 6′8″ pair; they are not in the photo and their size is provisional. The M8 windows are not cut.</li>
       <li>Designs are Tripp's Photoshop canvas exports from 11 October, laid over the photos on B2, the B2 bulkhead, B3, the Viper and the Tiger. M4 and B4 carry Tripp's fixed three-section design from 12 October, cut at the 49′ line (M4 is Section 1, B4 runs Sections 2 to 4 to the Viper corner), over his background wall colour, with the bottom trim and the mirrors in front. Phones and tablets load 4096 px copies; computers load the full exports.</li>
       <li>The M4 mural photo is laid on unstretched, floor to ceiling from the B3 corner. At that size it is about 50′6″ long, so its last 1′6″ of foliage and blue wall runs past the 49′ mark onto B4.</li>
@@ -713,7 +731,7 @@ fontReady.then(buildSections);
 // markup state lives up here because the menu toggles read it before the markup code further down runs
 const gMark=new THREE.Group();scene.add(gMark);
 const MARK_COLS=['#ff3b30','#ffd60a','#30d158','#0a84ff','#ffffff'],REPO='https://github.com/TrippArt/PPH-PHASE-2-WALKTHROUGH';
-const mark={col:MARK_COLS[0],w:2/12,strokes:[],saved:[],live:null,down:false,ndc:null,mats:{}};
+const mark={col:MARK_COLS[0],w:2/12,strokes:[],saved:[],live:null,down:false,ndc:null,mats:{},paint:false}; // paint = the phone Paint toggle
 const markEl=$('mark'),markBtn=$('markBtn');
 
 /* ---------- state ---------- */
@@ -810,7 +828,9 @@ document.addEventListener('pointerlockchange',()=>{if(locked()){everLocked=true;
 document.addEventListener('pointerlockerror',()=>{if(!everLocked&&!lockFail){lockFail=true;say('Hold the mouse button and drag to look around · arrow keys walk');}});
 window.addEventListener('focus',()=>{if(hint.dataset.stay){hint.dataset.stay='';hint.classList.add('gone');}});
 canvas.addEventListener('pointerdown',e=>{if(!sheet.hidden)closeSheet();focusView();try{canvas.setPointerCapture(e.pointerId);}catch(_){}
-  const mouse=e.pointerType==='mouse';if(mouse&&e.button===2){if(st.mode==='walk')markStart(e);return;}if(mouse&&e.button===0)holdMouse();
+  const mouse=e.pointerType==='mouse';
+  // Paint on (touch): one finger turns the view and paints where the dot points; a second finger stops the stroke
+  if(!mouse&&mark.paint&&st.mode==='walk'){if(ptrs.size===0){mark.down=true;mark.live=null;mark.ndc=null;}else markEnd();}if(mouse&&e.button===2){if(st.mode==='walk')markStart(e);return;}if(mouse&&e.button===0)holdMouse();
   ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY,sx:e.clientX,sy:e.clientY,mouse});rebase();dropHint();if(!mouse)e.preventDefault();});
 canvas.addEventListener('pointermove',e=>{
   if(mark.down&&mark.ndc)mark.ndc.set(e.clientX/window.innerWidth*2-1,-(e.clientY/window.innerHeight)*2+1);
@@ -821,10 +841,10 @@ canvas.addEventListener('pointermove',e=>{
       else if(st.mode==='orbit'){st.dist=Math.max(20,Math.min(520,st.dist*k));st.el+=dcy*0.004;}
       else{st.span=Math.max(18,Math.min(460,st.span*k));const u=st.span/window.innerWidth;st.pcy+=dcx*u;st.pcx+=dcy*u;}}
     two=n;return;}
-  if(st.mode==='walk'){if(p.mouse){st.yaw-=dx*0.0042;st.pitch-=dy*0.0042;}}
+  if(st.mode==='walk'){if(p.mouse){st.yaw-=dx*0.0042;st.pitch-=dy*0.0042;}else if(mark.paint){st.yaw-=dx*0.003;st.pitch=Math.max(-1.2,Math.min(1.2,st.pitch-dy*0.003));}}
   else if(st.mode==='orbit'){st.az-=dx*0.006;st.el+=dy*0.005;}
   else{const u=st.span/window.innerWidth;st.pcy+=dx*u;st.pcx+=dy*u;}});
-function up(e){if(mark.down&&(e.button===2||e.type==='pointercancel'))markEnd();ptrs.delete(e.pointerId);rebase();}
+function up(e){if(mark.down&&(e.button===2||e.type==='pointercancel'||(mark.paint&&e.pointerType!=='mouse')))markEnd();ptrs.delete(e.pointerId);rebase();}
 canvas.addEventListener('pointerup',up);canvas.addEventListener('pointercancel',up);
 canvas.addEventListener('wheel',e=>{e.preventDefault();const k=Math.exp(e.deltaY*0.0012);if(st.mode==='orbit')st.dist=Math.max(20,Math.min(520,st.dist*k));else if(st.mode==='plan')st.span=Math.max(18,Math.min(460,st.span*k));},{passive:false});
 canvas.addEventListener('contextmenu',e=>e.preventDefault());['gesturestart','gesturechange'].forEach(n=>document.addEventListener(n,e=>e.preventDefault()));
@@ -857,7 +877,7 @@ function walkSpeed(j,forward){const h=0.5;if(j<=h||!forward)return PACE*Math.pow
 function tick(now){const dt=Math.min(0.05,(now-last)/1000);last=now;updateEye();
   if(st.mode==='walk'){
     let fwd=0,strafe=0,turn=0;
-    if(ptrs.size===1){const p=ptrs.values().next().value;if(!p.mouse){const R=95,dz=0.1;let jx=(p.x-p.sx)/R,jy=(p.y-p.sy)/R;
+    if(ptrs.size===1&&!mark.paint){const p=ptrs.values().next().value;if(!p.mouse){const R=95,dz=0.1;let jx=(p.x-p.sx)/R,jy=(p.y-p.sy)/R;
         jx=Math.abs(jx)<dz?0:Math.max(-1,Math.min(1,jx-Math.sign(jx)*dz));jy=Math.abs(jy)<dz?0:Math.max(-1,Math.min(1,jy-Math.sign(jy)*dz));
         fwd=-Math.sign(jy)*walkSpeed(Math.abs(jy),jy<0);turn=-Math.sign(jx)*Math.pow(Math.abs(jx),1.4)*1.9;}}
     let kf=0,ks=0;
@@ -977,7 +997,7 @@ function updateEye(){eyeText='';eyeRing.visible=eyeDot.visible=false;const measO
   const n=hit.face.normal.clone();if(n.dot(d)>0)n.negate();const r=hit.distance*CONE,c=hit.point.clone().addScaledVector(n,0.09);
   eyeRing.position.copy(c);eyeRing.scale.set(r,r,1);eyeRing.lookAt(c.clone().add(n));eyeDot.position.copy(c);eyeDot.lookAt(c.clone().add(n));
   const ds=Math.max(1,hit.distance/22);eyeDot.scale.set(ds,ds,1);
-  if(mark.down||!markEl.hidden){eyeDot.material.color.set(mark.col);const k=Math.max(ds,mark.w/2/0.18);eyeDot.scale.set(k,k,1);}else eyeDot.material.color.setHex(0xffe14a);
+  if(mark.down||mark.paint||!markEl.hidden){eyeDot.material.color.set(mark.col);const k=Math.max(ds,mark.w/2/0.18);eyeDot.scale.set(k,k,1);}else eyeDot.material.color.setHex(0xffe14a);
   eyeDot.visible=true;eyeRing.visible=eyeOn;if(eyeOn)eyeText=' · 60° view circle '+fmt(2*r)+' across';
   const u=hit.object.userData,run=u.run;if(!measOn||!run||introOn){tagEl.hidden=true;return;}
   tagP.copy(hit.point).applyMatrix4(u.inv);const s=Math.max(0,Math.min(run.total,u.off+tagP.x));
@@ -1009,8 +1029,18 @@ function markTick(){if(!mark.down)return;const h=markHit();if(!h)return;
   const q=k.p[k.p.length-1];if(Math.hypot(h.s-q[0],h.v-q[1])<Math.max(0.02,k.w*0.3)||k.p.length>=1500)return;k.p.push([h.s,h.v]);showStroke(k);}
 MARK_COLS.forEach((c,i)=>{const b=document.createElement('button');b.style.background=c;b.setAttribute('aria-pressed',i===0);b.setAttribute('aria-label','Colour '+(i+1));
   b.onclick=()=>{mark.col=c;document.querySelectorAll('#markCols button').forEach(x=>x.setAttribute('aria-pressed',x===b));document.documentElement.style.setProperty('--brush',c);};$('markCols').appendChild(b);});
-$('markSize').oninput=e=>{const v=+e.target.value;mark.w=v/12;$('markSizeV').textContent=(v%1?(Math.floor(v)||'')+'½':v)+'″';};
+$('markSize').oninput=e=>{const v=+e.target.value;mark.w=v/12;$('markSizeV').textContent=$('sizeBtn').textContent=(v%1?(Math.floor(v)||'')+'½':v)+'″';};
 markBtn.onclick=()=>{const open=markEl.hidden;markEl.hidden=!open;markBtn.setAttribute('aria-pressed',open);if(open){freeMouse();closeSheet();}else focusView();};
+// phones and tablets: a Paint toggle and a size button beside the brush; computers: a right-click tip
+const SIZES=[1,2,4,8,12];
+function setSize(v){$('markSize').value=v;$('markSize').oninput({target:$('markSize')});}
+function paintNote(t){hint.hidden=false;hint.textContent=t;hint.classList.remove('gone');clearTimeout(hintT);hintT=setTimeout(()=>hint.classList.add('gone'),2600);}
+if(coarse){$('paintBtn').hidden=false;$('sizeBtn').hidden=false;
+  $('markHow').innerHTML='Tap <b>Paint</b> so it turns green, then drag one finger: the view turns and the dot paints where it points. You stay where you are. Tap <b>Paint</b> again to walk. The size button beside it changes the brush.';}
+else $('markTip').hidden=false;
+$('paintBtn').onclick=()=>{mark.paint=!mark.paint;$('paintBtn').setAttribute('aria-pressed',mark.paint);markEnd();ptrs.clear();two=null;closeSheet();endIntro();
+  if(mark.paint){if(st.mode!=='walk')setMode('walk');paintNote('Paint on · drag one finger to paint where the dot points');}else paintNote('Paint off · push up to walk');};
+$('sizeBtn').onclick=()=>{const v=+$('markSize').value,i=SIZES.findIndex(x=>x>v);setSize(SIZES[i<0?0:i]);};
 $('markUndo').onclick=()=>{const k=mark.strokes.pop();if(k)dropStroke(k);markStat();};
 $('markClear').onclick=()=>{mark.strokes.forEach(dropStroke);mark.strokes=[];markStat();};
 $('markHide').onclick=()=>{$('tMark').checked=!$('tMark').checked;applyToggles();};
