@@ -308,7 +308,7 @@ const RACK={width:49/12,height:89/12,upright:3/12,peg:12/12,
   depth:48/12,pegDiameter:1/12,pegHeights:[36/12,60/12]};
 // All construction choices other than width, height, upright thickness and peg projection are PROVISIONAL.
 const rackFrame=new THREE.Group();rackFrame.name='Frame (49 in outside, 43 in clear)';rack.add(rackFrame);
-const rackSteel=new THREE.MeshLambertMaterial({color:0x727d83});
+const rackSteel=new THREE.MeshLambertMaterial({color:0x16191b});
 const rackPegMat=new THREE.MeshLambertMaterial({color:0xb9c1c5});
 function rackBox(w,h,d,x,y,z){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),rackSteel);m.position.set(x,y,z);rackFrame.add(m);return m;}
 const ru=RACK.upright,rx=(RACK.width-ru)/2,rz=(RACK.depth-ru)/2;
